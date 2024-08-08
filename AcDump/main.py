@@ -1,10 +1,11 @@
 import argparse
+import configparser
 import json
 
 
 def load_config(args):
-    with open(args.config, "r", encoding="utf8") as fh:
-        config = json.load(fh)
+    config = configparser.ConfigParser()
+    config.read(args.config)
     return config
 
 
@@ -18,7 +19,7 @@ def run_version(args):
     return {"version": VERSION}
 
 
-def run(args, parser):
+def run(args, parser, config):
     # run the command
     if args.version:
         return run_version(args)
@@ -35,11 +36,12 @@ def main():
         epilog='(c) 2024 by ACME VC, Charlie Sloan <cs@example.com>')
     parser.add_argument('-v', '--version', action='store_true',
                         help="show version information for this tool", default=False)
-    # parser.add_argument('-c', '--config', required=True,
-    #                     help="use the named config file")
+    parser.add_argument('-c', '--config', required=True,
+                        help="use the named config file")
 
     args = parser.parse_args()
-    output = run(args, parser)
+    config = load_config(args)
+    output = run(args, parser, config)
     if output is not None:
         print(serialize_output(output))
 
