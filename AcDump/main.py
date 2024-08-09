@@ -13,7 +13,7 @@ def load_config(args):
 
 def serialize_output(output):
     # serialize the output
-    return json.dumps(output)
+    return json.dumps(output, indent=4)
 
 
 def run_version():
@@ -38,6 +38,12 @@ def run(args, parser, config: configparser.ConfigParser):
         return run_version()
     if args.info:
         return run_info(ac)
+
+    # PoC
+    project_id = config.getint("POC", "project_id")
+    tasks = ac.get_tasks(project_id)
+    return list(map(lambda task: task.to_dict(), tasks))
+
     # no command given so show the help
     parser.print_help()
     return None
