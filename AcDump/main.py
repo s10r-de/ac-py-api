@@ -2,6 +2,8 @@ import argparse
 import configparser
 import json
 
+from ActiveCollabAPI.ActiveCollab import ActiveCollab
+
 
 def load_config(args):
     config = configparser.ConfigParser()
@@ -19,11 +21,23 @@ def run_version(args):
     return {"version": VERSION}
 
 
+def run_info(args, ac):
+    return ac.get_info()
+
+
 def run(args, parser, config):
-    # run the command
+    # create the AC Client
+    ac = ActiveCollab(config.get("DEFAULT", "base_url"))
+    ac.login_to_first_account(
+        config.get("LOGIN", "username"),
+        config.get("LOGIN", "password"))
+    # FIXME: use config.get("LOGIN", "account")
+    # run the commands
     if args.version:
         return run_version(args)
-
+    if args.info:
+        return run_info(args, ac)
+    # no command given so show the help
     parser.print_help()
     return None
 
@@ -38,6 +52,8 @@ def main():
                         help="show version information for this tool", default=False)
     parser.add_argument('-c', '--config', required=True,
                         help="use the named config file")
+    parser.add_argument('--info', action='store_true',
+                        help="show server information", default=False)
 
     args = parser.parse_args()
     config = load_config(args)
