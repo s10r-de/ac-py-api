@@ -20,18 +20,11 @@ class ActiveCollab:
     def __init__(self, base_url: str):
         self.base_url = base_url
 
-    def login_to_account(self, email: str, password: str, account: str|None) -> AcSession:
+    def login_to_account(self, email: str, password: str, account: str | None) -> AcSession:
         login_res = self.user_login(email, password)
         cur_account = self.select_first_account(login_res.accounts)
         if account is not None:
             cur_account = self.select_account(login_res.accounts, account)
-        token = self.create_token(cur_account, login_res.user)
-        self.session = AcSession(login_res.user, login_res.accounts, cur_account, token)
-        return self.session
-
-    def login_to_first_account(self, email: str, password: str) -> AcSession:
-        login_res = self.user_login(email, password)
-        cur_account = self.select_first_account(login_res.accounts)
         token = self.create_token(cur_account, login_res.user)
         self.session = AcSession(login_res.user, login_res.accounts, cur_account, token)
         return self.session
