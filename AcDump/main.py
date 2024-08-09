@@ -16,12 +16,12 @@ def serialize_output(output):
     return json.dumps(output)
 
 
-def run_version(args):
+def run_version():
     from version import VERSION
     return {"version": VERSION}
 
 
-def run_info(args, ac):
+def run_info(ac):
     return ac.get_info()
 
 
@@ -34,9 +34,9 @@ def run(args, parser, config):
     # FIXME: use config.get("LOGIN", "account")
     # run the commands
     if args.version:
-        return run_version(args)
+        return run_version()
     if args.info:
-        return run_info(args, ac)
+        return run_info(ac)
     # no command given so show the help
     parser.print_help()
     return None
