@@ -25,13 +25,14 @@ def run_info(ac):
     return ac.get_info()
 
 
-def run(args, parser, config):
+def run(args, parser, config: configparser.ConfigParser):
     # create the AC Client
     ac = ActiveCollab(config.get("DEFAULT", "base_url"))
-    ac.login_to_first_account(
+    ac.login_to_account(
         config.get("LOGIN", "username"),
-        config.get("LOGIN", "password"))
-    # FIXME: use config.get("LOGIN", "account")
+        config.get("LOGIN", "password"),
+        config.get("LOGIN", "account", fallback=None)
+    )
     # run the commands
     if args.version:
         return run_version()
