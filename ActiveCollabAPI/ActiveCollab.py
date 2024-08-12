@@ -73,3 +73,6 @@ class ActiveCollab:
         res_data = res.json()
         tasks = list(map(lambda p: task_from_json(p), res_data['tasks']))
         return tasks
+
+    def filter_tasks(self, tasks: list[AcTask], compare_func: callable) -> list[AcTask]:
+        return list(filter(compare_func, tasks))
