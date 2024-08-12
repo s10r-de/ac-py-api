@@ -42,6 +42,26 @@ AcDump/main.py -c config.ini -v
 
 The script will currently always print JSON output.
 
+
+## API Documentation
+
+We only have the following information regarding our API:
+
+We have resources available regarding our API - first the documentation page: https://developers.activecollab.com/api-documentation/index.html
+
+The second is the GitHub repo with examples here: https://github.com/activecollab/activecollab-feather-sdk
+
+And the third and most valuable one is the StackOverflow here: https://stackoverflow.com/questions/tagged/activecollab
+
+If you need some further assistance on this, I encourage you to post all the questions about the API on Stack Overflow so that our developers can take a look and answer.
+
+
+## API Problems
+
+- no paging: https://github.com/activecollab/activecollab-feather-sdk/issues/29
+  - https://stackoverflow.com/questions/40020003/get-pagination-results-in-active-collab-api/40020858#40020858
+- no filter: https://github.com/activecollab/activecollab-feather-sdk/issues/36
+
 ## License
 
 Only for internal use!  No public distribution!
