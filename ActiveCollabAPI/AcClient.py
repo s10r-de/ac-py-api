@@ -73,5 +73,8 @@ class AcClient:
     def get_info(self):
         return self._get('info')
 
-    def get_project_tasks(self, project_id: int):
+    def get_project_active_tasks(self, project_id: int):
         return self._get('projects/%d/tasks' % project_id)
+
+    def get_project_completed_tasks(self, project_id: int):
+        return self._get('projects/%d/tasks/archive' % project_id)

@@ -65,13 +65,22 @@ class ActiveCollab:
         res = client.get_info()
         return res.json()
 
-    def get_tasks(self, project_id: int) -> list[AcTask]:
+    def get_active_tasks(self, project_id: int) -> list[AcTask]:
         client = AcClient(self.session.cur_account, self.session.token)
-        res = client.get_project_tasks(project_id)
+        res = client.get_project_active_tasks(project_id)
         if res.status_code != 200:
             raise Exception("Error %d" % res.status_code)
         res_data = res.json()
         tasks = list(map(lambda p: task_from_json(p), res_data['tasks']))
+        return tasks
+
+    def get_completed_tasks(self, project_id: int) -> list[AcTask]:
+        client = AcClient(self.session.cur_account, self.session.token)
+        res = client.get_project_completed_tasks(project_id)
+        if res.status_code != 200:
+            raise Exception("Error %d" % res.status_code)
+        res_data = res.json()
+        tasks = list(map(lambda p: task_from_json(p), res_data))
         return tasks
 
     def filter_tasks(self, tasks: list[AcTask], compare_func: callable) -> list[AcTask]:

@@ -43,12 +43,14 @@ def run(args, parser, config: configparser.ConfigParser):
     project_id = config.getint("POC", "project_id")
 
     # get all tasks
-    # tasks = ac.get_tasks(project_id)
+    tasks = ac.get_active_tasks(project_id)
+    tasks = ac.get_completed_tasks(project_id)
     # return list(map(lambda task: task.to_dict(), tasks))
 
     # get tasks modified after 1723452690  12.08.2024 10:51 CEST
-    tasks = ac.filter_tasks(ac.get_tasks(project_id), lambda t: t.updated_on > 1723452690)
-    return len(list(map(lambda task: task.to_dict(), tasks)))
+    # tasks = ac.filter_tasks(tasks, lambda t: t.updated_on > 1723452690)
+    tasks = ac.filter_tasks(tasks, lambda t: t.id == 18440)
+    return list(map(lambda task: task.to_dict(), tasks))
 
     # no command given so show the help
     parser.print_help()
