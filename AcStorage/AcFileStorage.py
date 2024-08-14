@@ -2,6 +2,8 @@ import json
 import os
 import shutil
 
+from ActiveCollabAPI.AcTask import AcTask
+
 
 class AcFileStorage(object):
 
@@ -42,15 +44,15 @@ class AcFileStorage(object):
     def get_project_filename(self, project: dict):
         return "project-%08d.json" % project["id"]
 
-    def get_task_filename(self, task: dict) -> str:
-        return "task-%08d.json" % task["id"]
+    def get_task_filename(self, task: AcTask) -> str:
+        return "task-%08d.json" % task.id
 
-    def save_task(self, task: dict) -> str:
-        assert (task["class_"] == "Task")
+    def save_task(self, task: AcTask) -> str:
+        assert (task.class_ == "Task")
         task_filename = self.get_task_filename(task)
         task_full_filename = self.get_task_full_filename(task_filename)
         with open(task_full_filename, "w") as f:
-            json.dump(task, f, sort_keys=True, indent=2)
+            json.dump(task.to_dict(), f, sort_keys=True, indent=2)
         return task_full_filename
 
     def get_task_full_filename(self, task_filename: str) -> str:
