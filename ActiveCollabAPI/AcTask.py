@@ -54,6 +54,8 @@ class AcTask:
         d = dataclasses.asdict(self)
         d["class"] = d["class_"]
         del d["class_"]
+        if d["open_dependencies"] is not None:
+            d["open_dependencies"] = self.open_dependencies.to_dict()
         return d
 
     def to_json(self) -> str:
@@ -63,7 +65,6 @@ class AcTask:
 def task_from_json(json_obj: dict) -> AcTask:
     json_obj["class_"] = json_obj["class"]
     del json_obj["class"]
-    json_obj["open_dependencies"] = AcTaskDependencies.taskdependency_from_json(json_obj["open_dependencies"])
-    # TODO: json_obj["attachments"] =
-    # TODO: json_obj["labels"] =
+    if json_obj["open_dependencies"] is not None:
+        json_obj["open_dependencies"] = AcTaskDependencies.taskdependency_from_json(json_obj["open_dependencies"])
     return AcTask(**json_obj)

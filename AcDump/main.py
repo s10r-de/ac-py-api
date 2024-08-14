@@ -2,6 +2,7 @@ import argparse
 import configparser
 import json
 
+from AcStorage.AcFileStorage import AcFileStorage
 from ActiveCollabAPI.ActiveCollab import ActiveCollab
 
 
@@ -39,17 +40,27 @@ def run(args, parser, config: configparser.ConfigParser):
     if args.info:
         return run_info(ac)
 
+    ac_storage = AcFileStorage(config.get('STORAGE', 'path'),
+                               config.getint('LOGIN', 'account'))
+    ac_storage.reset()
+    ac_storage.ensure_dirs()
+
     # PoC
     project_id = config.getint("POC", "project_id")
 
     # get all tasks
     tasks = ac.get_active_tasks(project_id)
-    tasks = ac.get_completed_tasks(project_id)
+
+    # save as JSON file
+    for task in tasks:
+        ac_storage.save_task(task)
+
+    # tasks = ac.get_completed_tasks(project_id)
     # return list(map(lambda task: task.to_dict(), tasks))
 
     # get tasks modified after 1723452690  12.08.2024 10:51 CEST
     # tasks = ac.filter_tasks(tasks, lambda t: t.updated_on > 1723452690)
-    tasks = ac.filter_tasks(tasks, lambda t: t.id == 18440)
+    # tasks = ac.filter_tasks(tasks, lambda t: t.id == 18440)
     return list(map(lambda task: task.to_dict(), tasks))
 
     # no command given so show the help
