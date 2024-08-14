@@ -18,31 +18,13 @@ class AcFileStorage(object):
     def ensure_dirs(self):
         if not os.path.exists(self.get_account_path()):
             os.makedirs(self.get_account_path(), 0o700)
-            os.makedirs(self.get_projects_path(), 0o700)
             os.makedirs(self.get_tasks_path(), 0o700)
 
     def get_account_path(self) -> str:
         return os.path.join(self.root_path, "account-%08d" % self.account_id)
 
-    def get_projects_path(self) -> str:
-        return os.path.join(self.get_account_path(), "projects")
-
     def get_tasks_path(self) -> str:
         return os.path.join(self.get_account_path(), "tasks")
-
-    def save_project(self, project: dict) -> str:
-        assert (project["class_"] == "Project")
-        project_filename = self.get_project_filename(project)
-        project_full_filename = self.get_project_full_filename(project_filename)
-        with open(project_full_filename, "w") as f:
-            json.dump(project, f, sort_keys=True, indent=2)
-        return project_full_filename
-
-    def get_project_full_filename(self, project_filename: str) -> str:
-        return os.path.join(self.get_projects_path(), project_filename)
-
-    def get_project_filename(self, project: dict):
-        return "project-%08d.json" % project["id"]
 
     def get_task_filename(self, task: AcTask) -> str:
         return "task-%08d.json" % task.id
