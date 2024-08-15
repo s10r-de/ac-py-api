@@ -55,13 +55,20 @@ def run(args, parser, config: configparser.ConfigParser):
     for task in tasks:
         ac_storage.save_task(task)
 
+    # get all projects
+    projects = ac.get_active_projects()
+
+    # save as JSON file
+    for project in projects:
+        ac_storage.save_project(project)
+
     # tasks = ac.get_completed_tasks(project_id)
     # return list(map(lambda task: task.to_dict(), tasks))
 
     # get tasks modified after 1723452690  12.08.2024 10:51 CEST
     # tasks = ac.filter_tasks(tasks, lambda t: t.updated_on > 1723452690)
     # tasks = ac.filter_tasks(tasks, lambda t: t.id == 18440)
-    return list(map(lambda task: task.to_dict(), tasks))
+    return list(map(lambda task: task.to_dict(), projects))
 
     # no command given so show the help
     parser.print_help()
