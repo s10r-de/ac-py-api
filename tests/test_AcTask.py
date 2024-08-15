@@ -64,10 +64,10 @@ class TestAcTask(TestCase):
         task_id = 123456
         task = self._test_task(task_id)
         task_dict = task.to_dict()
-        self.assertEqual(task_id, task_dict["id"])
+        self.assertEqual(task_dict["id"], task_id)
 
     def test_to_json(self):
         task_id = 123456
         task = self._test_task(task_id)
         task_json = task.to_json()
-        self.assertEqual(task_id, json.loads(task_json)["id"])
+        self.assertEqual(json.loads(task_json)["id"], task_id)
