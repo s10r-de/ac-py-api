@@ -19,9 +19,8 @@ class AcFileStorage(object):
 
     def ensure_dirs(self):
         if not os.path.exists(self.get_account_path()):
-            os.makedirs(self.get_account_path(), 0o700)
-            os.makedirs(self.get_tasks_path(), 0o700)
             os.makedirs(self.get_account_path(), DEFAULT_MODE_DIRS)
+            os.makedirs(self.get_tasks_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_projects_path(), DEFAULT_MODE_DIRS)
 
     def get_account_path(self) -> str:
