@@ -16,7 +16,7 @@ class TestAcProject(TestCase):
             budget_type="",
             budgeting_interval="",
             category_id=0,
-            class_="",
+            class_="Project",
             company_id=0,
             completed_by_id=0,
             completed_on=0,
