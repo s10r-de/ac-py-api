@@ -53,15 +53,19 @@ def run(args, parser, config: configparser.ConfigParser):
     # save each project as JSON file
     for project in projects:
         ac_storage.save_project(project)
-        # get all tasks for this project
+        # get all active tasks for this project
         tasks = ac.get_active_tasks(project.id)
         # save all tasks of this project as JSON file
         for task in tasks:
             ac_storage.save_task(task)
+        # get all completed tasks for this project
+        tasks = ac.get_completed_tasks(project.id)
+        # save all tasks of this project as JSON file
+        for task in tasks:
+            ac_storage.save_task(task)
+        # TODO: get all trashed tasks for this project
 
     return {'message': "data of account %d dumped to %s" % (account_id, storage_path)}
-    # tasks = ac.get_completed_tasks(project_id)
-    # return list(map(lambda task: task.to_dict(), tasks))
 
     # get tasks modified after 1723452690  12.08.2024 10:51 CEST
     # tasks = ac.filter_tasks(tasks, lambda t: t.updated_on > 1723452690)
