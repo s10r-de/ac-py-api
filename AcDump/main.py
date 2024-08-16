@@ -49,21 +49,15 @@ def run(args, parser, config: configparser.ConfigParser):
 
     # get all projects
     projects = ac.get_active_projects()
-
-    # save each project as JSON file
+    projects.extend(ac.get_archived_projects())
     for project in projects:
         ac_storage.save_project(project)
-        # get all active tasks for this project
+        # get all tasks for this project
         tasks = ac.get_active_tasks(project.id)
-        # save all tasks of this project as JSON file
-        for task in tasks:
-            ac_storage.save_task(task)
-        # get all completed tasks for this project
-        tasks = ac.get_completed_tasks(project.id)
-        # save all tasks of this project as JSON file
-        for task in tasks:
-            ac_storage.save_task(task)
+        tasks.extend(ac.get_completed_tasks(project.id))
         # TODO: get all trashed tasks for this project
+        for task in tasks:
+            ac_storage.save_task(task)
 
     return {'message': "data of account %d dumped to %s" % (account_id, storage_path)}
 

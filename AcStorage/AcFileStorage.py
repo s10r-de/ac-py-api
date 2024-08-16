@@ -33,7 +33,6 @@ class AcFileStorage(object):
         return "task-%08d.json" % task.id
 
     def save_task(self, task: AcTask) -> str:
-        assert (task.class_ == "Task")
         task_filename = self.get_task_filename(task)
         task_full_filename = self.get_task_full_filename(task_filename)
         with open(task_full_filename, "w") as f:
@@ -53,7 +52,6 @@ class AcFileStorage(object):
         return os.path.join(self.get_projects_path(), project_filename)
 
     def save_project(self, project: AcProject) -> str:
-        assert (project.class_ == "Project")
         project_filename = self.get_project_filename(project)
         project_full_filename = self.get_project_full_filename(project_filename)
         with open(project_full_filename, "w") as f:

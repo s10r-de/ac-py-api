@@ -14,6 +14,7 @@ if DEBUG:
     # You will see the REQUEST, including HEADERS and DATA, and RESPONSE with HEADERS but without DATA.
     # The only thing missing will be the response.body which is not logged.
     import http.client as http_client
+
     http_client.HTTPConnection.debuglevel = 1
 
     # You must initialize logging, otherwise you'll not see debug output.
@@ -77,3 +78,6 @@ class AcClient:
 
     def get_active_projects(self):
         return self._get('projects')
+
+    def get_archived_projects(self):
+        return self._get('projects/archive')

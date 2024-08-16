@@ -95,3 +95,12 @@ class ActiveCollab:
         res_data = res.json()
         projects = list(map(lambda p: project_from_json(p), res_data))
         return projects
+
+    def get_archived_projects(self) -> list[AcProject]:
+        client = AcClient(self.session.cur_account, self.session.token)
+        res = client.get_archived_projects()
+        if res.status_code != 200:
+            raise Exception("Error %d" % res.status_code)
+        res_data = res.json()
+        projects = list(map(lambda p: project_from_json(p), res_data))
+        return projects
