@@ -49,7 +49,7 @@ account_name = #123456
 Then test if execution will work by print the version number:
 
 ```console
-AcDump/main.py -c config.ini -v 
+PYTHONPATH=$PWD/$PYTHONPATH python3 AcDump/main.py -c config.ini -v 
 {"version": "0.1"}
 ```
 
