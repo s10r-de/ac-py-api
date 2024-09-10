@@ -55,7 +55,6 @@ def run(args, parser, config: configparser.ConfigParser):
         # get all tasks for this project
         tasks = ac.get_active_tasks(project.id)
         tasks.extend(ac.get_completed_tasks(project.id))
-        # TODO: get all trashed tasks for this project
         for task in tasks:
             ac_storage.save_task(task)
 

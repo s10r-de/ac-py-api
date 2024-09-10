@@ -43,6 +43,13 @@ AcDump/main.py -c config.ini -v
 The script will currently always print JSON output.
 
 
+## Noteable
+
+- **⚠️ Current implementation will always erase current data and create from scratch, this will change in a future version!!**
+- This script will only backup the data where it has access to, remember when configure the account to give enough permissions!
+- this script will not backup trashed projects or tasks or anything else what is trashed, but it will include completed projects tasks etc!
+
+
 ## API Documentation
 
 We only have the following information regarding our API:
