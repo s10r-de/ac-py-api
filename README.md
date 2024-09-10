@@ -21,6 +21,19 @@ development.
 
 The project setup is already done for it.
 
+### Setup the Virtual Env
+
+Create virtual environment and install the required modules:
+
+```console
+python3 -m venv .venv
+source .venv/bin/activate
+pip3 install -r requirements.txt 
+```
+
+Always run it inside this venv!
+
+
 ## Running
 
 Create a `config.ini` file from `config-example.ini`. You need to
