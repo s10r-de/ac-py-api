@@ -4,6 +4,7 @@ import shutil
 
 from ActiveCollabAPI.AcProject import AcProject
 from ActiveCollabAPI.AcTask import AcTask
+from ActiveCollabAPI.AcUser import AcUser
 
 DEFAULT_MODE_DIRS = 0o700
 
@@ -22,6 +23,7 @@ class AcFileStorage(object):
             os.makedirs(self.get_account_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_tasks_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_projects_path(), DEFAULT_MODE_DIRS)
+            os.makedirs(self.get_users_path(), DEFAULT_MODE_DIRS)
 
     def get_account_path(self) -> str:
         return os.path.join(self.root_path, "account-%08d" % self.account_id)
@@ -57,3 +59,19 @@ class AcFileStorage(object):
         with open(project_full_filename, "w") as f:
             json.dump(project.to_dict(), f, sort_keys=True, indent=2)
         return project_full_filename
+
+    def get_users_path(self) -> str:
+        return os.path.join(self.get_account_path(), "users")
+
+    def get_user_filename(self, user: AcUser) -> str:
+        return "user-%08d.json" % user.id
+
+    def get_user_full_filename(self, user_filename: str) -> str:
+        return os.path.join(self.get_users_path(), user_filename)
+
+    def save_user(self, user: AcUser) -> str:
+        user_filename = self.get_user_filename(user)
+        user_full_filename = self.get_user_full_filename(user_filename)
+        with open(user_full_filename, "w") as f:
+            json.dump(user.to_dict(), f, sort_keys=True, indent=2)
+        return user_full_filename

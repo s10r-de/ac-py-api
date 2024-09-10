@@ -9,6 +9,7 @@ from ActiveCollabAPI.AcLoginResponse import AcLoginResponse
 from ActiveCollabAPI.AcSession import AcSession
 from ActiveCollabAPI.AcToken import AcToken
 from ActiveCollabAPI.AcLoginUser import AcLoginUser
+from ActiveCollabAPI.AcUser import AcUser, user_from_json
 
 
 class ActiveCollab:
@@ -104,3 +105,12 @@ class ActiveCollab:
         res_data = res.json()
         projects = list(map(lambda p: project_from_json(p), res_data))
         return projects
+
+    def get_all_users(self) -> list[AcUser]:
+        client = AcClient(self.session.cur_account, self.session.token)
+        res = client.get_all_users()
+        if res.status_code != 200:
+            raise Exception("Error %d" % res.status_code)
+        res_data = res.json()
+        users = list(map(lambda u: user_from_json(u), res_data))
+        return users
