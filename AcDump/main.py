@@ -47,6 +47,11 @@ def run(args, parser, config: configparser.ConfigParser):
     ac_storage.reset()
     ac_storage.ensure_dirs()
 
+    # get all users
+    users = ac.get_all_users()
+    for user in users:
+        ac_storage.save_user(user)
+        
     # get all projects
     projects = ac.get_active_projects()
     projects.extend(ac.get_archived_projects())

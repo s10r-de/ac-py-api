@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 
-from ActiveCollabAPI.AcUser import AcUser
+from ActiveCollabAPI.AcLoginUser import AcLoginUser
 from ActiveCollabAPI.AcAccount import AcAccount
 
 
 @dataclass
 class AcLoginResponse:
-    user: AcUser
+    user: AcLoginUser
     accounts: list[AcAccount]

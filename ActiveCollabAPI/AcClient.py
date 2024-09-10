@@ -81,3 +81,6 @@ class AcClient:
 
     def get_archived_projects(self):
         return self._get('projects/archive')
+
+    def get_all_users(self):
+        return self._get('users/all')
