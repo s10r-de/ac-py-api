@@ -28,7 +28,8 @@ def run_info(ac):
 
 def run(args, parser, config: configparser.ConfigParser):
     # create the AC Client
-    ac = ActiveCollab(config.get("DEFAULT", "base_url"))
+    base_url = config.get("DEFAULT", "base_url")
+    ac = ActiveCollab(base_url)
     ac.login_to_account(
         config.get("LOGIN", "username"),
         config.get("LOGIN", "password"),
@@ -40,28 +41,29 @@ def run(args, parser, config: configparser.ConfigParser):
     if args.info:
         return run_info(ac)
 
-    ac_storage = AcFileStorage(config.get('STORAGE', 'path'),
-                               config.getint('LOGIN', 'account'))
+    account_id = config.getint('LOGIN', 'account')
+    storage_path = config.get('STORAGE', 'path')
+    ac_storage = AcFileStorage(storage_path, account_id)
     ac_storage.reset()
     ac_storage.ensure_dirs()
 
-    # PoC
-    project_id = config.getint("POC", "project_id")
+    # get all projects
+    projects = ac.get_active_projects()
+    projects.extend(ac.get_archived_projects())
+    for project in projects:
+        ac_storage.save_project(project)
+        # get all tasks for this project
+        tasks = ac.get_active_tasks(project.id)
+        tasks.extend(ac.get_completed_tasks(project.id))
+        for task in tasks:
+            ac_storage.save_task(task)
 
-    # get all tasks
-    tasks = ac.get_active_tasks(project_id)
-
-    # save as JSON file
-    for task in tasks:
-        ac_storage.save_task(task)
-
-    # tasks = ac.get_completed_tasks(project_id)
-    # return list(map(lambda task: task.to_dict(), tasks))
+    return {'message': "data of account %d dumped to %s" % (account_id, storage_path)}
 
     # get tasks modified after 1723452690  12.08.2024 10:51 CEST
     # tasks = ac.filter_tasks(tasks, lambda t: t.updated_on > 1723452690)
     # tasks = ac.filter_tasks(tasks, lambda t: t.id == 18440)
-    return list(map(lambda task: task.to_dict(), tasks))
+    # return list(map(lambda task: task.to_dict(), projects))
 
     # no command given so show the help
     parser.print_help()

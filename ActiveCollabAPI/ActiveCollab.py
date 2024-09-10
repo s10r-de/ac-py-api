@@ -1,6 +1,7 @@
 from ActiveCollabAPI import AC_API_VERSION, AcTask
 from ActiveCollabAPI.AcAuthenticator import AcAuthenticator
 from ActiveCollabAPI.AcClient import AcClient
+from ActiveCollabAPI.AcProject import AcProject, project_from_json
 from ActiveCollabAPI.AcTask import task_from_json
 from ActiveCollabAPI.AcTokenAuthenticator import AcTokenAuthenticator
 from ActiveCollabAPI.AcAccount import AcAccount, account_from_json
@@ -85,3 +86,21 @@ class ActiveCollab:
 
     def filter_tasks(self, tasks: list[AcTask], compare_func: callable) -> list[AcTask]:
         return list(filter(compare_func, tasks))
+
+    def get_active_projects(self) -> list[AcProject]:
+        client = AcClient(self.session.cur_account, self.session.token)
+        res = client.get_active_projects()
+        if res.status_code != 200:
+            raise Exception("Error %d" % res.status_code)
+        res_data = res.json()
+        projects = list(map(lambda p: project_from_json(p), res_data))
+        return projects
+
+    def get_archived_projects(self) -> list[AcProject]:
+        client = AcClient(self.session.cur_account, self.session.token)
+        res = client.get_archived_projects()
+        if res.status_code != 200:
+            raise Exception("Error %d" % res.status_code)
+        res_data = res.json()
+        projects = list(map(lambda p: project_from_json(p), res_data))
+        return projects
