@@ -4,12 +4,12 @@ from dataclasses import dataclass
 
 from ActiveCollabAPI.AcAccount import AcAccount
 from ActiveCollabAPI.AcToken import AcToken
-from ActiveCollabAPI.AcUser import AcUser
+from ActiveCollabAPI.AcLoginUser import AcLoginUser
 
 
 @dataclass
 class AcSession:
-    user: AcUser
+    user: AcLoginUser
     accounts: [AcAccount]
     cur_account: AcAccount
     token: AcToken

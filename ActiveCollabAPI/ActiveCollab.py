@@ -8,7 +8,7 @@ from ActiveCollabAPI.AcAccount import AcAccount, account_from_json
 from ActiveCollabAPI.AcLoginResponse import AcLoginResponse
 from ActiveCollabAPI.AcSession import AcSession
 from ActiveCollabAPI.AcToken import AcToken
-from ActiveCollabAPI.AcUser import AcUser
+from ActiveCollabAPI.AcLoginUser import AcLoginUser
 
 
 class ActiveCollab:
@@ -40,7 +40,7 @@ class ActiveCollab:
         if res_data['is_ok'] != 1:
             raise Exception('Login failed! (2)')
         accounts = list(map(lambda a: account_from_json(a), res_data['accounts']))
-        return AcLoginResponse(AcUser(**res_data['user']), accounts)
+        return AcLoginResponse(AcLoginUser(**res_data['user']), accounts)
 
     def select_first_account(self, accounts: list[AcAccount]) -> AcAccount:
         return accounts[0]
@@ -51,7 +51,7 @@ class ActiveCollab:
             raise Exception('Account not found!')
         return found[0]
 
-    def create_token(self, account: AcAccount, user: AcUser) -> AcToken:
+    def create_token(self, account: AcAccount, user: AcLoginUser) -> AcToken:
         authenticator = AcTokenAuthenticator(account.url + '/api/v%s' % AC_API_VERSION)
         res = authenticator.issue_token_intent(user.intent)
         if res.status_code != 200:
