@@ -22,25 +22,11 @@ def run_version():
     return {"version": VERSION}
 
 
-def run_info(ac):
+def run_info(ac: ActiveCollab):
     return ac.get_info()
 
 
-def run(args, parser, config: configparser.ConfigParser):
-    # create the AC Client
-    base_url = config.get("DEFAULT", "base_url")
-    ac = ActiveCollab(base_url)
-    ac.login_to_account(
-        config.get("LOGIN", "username"),
-        config.get("LOGIN", "password"),
-        config.get("LOGIN", "account", fallback=None)
-    )
-    # run the commands
-    if args.version:
-        return run_version()
-    if args.info:
-        return run_info(ac)
-
+def run_dump_all(ac: ActiveCollab, config: configparser.ConfigParser):
     account_id = config.getint('LOGIN', 'account')
     storage_path = config.get('STORAGE', 'path')
     ac_storage = AcFileStorage(storage_path, account_id)
@@ -74,6 +60,28 @@ def run(args, parser, config: configparser.ConfigParser):
     # tasks = ac.filter_tasks(tasks, lambda t: t.id == 18440)
     # return list(map(lambda task: task.to_dict(), projects))
 
+
+def _login(config: configparser.ConfigParser) -> ActiveCollab:
+    # create the AC Client
+    base_url = config.get("DEFAULT", "base_url")
+    ac = ActiveCollab(base_url)
+    ac.login_to_account(
+        config.get("LOGIN", "username"),
+        config.get("LOGIN", "password"),
+        config.get("LOGIN", "account", fallback=None)
+    )
+    return ac
+
+
+def run(args, parser, config: configparser.ConfigParser):
+    # run the commands
+    if args.version:
+        return run_version()
+    if args.info:
+        return run_info(_login(config))
+    if args.dump:
+        return run_dump_all(_login(config), config)
+
     # no command given so show the help
     parser.print_help()
     return None
@@ -91,7 +99,8 @@ def main():
                         help="use the named config file")
     parser.add_argument('--info', action='store_true',
                         help="show server information", default=False)
-
+    parser.add_argument('--dump', action='store_true',
+                        help="dump all data", default=False)
     args = parser.parse_args()
     config = load_config(args)
     output = run(args, parser, config)

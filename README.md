@@ -55,6 +55,15 @@ PYTHONPATH=$PWD/$PYTHONPATH python3 AcDump/main.py -c config.ini -v
 
 The script will currently always print JSON output.
 
+Trigger the dump of all data:
+
+```console
+PYTHONPATH=$PWD/$PYTHONPATH python3 AcDump/main.py -c config.ini --dump
+{
+    "message": "data of account 416910 dumped to ./data"
+}
+```
+
 
 ## Noteable
 
