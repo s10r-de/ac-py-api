@@ -2,6 +2,7 @@ from ActiveCollabAPI import AC_API_VERSION, AcTask
 from ActiveCollabAPI.AcAccount import AcAccount, account_from_json
 from ActiveCollabAPI.AcAuthenticator import AcAuthenticator
 from ActiveCollabAPI.AcClient import AcClient
+from ActiveCollabAPI.AcComment import AcComment, comment_from_json
 from ActiveCollabAPI.AcLoginResponse import AcLoginResponse
 from ActiveCollabAPI.AcLoginUser import AcLoginUser
 from ActiveCollabAPI.AcProject import AcProject, project_from_json
@@ -124,3 +125,12 @@ class ActiveCollab:
         res_data = res.json()
         subtasks = list(map(lambda u: subtask_from_json(u), res_data))
         return subtasks
+
+    def get_comments(self, task: AcTask) -> list[AcComment]:
+        client = AcClient(self.session.cur_account, self.session.token)
+        res = client.get_comments(task.id)
+        if res.status_code != 200:
+            raise Exception("Error %d" % res.status_code)
+        res_data = res.json()
+        comments = list(map(lambda c: comment_from_json(c), res_data))
+        return comments

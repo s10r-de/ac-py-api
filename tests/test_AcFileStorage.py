@@ -4,6 +4,7 @@ import re
 from unittest import TestCase
 
 from AcStorage.AcFileStorage import AcFileStorage
+from ActiveCollabAPI.AcComment import AcComment, comment_from_json
 from ActiveCollabAPI.AcProject import AcProject, project_from_json
 from ActiveCollabAPI.AcSubtask import AcSubtask, subtask_from_json
 from ActiveCollabAPI.AcTask import AcTask, task_from_json
@@ -56,7 +57,7 @@ class TestAcFileStorage(TestCase):
         self.assertIsNotNone(re.search(str(account_id), ac_storage.get_tasks_path()))
 
     def test_110_get_task_filename(self):
-        account_id = 123412
+        account_id = 12341234
         task_id = 3456
         ac_storage = AcFileStorage(DATA_DIR, account_id)
         test_task = self._generate_test_task(task_id)
@@ -64,7 +65,7 @@ class TestAcFileStorage(TestCase):
         self.assertGreater(len(filename), 0)
 
     def test_120_get_task_full_filename(self):
-        account_id = 123412
+        account_id = 12341234
         task_id = 3456
         ac_storage = AcFileStorage(DATA_DIR, account_id)
         test_task = self._generate_test_task(task_id)
@@ -73,7 +74,7 @@ class TestAcFileStorage(TestCase):
         self.assertGreater(len(full_filename), 0)
 
     def test_130_save_task(self):
-        account_id = 123412
+        account_id = 12341234
         task_id = 3456
         ac_storage = AcFileStorage(DATA_DIR, account_id)
         ac_storage.ensure_dirs()
@@ -95,7 +96,7 @@ class TestAcFileStorage(TestCase):
         self.assertIsNotNone(re.search(str(account_id), ac_storage.get_projects_path()))
 
     def test_210_get_project_filename(self):
-        account_id = 123412
+        account_id = 12341234
         project_id = 4321
         ac_storage = AcFileStorage(DATA_DIR, account_id)
         test_project = self._generate_test_project(project_id)
@@ -103,7 +104,7 @@ class TestAcFileStorage(TestCase):
         self.assertGreater(len(filename), 0)
 
     def test_220_get_project_full_filename(self):
-        account_id = 123412
+        account_id = 12341234
         project_id = 4321
         ac_storage = AcFileStorage(DATA_DIR, account_id)
         test_project = self._generate_test_project(project_id)
@@ -112,7 +113,7 @@ class TestAcFileStorage(TestCase):
         self.assertGreater(len(full_filename), 0)
 
     def test_230_save_project(self):
-        account_id = 123412
+        account_id = 12341234
         project_id = 4321
         ac_storage = AcFileStorage(DATA_DIR, account_id)
         ac_storage.ensure_dirs()
@@ -134,7 +135,7 @@ class TestAcFileStorage(TestCase):
         self.assertIsNotNone(re.search(str(account_id), ac_storage.get_users_path()))
 
     def test_310_get_user_filename(self):
-        account_id = 123412
+        account_id = 12341234
         user_id = 4711
         ac_storage = AcFileStorage(DATA_DIR, account_id)
         test_user = self._generate_test_user(user_id)
@@ -142,7 +143,7 @@ class TestAcFileStorage(TestCase):
         self.assertGreater(len(filename), 0)
 
     def test_320_get_user_full_filename(self):
-        account_id = 123412
+        account_id = 12341234
         user_id = 4712
         ac_storage = AcFileStorage(DATA_DIR, account_id)
         test_user = self._generate_test_user(user_id)
@@ -151,7 +152,7 @@ class TestAcFileStorage(TestCase):
         self.assertGreater(len(full_filename), 0)
 
     def test_330_save_user(self):
-        account_id = 123412
+        account_id = 12341234
         user_id = 4323
         ac_storage = AcFileStorage(DATA_DIR, account_id)
         ac_storage.ensure_dirs()
@@ -167,13 +168,13 @@ class TestAcFileStorage(TestCase):
         subtask.id = subtask_id
         return subtask
 
-    def test_400_get_tasks_path(self):
+    def test_400_get_subtasks_path(self):
         account_id = 12341234
         ac_storage = AcFileStorage(DATA_DIR, account_id)
         self.assertIsNotNone(re.search(str(account_id), ac_storage.get_subtasks_path()))
 
     def test_410_get_subtask_filename(self):
-        account_id = 123412
+        account_id = 12341234
         task_id = 3456
         subtask_id = 987
         ac_storage = AcFileStorage(DATA_DIR, account_id)
@@ -182,7 +183,7 @@ class TestAcFileStorage(TestCase):
         self.assertGreater(len(filename), 0)
 
     def test_420_get_subtask_full_filename(self):
-        account_id = 123412
+        account_id = 12341234
         task_id = 3456
         subtask_id = 987
         ac_storage = AcFileStorage(DATA_DIR, account_id)
@@ -192,11 +193,57 @@ class TestAcFileStorage(TestCase):
         self.assertGreater(len(full_filename), 0)
 
     def test_430_save_subtask(self):
-        account_id = 123412
+        account_id = 12341234
         task_id = 3456
         subtask_id = 987
         ac_storage = AcFileStorage(DATA_DIR, account_id)
         ac_storage.ensure_dirs()
         subtest_task = self._generate_test_subtask(task_id, subtask_id)
         full_filename = ac_storage.save_subtask(subtest_task)
+        self.assertTrue(os.path.isfile(full_filename))
+
+    # comments
+    def _generate_test_comment(self, task_id: int, comment_id: int) -> AcComment:
+        with open('../example-data/example-comment-95993.json', 'r') as fh:
+            comment = comment_from_json(json.load(fh))
+        comment.parent_id = task_id
+        comment.id = comment_id
+        return comment
+
+    def test_500_get_comments_path(self):
+        account_id = 12341234
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        self.assertRegex(ac_storage.get_comments_path(), r'^.*\/account-' + str(account_id + 0) + r'\/comments$')
+        ac_storage.ensure_dirs()
+        self.assertTrue(os.path.isdir(ac_storage.get_comments_path()))
+
+    def test_510_get_comment_filename(self):
+        account_id = 12341234
+        task_id = 3456
+        comment_id = 667788
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        test_comment = self._generate_test_comment(task_id, comment_id)
+        filename = ac_storage.get_comment_filename(test_comment)
+        self.assertGreater(len(filename), 0)
+        self.assertRegex(filename, r'^comment-%08d\.json$' % (comment_id))
+
+    def test_520_get_comment_full_filename(self):
+        account_id = 12341234
+        task_id = 3456
+        comment_id = 987
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        test_comment = self._generate_test_comment(task_id, comment_id)
+        filename = ac_storage.get_comment_filename(test_comment)
+        full_filename = ac_storage.get_comment_full_filename(filename)
+        self.assertGreater(len(full_filename), 0)
+        self.assertRegex(full_filename, r'^.*\/account-%08d\/comments\/comment-%08d\.json$' % (account_id, comment_id))
+
+    def test_530_save_comment(self):
+        account_id = 12341234
+        task_id = 3456
+        comment_id = 987
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        ac_storage.ensure_dirs()
+        test_comment = self._generate_test_comment(task_id, comment_id)
+        full_filename = ac_storage.save_comment(test_comment)
         self.assertTrue(os.path.isfile(full_filename))

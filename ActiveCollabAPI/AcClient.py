@@ -87,3 +87,6 @@ class AcClient:
 
     def get_subtasks(self, project_id: int, task_id: int):
         return self._get('projects/%d/tasks/%d/subtasks' % (project_id, task_id))
+
+    def get_comments(self, task_id: int):
+        return self._get('comments/task/%d' % task_id)
