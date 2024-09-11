@@ -4,6 +4,7 @@ import re
 from unittest import TestCase
 
 from AcStorage.AcFileStorage import AcFileStorage
+from ActiveCollabAPI.AcComment import AcComment, comment_from_json
 from ActiveCollabAPI.AcProject import AcProject, project_from_json
 from ActiveCollabAPI.AcSubtask import AcSubtask, subtask_from_json
 from ActiveCollabAPI.AcTask import AcTask, task_from_json
@@ -199,4 +200,50 @@ class TestAcFileStorage(TestCase):
         ac_storage.ensure_dirs()
         subtest_task = self._generate_test_subtask(task_id, subtask_id)
         full_filename = ac_storage.save_subtask(subtest_task)
+        self.assertTrue(os.path.isfile(full_filename))
+
+    # comments
+    def _generate_test_comment(self, task_id: int, comment_id: int) -> AcComment:
+        with open('../example-data/example-comment-95993.json', 'r') as fh:
+            comment = comment_from_json(json.load(fh))
+        comment.parent_id = task_id
+        comment.id = comment_id
+        return comment
+
+    def test_500_get_comments_path(self):
+        account_id = 12341234
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        self.assertRegex(ac_storage.get_comments_path(), r'^.*\/account-' + str(account_id + 0) + r'\/comments$')
+        ac_storage.ensure_dirs()
+        self.assertTrue(os.path.isdir(ac_storage.get_comments_path()))
+
+    def test_510_get_comment_filename(self):
+        account_id = 12341234
+        task_id = 3456
+        comment_id = 667788
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        test_comment = self._generate_test_comment(task_id, comment_id)
+        filename = ac_storage.get_comment_filename(test_comment)
+        self.assertGreater(len(filename), 0)
+        self.assertRegex(filename, r'^comment-%08d\.json$' % (comment_id))
+
+    def test_520_get_comment_full_filename(self):
+        account_id = 12341234
+        task_id = 3456
+        comment_id = 987
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        test_comment = self._generate_test_comment(task_id, comment_id)
+        filename = ac_storage.get_comment_filename(test_comment)
+        full_filename = ac_storage.get_comment_full_filename(filename)
+        self.assertGreater(len(full_filename), 0)
+        self.assertRegex(full_filename, r'^.*\/account-%08d\/comments\/comment-%08d\.json$' % (account_id, comment_id))
+
+    def test_530_save_comment(self):
+        account_id = 12341234
+        task_id = 3456
+        comment_id = 987
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        ac_storage.ensure_dirs()
+        test_comment = self._generate_test_comment(task_id, comment_id)
+        full_filename = ac_storage.save_comment(test_comment)
         self.assertTrue(os.path.isfile(full_filename))

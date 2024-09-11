@@ -3,6 +3,7 @@ import os
 import shutil
 
 from ActiveCollabAPI import AcSubtask
+from ActiveCollabAPI.AcComment import AcComment
 from ActiveCollabAPI.AcProject import AcProject
 from ActiveCollabAPI.AcTask import AcTask
 from ActiveCollabAPI.AcUser import AcUser
@@ -27,6 +28,7 @@ class AcFileStorage(object):
             os.makedirs(self.get_projects_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_users_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_subtasks_path(), DEFAULT_MODE_DIRS)
+            os.makedirs(self.get_comments_path(), DEFAULT_MODE_DIRS)
 
     def get_account_path(self) -> str:
         return os.path.join(self.root_path, "account-%08d" % self.account_id)
@@ -94,3 +96,19 @@ class AcFileStorage(object):
         with open(subtask_full_filename, "w") as f:
             json.dump(subtask.to_dict(), f, sort_keys=True, indent=2)
         return subtask_full_filename
+
+    def get_comments_path(self) -> str:
+        return os.path.join(self.get_account_path(), "comments")
+
+    def get_comment_filename(self, comment: AcComment) -> str:
+        return "comment-%08d.json" % comment.id
+
+    def get_comment_full_filename(self, comment_filename: str) -> str:
+        return os.path.join(self.get_comments_path(), comment_filename)
+
+    def save_comment(self, comment: AcComment) -> str:
+        comment_filename = self.get_comment_filename(comment)
+        comment_full_filename = self.get_comment_full_filename(comment_filename)
+        with open(comment_full_filename, "w") as f:
+            json.dump(comment.to_dict(), f, sort_keys=True, indent=2)
+        return comment_full_filename
