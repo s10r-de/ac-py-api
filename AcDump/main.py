@@ -51,7 +51,7 @@ def run(args, parser, config: configparser.ConfigParser):
     users = ac.get_all_users()
     for user in users:
         ac_storage.save_user(user)
-        
+
     # get all projects
     projects = ac.get_active_projects()
     projects.extend(ac.get_archived_projects())
@@ -62,6 +62,10 @@ def run(args, parser, config: configparser.ConfigParser):
         tasks.extend(ac.get_completed_tasks(project.id))
         for task in tasks:
             ac_storage.save_task(task)
+            if task.total_subtasks > 0:
+                subtasks = ac.get_subtasks(task)
+                for subtask in subtasks:
+                    ac_storage.save_subtask(subtask)
 
     return {'message': "data of account %d dumped to %s" % (account_id, storage_path)}
 
