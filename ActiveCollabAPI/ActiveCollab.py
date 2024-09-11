@@ -1,14 +1,15 @@
 from ActiveCollabAPI import AC_API_VERSION, AcTask
+from ActiveCollabAPI.AcAccount import AcAccount, account_from_json
 from ActiveCollabAPI.AcAuthenticator import AcAuthenticator
 from ActiveCollabAPI.AcClient import AcClient
-from ActiveCollabAPI.AcProject import AcProject, project_from_json
-from ActiveCollabAPI.AcTask import task_from_json
-from ActiveCollabAPI.AcTokenAuthenticator import AcTokenAuthenticator
-from ActiveCollabAPI.AcAccount import AcAccount, account_from_json
 from ActiveCollabAPI.AcLoginResponse import AcLoginResponse
-from ActiveCollabAPI.AcSession import AcSession
-from ActiveCollabAPI.AcToken import AcToken
 from ActiveCollabAPI.AcLoginUser import AcLoginUser
+from ActiveCollabAPI.AcProject import AcProject, project_from_json
+from ActiveCollabAPI.AcSession import AcSession
+from ActiveCollabAPI.AcSubtask import AcSubtask, subtask_from_json
+from ActiveCollabAPI.AcTask import task_from_json
+from ActiveCollabAPI.AcToken import AcToken
+from ActiveCollabAPI.AcTokenAuthenticator import AcTokenAuthenticator
 from ActiveCollabAPI.AcUser import AcUser, user_from_json
 
 
@@ -114,3 +115,12 @@ class ActiveCollab:
         res_data = res.json()
         users = list(map(lambda u: user_from_json(u), res_data))
         return users
+
+    def get_subtasks(self, task: AcTask) -> list[AcSubtask]:
+        client = AcClient(self.session.cur_account, self.session.token)
+        res = client.get_subtasks(task.project_id, task.id)
+        if res.status_code != 200:
+            raise Exception("Error %d" % res.status_code)
+        res_data = res.json()
+        subtasks = list(map(lambda u: subtask_from_json(u), res_data))
+        return subtasks

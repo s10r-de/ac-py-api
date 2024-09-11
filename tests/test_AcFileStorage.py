@@ -5,6 +5,7 @@ from unittest import TestCase
 
 from AcStorage.AcFileStorage import AcFileStorage
 from ActiveCollabAPI.AcProject import AcProject, project_from_json
+from ActiveCollabAPI.AcSubtask import AcSubtask, subtask_from_json
 from ActiveCollabAPI.AcTask import AcTask, task_from_json
 from ActiveCollabAPI.AcUser import user_from_json, AcUser
 
@@ -156,4 +157,46 @@ class TestAcFileStorage(TestCase):
         ac_storage.ensure_dirs()
         test_user = self._generate_test_user(user_id)
         full_filename = ac_storage.save_user(test_user)
+        self.assertTrue(os.path.isfile(full_filename))
+
+    # subtasks
+    def _generate_test_subtask(self, task_id: int, subtask_id: int) -> AcSubtask:
+        with open('../example-data/example-subtask-00041071.json', 'r') as fh:
+            subtask = subtask_from_json(json.load(fh))
+        subtask.task_id = task_id
+        subtask.id = subtask_id
+        return subtask
+
+    def test_400_get_tasks_path(self):
+        account_id = 12341234
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        self.assertIsNotNone(re.search(str(account_id), ac_storage.get_subtasks_path()))
+
+    def test_410_get_subtask_filename(self):
+        account_id = 123412
+        task_id = 3456
+        subtask_id = 987
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        subtest_task = self._generate_test_subtask(task_id, subtask_id)
+        filename = ac_storage.get_subtask_filename(subtest_task)
+        self.assertGreater(len(filename), 0)
+
+    def test_420_get_subtask_full_filename(self):
+        account_id = 123412
+        task_id = 3456
+        subtask_id = 987
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        subtest_task = self._generate_test_subtask(task_id, subtask_id)
+        filename = ac_storage.get_subtask_filename(subtest_task)
+        full_filename = ac_storage.get_subtask_full_filename(filename)
+        self.assertGreater(len(full_filename), 0)
+
+    def test_430_save_subtask(self):
+        account_id = 123412
+        task_id = 3456
+        subtask_id = 987
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        ac_storage.ensure_dirs()
+        subtest_task = self._generate_test_subtask(task_id, subtask_id)
+        full_filename = ac_storage.save_subtask(subtest_task)
         self.assertTrue(os.path.isfile(full_filename))

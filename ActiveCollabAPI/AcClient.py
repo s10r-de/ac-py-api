@@ -84,3 +84,6 @@ class AcClient:
 
     def get_all_users(self):
         return self._get('users/all')
+
+    def get_subtasks(self, project_id: int, task_id: int):
+        return self._get('projects/%d/tasks/%d/subtasks' % (project_id, task_id))

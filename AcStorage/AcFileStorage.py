@@ -2,11 +2,13 @@ import json
 import os
 import shutil
 
+from ActiveCollabAPI import AcSubtask
 from ActiveCollabAPI.AcProject import AcProject
 from ActiveCollabAPI.AcTask import AcTask
 from ActiveCollabAPI.AcUser import AcUser
 
 DEFAULT_MODE_DIRS = 0o700
+
 
 class AcFileStorage(object):
 
@@ -24,6 +26,7 @@ class AcFileStorage(object):
             os.makedirs(self.get_tasks_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_projects_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_users_path(), DEFAULT_MODE_DIRS)
+            os.makedirs(self.get_subtasks_path(), DEFAULT_MODE_DIRS)
 
     def get_account_path(self) -> str:
         return os.path.join(self.root_path, "account-%08d" % self.account_id)
@@ -75,3 +78,19 @@ class AcFileStorage(object):
         with open(user_full_filename, "w") as f:
             json.dump(user.to_dict(), f, sort_keys=True, indent=2)
         return user_full_filename
+
+    def get_subtasks_path(self) -> str:
+        return os.path.join(self.get_account_path(), "subtasks")
+
+    def get_subtask_filename(self, subtask: AcSubtask) -> str:
+        return "subtask-%08d.json" % subtask.id
+
+    def get_subtask_full_filename(self, subtask_filename: str) -> str:
+        return os.path.join(self.get_subtasks_path(), subtask_filename)
+
+    def save_subtask(self, subtask: AcSubtask) -> str:
+        subtask_filename = self.get_subtask_filename(subtask)
+        subtask_full_filename = self.get_subtask_full_filename(subtask_filename)
+        with open(subtask_full_filename, "w") as f:
+            json.dump(subtask.to_dict(), f, sort_keys=True, indent=2)
+        return subtask_full_filename
