@@ -3,6 +3,7 @@ import logging
 
 import requests
 
+from AcAttachment import AcAttachment
 from ActiveCollabAPI import AC_USER_AGENT, AC_API_VERSION
 from ActiveCollabAPI.AcAccount import AcAccount
 from ActiveCollabAPI.AcToken import AcToken
@@ -90,3 +91,9 @@ class AcClient:
 
     def get_comments(self, task_id: int):
         return self._get('comments/task/%d' % task_id)
+
+    def get_attachment(self, attachment_id: int) -> AcAttachment:
+        return self._get('attachments/%d' % attachment_id)
+
+    def get_attachment_download(self, attachment_id: int):
+        return self._get('attachments/%d/download' % attachment_id)
