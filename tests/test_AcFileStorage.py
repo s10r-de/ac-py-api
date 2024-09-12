@@ -264,7 +264,7 @@ class TestAcFileStorage(TestCase):
 
     # attachments
     def _generate_test_attachment(self, attachment_id: int) -> AcAttachment:
-        with open('../example-data/example-attachment-qqq.json', 'r') as fh:
+        with open('../example-data/example-attachment-29703.json', 'r') as fh:
             attachment = attachment_from_json(json.load(fh))
         attachment.id = attachment_id
         return attachment

@@ -7,6 +7,29 @@ from dataclasses import dataclass
 class AcAttachment:
     id: int
     class_: str
+    url_path: str
+    name: str
+    parent_type: str
+    parent_id: int
+    mime_type: str
+    size: int
+    md5: str
+    thumbnail_url: str
+    preview_url: str
+    download_url: str
+    file_meta: []  # FIXME
+    created_on: int
+    created_by_id: int
+    created_by_name: str
+    created_by_email: str
+    updated_on: int
+    updated_by_id: int
+    folder_id: int
+    disposition: str
+    project_id: int
+    is_hidden_from_clients: bool
+    extension: str
+    file_type: str
 
     def to_dict(self) -> dict:
         d = dataclasses.asdict(self)

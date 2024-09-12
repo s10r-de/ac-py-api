@@ -48,6 +48,8 @@ def run_dump_all(ac: ActiveCollab, config: configparser.ConfigParser):
         tasks.extend(ac.get_completed_tasks(project.id))
         for task in tasks:
             ac_storage.save_task(task)
+            for attachment in task.get_attachments():
+                ac_storage.save_attachment(attachment)
             if task.total_subtasks > 0:
                 subtasks = ac.get_subtasks(task)
                 for subtask in subtasks:
