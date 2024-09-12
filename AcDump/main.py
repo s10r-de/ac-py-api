@@ -58,7 +58,8 @@ def run_dump_all(ac: ActiveCollab, config: configparser.ConfigParser):
                 comments = ac.get_comments(task)
                 for comment in comments:
                     ac_storage.save_comment(comment)
-
+                    for attachment in comment.get_attachments():
+                        ac_storage.save_attachment(attachment)
 
     return {'message': "data of account %d dumped to %s" % (account_id, storage_path)}
 
