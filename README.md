@@ -49,7 +49,7 @@ account_name = #123456
 Then test if execution will work by print the version number:
 
 ```console
-PYTHONPATH=$PWD/$PYTHONPATH python3 AcDump/main.py -c config.ini -v 
+./acdump.sh -c config-test.ini --version
 {"version": "0.1"}
 ```
 
@@ -58,7 +58,7 @@ The script will currently always print JSON output.
 Trigger the dump of all data:
 
 ```console
-PYTHONPATH=$PWD/$PYTHONPATH python3 AcDump/main.py -c config.ini --dump
+./acdump.sh -c config-test.ini --dump
 {
     "message": "data of account 416910 dumped to ./data"
 }
