@@ -35,6 +35,8 @@ class AcAttachment:
         d = dataclasses.asdict(self)
         d["class"] = d["class_"]
         del d["class_"]
+        if d['extension'] is None:
+            d['extension'] = 'none'
         return d
 
     def to_json(self) -> str:
@@ -44,4 +46,6 @@ class AcAttachment:
 def attachment_from_json(json_obj: dict) -> AcAttachment:
     json_obj["class_"] = json_obj["class"]
     del json_obj["class"]
+    if json_obj["extension"] is None:
+        json_obj["extension"] = "none"
     return AcAttachment(**json_obj)
