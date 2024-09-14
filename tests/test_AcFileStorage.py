@@ -1,6 +1,7 @@
 import json
 import os.path
 import re
+from tempfile import mkstemp
 from unittest import TestCase
 
 from AcAttachment import AcAttachment, attachment_from_json
@@ -15,12 +16,6 @@ DATA_DIR = './data'
 
 
 class TestAcFileStorage(TestCase):
-
-    @classmethod
-    def tearDownClass(cls):
-        account_id = 12341234
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        # ac_storage.reset()
 
     def test__010_reset(self):
         account_id = 12341234
@@ -305,5 +300,6 @@ class TestAcFileStorage(TestCase):
         ac_storage.reset()
         ac_storage.ensure_dirs()
         test_attachment = self._generate_test_attachment(attachment_id)
-        full_filename = ac_storage.save_attachment(test_attachment)
+        tmp_filename = mkstemp()[1]
+        full_filename = ac_storage.save_attachment(test_attachment, tmp_filename)
         self.assertTrue(os.path.isfile(full_filename))
