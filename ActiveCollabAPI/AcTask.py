@@ -2,13 +2,15 @@ import dataclasses
 import json
 from dataclasses import dataclass
 
+from AcAttachment import AcAttachment, attachment_from_json
+from AcTaskDependencies import taskdependency_from_json
 from ActiveCollabAPI import AcTaskDependencies
 
 
 @dataclass
 class AcTask:
     assignee_id: int
-    attachments: []
+    attachments: [AcAttachment | None]
     body: str
     body_formatted: str
     body_mode: str
@@ -56,15 +58,22 @@ class AcTask:
         del d["class_"]
         if d["open_dependencies"] is not None:
             d["open_dependencies"] = self.open_dependencies.to_dict()
+        if d["attachments"] is not None:
+            d["attachments"] = list(map(lambda a: a.to_dict(), self.get_attachments()))
         return d
 
     def to_json(self) -> str:
         return json.dumps(self.to_dict())
+
+    def get_attachments(self) -> list[AcAttachment]:
+        return self.attachments
 
 
 def task_from_json(json_obj: dict) -> AcTask:
     json_obj["class_"] = json_obj["class"]
     del json_obj["class"]
     if json_obj["open_dependencies"] is not None:
-        json_obj["open_dependencies"] = AcTaskDependencies.taskdependency_from_json(json_obj["open_dependencies"])
+        json_obj["open_dependencies"] = taskdependency_from_json(json_obj["open_dependencies"])
+    if json_obj["attachments"] is not None:
+        json_obj["attachments"] = list(map(attachment_from_json, json_obj["attachments"]))
     return AcTask(**json_obj)

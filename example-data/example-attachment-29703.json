@@ -1,0 +1,29 @@
+{
+  "id": 29703,
+  "class": "WarehouseAttachment",
+  "url_path": "/attachments/29703",
+  "name": "remember-to-have-fun.jpg",
+  "parent_type": "Task",
+  "parent_id": 17593,
+  "mime_type": "image/jpeg",
+  "size": 973338,
+  "md5": "20b8a495e99331838415f65b71365532",
+  "thumbnail_url": "https://warehouse.activecollab.com/api/v1/files/2024-09%2F6e3533f39db93ccf609910c3bb030aec84f594399b28a7fd2ea72c1211dcd6e0ea978a01049ee6616974e58b7dc3e0cb6b17cdbd017ce6ef5346cb1e779b2d2f.jpeg/20b8a495e99331838415f65b71365532/thumbnails/-:WIDTH--_--HEIGHT-",
+  "preview_url": "https://warehouse.activecollab.com/api/v1/files/2024-09%2F6e3533f39db93ccf609910c3bb030aec84f594399b28a7fd2ea72c1211dcd6e0ea978a01049ee6616974e58b7dc3e0cb6b17cdbd017ce6ef5346cb1e779b2d2f.jpeg/20b8a495e99331838415f65b71365532/preview?i:tent=--PREVIEW-TOKEN",
+  "download_url": "https://warehouse.activecollab.com/api/v1/files/2024-09%2F6e3533f39db93ccf609910c3bb030aec84f594399b28a7fd2ea72c1211dcd6e0ea978a01049ee6616974e58b7dc3e0cb6b17cdbd017ce6ef5346cb1e779b2d2f.jpeg/20b8a495e99331838415f65b71365532/download?f:rce=1&intent=--DOWN",
+  "file_meta": {
+    "kind": "image"
+  },
+  "created_on": 1726141502,
+  "created_by_id": 30,
+  "created_by_name": "Charlie Sloan",
+  "created_by_email": "cs@example.com",
+  "updated_on": 1726141504,
+  "updated_by_id": 30,
+  "folder_id": 611,
+  "disposition": "attachment",
+  "project_id": 611,
+  "is_hidden_from_clients": false,
+  "extension": "jpg",
+  "file_type": "image"
+}

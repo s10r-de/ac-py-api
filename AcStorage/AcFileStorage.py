@@ -2,9 +2,10 @@ import json
 import os
 import shutil
 
-from ActiveCollabAPI import AcSubtask
+from ActiveCollabAPI.AcAttachment import AcAttachment
 from ActiveCollabAPI.AcComment import AcComment
 from ActiveCollabAPI.AcProject import AcProject
+from ActiveCollabAPI.AcSubtask import AcSubtask
 from ActiveCollabAPI.AcTask import AcTask
 from ActiveCollabAPI.AcUser import AcUser
 
@@ -29,6 +30,7 @@ class AcFileStorage(object):
             os.makedirs(self.get_users_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_subtasks_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_comments_path(), DEFAULT_MODE_DIRS)
+            os.makedirs(self.get_attachments_path(), DEFAULT_MODE_DIRS)
 
     def get_account_path(self) -> str:
         return os.path.join(self.root_path, "account-%08d" % self.account_id)
@@ -112,3 +114,20 @@ class AcFileStorage(object):
         with open(comment_full_filename, "w") as f:
             json.dump(comment.to_dict(), f, sort_keys=True, indent=2)
         return comment_full_filename
+
+    def get_attachments_path(self) -> str:
+        return os.path.join(self.get_account_path(), "attachments")
+
+    def get_attachment_filename(self, attachment: AcAttachment) -> str:
+        return "attachment-%08d.json" % attachment.id
+
+    def get_attachment_full_filename(self, attachment_filename: str) -> str:
+        return os.path.join(self.get_attachments_path(), attachment_filename)
+
+    def save_attachment(self, attachment: AcAttachment, tmp_download: str) -> str:
+        attachment_filename = self.get_attachment_filename(attachment)
+        attachment_full_filename = self.get_attachment_full_filename(attachment_filename)
+        with open(attachment_full_filename, "w") as f:
+            json.dump(attachment.to_dict(), f, sort_keys=True, indent=2)
+        shutil.copyfile(tmp_download, attachment_full_filename + '.' + attachment.extension)
+        return attachment_full_filename

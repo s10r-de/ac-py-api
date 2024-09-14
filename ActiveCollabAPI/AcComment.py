@@ -2,10 +2,12 @@ import dataclasses
 import json
 from dataclasses import dataclass
 
+from AcAttachment import AcAttachment, attachment_from_json
+
 
 @dataclass
 class AcComment:
-    attachments: []
+    attachments: [AcAttachment | None]
     body: str
     body_formatted: str
     body_mode: str
@@ -35,13 +37,20 @@ class AcComment:
         d = dataclasses.asdict(self)
         d["class"] = d["class_"]
         del d["class_"]
+        if d["attachments"] is not None:
+            d["attachments"] = list(map(lambda a: a.to_dict(), self.get_attachments()))
         return d
 
     def to_json(self) -> str:
         return json.dumps(self.to_dict())
 
+    def get_attachments(self) -> list[AcAttachment]:
+        return self.attachments
+
 
 def comment_from_json(json_obj: dict) -> AcComment:
     json_obj["class_"] = json_obj["class"]
     del json_obj["class"]
+    if json_obj["attachments"] is not None:
+        json_obj["attachments"] = list(map(attachment_from_json, json_obj["attachments"]))
     return AcComment(**json_obj)
