@@ -2,12 +2,12 @@ import json
 import os
 import shutil
 
-from ActiveCollabAPI.AcAttachment import AcAttachment
-from ActiveCollabAPI.AcComment import AcComment
-from ActiveCollabAPI.AcProject import AcProject
-from ActiveCollabAPI.AcSubtask import AcSubtask
-from ActiveCollabAPI.AcTask import AcTask
-from ActiveCollabAPI.AcUser import AcUser
+from AcAttachment import AcAttachment
+from AcComment import AcComment
+from AcProject import AcProject
+from AcSubtask import AcSubtask
+from AcTask import AcTask
+from AcUser import AcUser
 
 DEFAULT_MODE_DIRS = 0o700
 
