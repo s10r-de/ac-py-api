@@ -1,3 +1,5 @@
+from AcAttachment import AcAttachment
+from AcFileAccessToken import AcFileAccessToken, fileaccesstoken_from_json
 from ActiveCollabAPI import AC_API_VERSION, AcTask
 from ActiveCollabAPI.AcAccount import AcAccount, account_from_json
 from ActiveCollabAPI.AcAuthenticator import AcAuthenticator
@@ -134,3 +136,17 @@ class ActiveCollab:
         res_data = res.json()
         comments = list(map(lambda c: comment_from_json(c), res_data))
         return comments
+
+    def get_file_access_token(self) -> AcFileAccessToken:
+        client = AcClient(self.session.cur_account, self.session.token)
+        res = client.get_file_access_token()
+        if res.status_code != 200:
+            raise Exception("Error %d" % res.status_code)
+        res_data = res.json()
+        file_access_token = fileaccesstoken_from_json(res_data)
+        return file_access_token
+
+    def download_attachment(self, attachment: AcAttachment, filename: str) -> str:
+        client = AcClient(self.session.cur_account, self.session.token)
+        file_access_token = self.get_file_access_token()
+        return client.download_attachment(attachment.download_url, file_access_token.download_token, filename)

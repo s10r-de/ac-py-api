@@ -2,8 +2,8 @@ import json
 import logging
 
 import requests
+from requests import Response
 
-from AcAttachment import AcAttachment
 from ActiveCollabAPI import AC_USER_AGENT, AC_API_VERSION
 from ActiveCollabAPI.AcAccount import AcAccount
 from ActiveCollabAPI.AcToken import AcToken
@@ -92,8 +92,19 @@ class AcClient:
     def get_comments(self, task_id: int):
         return self._get('comments/task/%d' % task_id)
 
-    def get_attachment(self, attachment_id: int) -> AcAttachment:
+    def get_attachment(self, attachment_id: int):
         return self._get('attachments/%d' % attachment_id)
 
-    def get_attachment_download(self, attachment_id: int):
-        return self._get('attachments/%d/download' % attachment_id)
+    def get_file_access_token(self) -> Response:
+        return requests.get(self.base_url + '/issue-file-access-token',
+                            headers=self.headers())
+
+    def download_attachment(self, download_url: str, file_access_token: str, filename: str):
+        # replace &intent=--DOWNLOAD-TOKEN--  with download token
+        download_url = download_url.replace('intent=--DOWNLOAD-TOKEN--', 'intent=%s' % file_access_token)
+        with requests.get(download_url, headers=self.headers(), stream=True) as r:
+            r.raise_for_status()
+            with open(filename, 'wb') as f:
+                for chunk in r.iter_content(chunk_size=8192):
+                    f.write(chunk)
+        return filename

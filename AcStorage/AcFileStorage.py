@@ -124,9 +124,10 @@ class AcFileStorage(object):
     def get_attachment_full_filename(self, attachment_filename: str) -> str:
         return os.path.join(self.get_attachments_path(), attachment_filename)
 
-    def save_attachment(self, attachment: AcAttachment) -> str:
+    def save_attachment(self, attachment: AcAttachment, tmp_download: str) -> str:
         attachment_filename = self.get_attachment_filename(attachment)
         attachment_full_filename = self.get_attachment_full_filename(attachment_filename)
         with open(attachment_full_filename, "w") as f:
             json.dump(attachment.to_dict(), f, sort_keys=True, indent=2)
+        shutil.copyfile(tmp_download, attachment_full_filename + '.' + attachment.extension)
         return attachment_full_filename
