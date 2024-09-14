@@ -37,6 +37,7 @@ class AcAttachment:
         del d["class_"]
         if d['extension'] is None:
             d['extension'] = 'none'
+        d['extension'] = d['extension'].lower()
         return d
 
     def to_json(self) -> str:
@@ -48,4 +49,5 @@ def attachment_from_json(json_obj: dict) -> AcAttachment:
     del json_obj["class"]
     if json_obj["extension"] is None:
         json_obj["extension"] = "none"
+    json_obj["extension"] = json_obj["extension"].lower()
     return AcAttachment(**json_obj)
