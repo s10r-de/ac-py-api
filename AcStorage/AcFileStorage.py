@@ -2,10 +2,10 @@ import json
 import os
 import shutil
 
-from AcAttachment import AcAttachment
-from ActiveCollabAPI import AcSubtask
+from ActiveCollabAPI.AcAttachment import AcAttachment
 from ActiveCollabAPI.AcComment import AcComment
 from ActiveCollabAPI.AcProject import AcProject
+from ActiveCollabAPI.AcSubtask import AcSubtask
 from ActiveCollabAPI.AcTask import AcTask
 from ActiveCollabAPI.AcUser import AcUser
 
