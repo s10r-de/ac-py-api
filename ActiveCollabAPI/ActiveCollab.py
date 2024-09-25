@@ -146,7 +146,10 @@ class ActiveCollab:
         file_access_token = fileaccesstoken_from_json(res_data)
         return file_access_token
 
-    def download_attachment(self, attachment: AcAttachment, filename: str) -> str:
+    def download_attachment(self, attachment: AcAttachment) -> str:
         client = AcClient(self.session.cur_account, self.session.token)
         file_access_token = self.get_file_access_token()
-        return client.download_attachment(attachment.download_url, file_access_token.download_token, filename)
+        tmp_filename = client.download_attachment(attachment.download_url,
+                                                  file_access_token.download_token,
+                                                  'attachment_%d_%s' % (attachment.id, attachment.name))
+        return tmp_filename

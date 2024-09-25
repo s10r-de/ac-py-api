@@ -1,7 +1,6 @@
 import argparse
 import configparser
 import json
-from tempfile import mkstemp
 
 from AcStorage.AcFileStorage import AcFileStorage
 from ActiveCollabAPI.ActiveCollab import ActiveCollab
@@ -50,9 +49,7 @@ def run_dump_all(ac: ActiveCollab, config: configparser.ConfigParser):
         for task in tasks:
             ac_storage.save_task(task)
             for attachment in task.get_attachments():
-                tmp_filename = mkstemp(suffix='.' + attachment.extension)[1]
-                ac.download_attachment(attachment, tmp_filename)
-                ac_storage.save_attachment(attachment, tmp_filename)
+                ac_storage.save_attachment(attachment, ac.download_attachment(attachment))
             if task.total_subtasks > 0:
                 subtasks = ac.get_subtasks(task)
                 for subtask in subtasks:
@@ -62,9 +59,7 @@ def run_dump_all(ac: ActiveCollab, config: configparser.ConfigParser):
                 for comment in comments:
                     ac_storage.save_comment(comment)
                     for attachment in comment.get_attachments():
-                        tmp_filename = mkstemp(suffix='.' + attachment.extension)[1]
-                        ac.download_attachment(attachment, tmp_filename)
-                        ac_storage.save_attachment(attachment, tmp_filename)
+                        ac_storage.save_attachment(attachment, ac.download_attachment(attachment))
 
     return {'message': "data of account %d dumped to %s" % (account_id, storage_path)}
 

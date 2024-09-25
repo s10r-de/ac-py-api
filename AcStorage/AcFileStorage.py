@@ -129,5 +129,5 @@ class AcFileStorage(object):
         attachment_full_filename = self.get_attachment_full_filename(attachment_filename)
         with open(attachment_full_filename, "w") as f:
             json.dump(attachment.to_dict(), f, sort_keys=True, indent=2)
-        shutil.copyfile(tmp_download, attachment_full_filename + '.' + attachment.extension)
+        shutil.move(tmp_download, attachment_full_filename + '.' + attachment.extension)
         return attachment_full_filename
