@@ -1,5 +1,7 @@
 import json
 import logging
+import os
+from tempfile import gettempdir
 
 import requests
 from requests import Response
@@ -99,12 +101,13 @@ class AcClient:
         return requests.get(self.base_url + '/issue-file-access-token',
                             headers=self.headers())
 
-    def download_attachment(self, download_url: str, file_access_token: str, filename: str):
+    def download_attachment(self, download_url: str, file_access_token: str, filename: str) -> str:
         # replace &intent=--DOWNLOAD-TOKEN--  with download token
         download_url = download_url.replace('intent=--DOWNLOAD-TOKEN--', 'intent=%s' % file_access_token)
         with requests.get(download_url, headers=self.headers(), stream=True) as r:
             r.raise_for_status()
-            with open(filename, 'wb') as f:
+            tmp_filename = os.path.join(gettempdir(), filename)
+            with open(tmp_filename, "w+b") as f:
                 for chunk in r.iter_content(chunk_size=8192):
                     f.write(chunk)
-        return filename
+        return tmp_filename
