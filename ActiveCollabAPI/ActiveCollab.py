@@ -153,3 +153,11 @@ class ActiveCollab:
                                                   file_access_token.download_token,
                                                   'attachment_%d_%s' % (attachment.id, attachment.name))
         return tmp_filename
+
+    def get_project_labels(self):
+        client = AcClient(self.session.cur_account, self.session.token)
+        res = client.get_labels()
+        if res.status_code != 200:
+            raise Exception("Error %d" % res.status_code)
+        res_data = res.json()
+        return res_data

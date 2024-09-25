@@ -111,3 +111,6 @@ class AcClient:
                 for chunk in r.iter_content(chunk_size=8192):
                     f.write(chunk)
         return tmp_filename
+
+    def get_labels(self) -> Response:
+        return self._get('labels/project-labels')

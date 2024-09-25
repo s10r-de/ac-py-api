@@ -2,6 +2,7 @@ import json
 import os
 import shutil
 
+from AcProjectLabel import AcProjectLabel
 from ActiveCollabAPI.AcAttachment import AcAttachment
 from ActiveCollabAPI.AcComment import AcComment
 from ActiveCollabAPI.AcProject import AcProject
@@ -31,6 +32,7 @@ class AcFileStorage(object):
             os.makedirs(self.get_subtasks_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_comments_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_attachments_path(), DEFAULT_MODE_DIRS)
+            os.makedirs(self.get_project_label_path(), DEFAULT_MODE_DIRS)
 
     def get_account_path(self) -> str:
         return os.path.join(self.root_path, "account-%08d" % self.account_id)
@@ -131,3 +133,19 @@ class AcFileStorage(object):
             json.dump(attachment.to_dict(), f, sort_keys=True, indent=2)
         shutil.move(tmp_download, attachment_full_filename + '.' + attachment.extension)
         return attachment_full_filename
+
+    def get_project_label_path(self) -> str:
+        return os.path.join(self.get_account_path(), "project-label")
+
+    def get_project_label_filename(self, project_label: AcProjectLabel) -> str:
+        return "project-label-%08d.json" % project_label.id
+
+    def get_project_label_full_filename(self, project_label_filename: str) -> str:
+        return os.path.join(self.get_project_label_path(), project_label_filename)
+
+    def save_project_label(self, project_label: AcProjectLabel) -> str:
+        project_label_filename = self.get_project_label_filename(project_label)
+        project_label_full_filename = self.get_project_label_full_filename(project_label_filename)
+        with open(project_label_full_filename, "w") as f:
+            json.dump(project_label.to_dict(), f, sort_keys=True, indent=2)
+        return project_label_full_filename
