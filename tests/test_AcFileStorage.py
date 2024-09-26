@@ -9,6 +9,7 @@ from AcCompany import company_from_json, AcCompany
 from AcProjectLabel import AcProjectLabel
 from AcStorage.AcFileStorage import AcFileStorage
 from AcTaskLabel import AcTaskLabel
+from AcTaskList import AcTaskList, task_list_from_json
 from ActiveCollabAPI.AcComment import AcComment, comment_from_json
 from ActiveCollabAPI.AcProject import AcProject, project_from_json
 from ActiveCollabAPI.AcSubtask import AcSubtask, subtask_from_json
@@ -34,6 +35,7 @@ class TestAcFileStorage(TestCase):
         self.assertFalse(os.path.isdir(ac_storage.get_project_label_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_task_label_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_company_path()))
+        self.assertFalse(os.path.isdir(ac_storage.get_task_lists_path()))
 
     def test_020_ensure_dirs(self):
         account_id = 12341234
@@ -50,6 +52,7 @@ class TestAcFileStorage(TestCase):
         self.assertTrue(os.path.isdir(ac_storage.get_project_label_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_task_label_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_company_path()))
+        self.assertTrue(os.path.isdir(ac_storage.get_task_lists_path()))
 
     def test_030_get_account_path(self):
         account_id = 12341234
@@ -472,4 +475,51 @@ class TestAcFileStorage(TestCase):
         ac_storage.ensure_dirs()
         test_company = self._generate_test_company(company_id)
         full_filename = ac_storage.save_company(test_company)
+        self.assertTrue(os.path.isfile(full_filename))
+
+    # task lists
+
+    def test_940_get_task_lists_path(self):
+        account_id = 12341234
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        ac_storage.reset()
+        ac_storage.ensure_dirs()
+        path = ac_storage.get_task_lists_path()
+        self.assertRegex(path, r'^.*\/account-' + str(account_id + 0) + r'\/task-lists')
+        self.assertTrue(os.path.isdir(path))
+
+    def _generate_test_task_list(self, task_list_id: int) -> AcTaskList:
+        with open('../example-data/example-task-list-37314.json', 'r') as fh:
+            task_list = task_list_from_json(json.load(fh))
+        task_list.id = task_list_id
+        return task_list
+
+    def test_950_get_task_list_filename(self):
+        account_id = 12341234
+        task_list_id = 230
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        test_task_list = self._generate_test_task_list(task_list_id)
+        filename = ac_storage.get_task_list_filename(test_task_list)
+        self.assertGreater(len(filename), 0)
+        self.assertRegex(filename, r'task-list-%08d\.json$' % task_list_id)
+
+    def test_960_get_task_list_full_filename(self):
+        account_id = 12341234
+        task_list_id = 237
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        test_task_list = self._generate_test_task_list(task_list_id)
+        filename = ac_storage.get_task_list_filename(test_task_list)
+        full_filename = ac_storage.get_task_list_full_filename(filename)
+        self.assertGreater(len(full_filename), 0)
+        self.assertRegex(full_filename,
+                         r'^.*\/account-%08d\/task-lists\/task-list-%08d\.json$' % (
+                             account_id, task_list_id))
+
+    def test_970_save_task_list(self):
+        account_id = 12341234
+        task_list_id = 238
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        test_task_list = self._generate_test_task_list(task_list_id)
+        full_filename = ac_storage.save_task_list(test_task_list)
+        self.assertGreater(len(full_filename), 0)
         self.assertTrue(os.path.isfile(full_filename))
