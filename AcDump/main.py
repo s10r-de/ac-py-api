@@ -2,7 +2,6 @@ import argparse
 import configparser
 import json
 
-from AcProjectLabel import project_label_from_json
 from AcStorage.AcFileStorage import AcFileStorage
 from ActiveCollabAPI.ActiveCollab import ActiveCollab
 
@@ -46,9 +45,12 @@ def run_dump_all(ac: ActiveCollab, config: configparser.ConfigParser):
         ac_storage.save_user(user)
 
     # get all project labels
-    project_labels = []
-    for project_label_dict in ac.get_project_labels():
-        ac_storage.save_project_label(project_label_from_json(project_label_dict))
+    for project_label in ac.get_project_labels():
+        ac_storage.save_project_label(project_label)
+
+    # get all task labels
+    for task_label in ac.get_task_labels():
+        ac_storage.save_task_label(task_label)
 
     # get all projects
     projects = ac.get_active_projects()

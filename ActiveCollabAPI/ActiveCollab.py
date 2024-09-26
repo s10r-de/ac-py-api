@@ -1,6 +1,8 @@
 from AcAttachment import AcAttachment
 from AcCompany import AcCompany, company_from_json
 from AcFileAccessToken import AcFileAccessToken, fileaccesstoken_from_json
+from AcProjectLabel import AcProjectLabel, project_label_from_json
+from AcTaskLabel import task_label_from_json, AcTaskLabel
 from ActiveCollabAPI import AC_API_VERSION, AcTask
 from ActiveCollabAPI.AcAccount import AcAccount, account_from_json
 from ActiveCollabAPI.AcAuthenticator import AcAuthenticator
@@ -155,13 +157,23 @@ class ActiveCollab:
                                                   'attachment_%d_%s' % (attachment.id, attachment.name))
         return tmp_filename
 
-    def get_project_labels(self):
+    def get_project_labels(self) -> list[AcProjectLabel]:
         client = AcClient(self.session.cur_account, self.session.token)
-        res = client.get_labels()
+        res = client.get_project_labels()
         if res.status_code != 200:
             raise Exception("Error %d" % res.status_code)
         res_data = res.json()
-        return res_data
+        project_labels = list(map(lambda l: project_label_from_json(l), res_data))
+        return project_labels
+
+    def get_task_labels(self) -> list[AcTaskLabel]:
+        client = AcClient(self.session.cur_account, self.session.token)
+        res = client.get_task_labels()
+        if res.status_code != 200:
+            raise Exception("Error %d" % res.status_code)
+        res_data = res.json()
+        task_labels = list(map(lambda u: task_label_from_json(u), res_data))
+        return task_labels
 
     def get_all_companies(self) -> list[AcCompany]:
         client = AcClient(self.session.cur_account, self.session.token)
