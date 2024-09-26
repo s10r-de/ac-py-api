@@ -2,6 +2,7 @@ import json
 import os
 import shutil
 
+from AcCompany import AcCompany
 from AcProjectLabel import AcProjectLabel
 from ActiveCollabAPI.AcAttachment import AcAttachment
 from ActiveCollabAPI.AcComment import AcComment
@@ -33,6 +34,7 @@ class AcFileStorage(object):
             os.makedirs(self.get_comments_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_attachments_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_project_label_path(), DEFAULT_MODE_DIRS)
+            os.makedirs(self.get_company_path(), DEFAULT_MODE_DIRS)
 
     def get_account_path(self) -> str:
         return os.path.join(self.root_path, "account-%08d" % self.account_id)
@@ -149,3 +151,19 @@ class AcFileStorage(object):
         with open(project_label_full_filename, "w") as f:
             json.dump(project_label.to_dict(), f, sort_keys=True, indent=2)
         return project_label_full_filename
+
+    def get_company_path(self) -> str:
+        return os.path.join(self.get_account_path(), "companies")
+
+    def get_company_filename(self, company: AcCompany) -> str:
+        return "company-%08d.json" % company.id
+
+    def get_company_full_filename(self, company_filename: str) -> str:
+        return os.path.join(self.get_company_path(), company_filename)
+
+    def save_company(self, company: AcCompany) -> str:
+        company_filename = self.get_company_filename(company)
+        company_full_filename = self.get_company_full_filename(company_filename)
+        with open(company_full_filename, "w") as f:
+            json.dump(company.to_dict(), f, sort_keys=True, indent=2)
+        return company_full_filename

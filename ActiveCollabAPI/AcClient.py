@@ -114,3 +114,6 @@ class AcClient:
 
     def get_labels(self) -> Response:
         return self._get('labels/project-labels')
+
+    def get_all_companies(self) -> Response:
+        return self._get('companies/all')

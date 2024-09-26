@@ -1,4 +1,5 @@
 from AcAttachment import AcAttachment
+from AcCompany import AcCompany, company_from_json
 from AcFileAccessToken import AcFileAccessToken, fileaccesstoken_from_json
 from ActiveCollabAPI import AC_API_VERSION, AcTask
 from ActiveCollabAPI.AcAccount import AcAccount, account_from_json
@@ -161,3 +162,12 @@ class ActiveCollab:
             raise Exception("Error %d" % res.status_code)
         res_data = res.json()
         return res_data
+
+    def get_all_companies(self) -> list[AcCompany]:
+        client = AcClient(self.session.cur_account, self.session.token)
+        res = client.get_all_companies()
+        if res.status_code != 200:
+            raise Exception("Error %d" % res.status_code)
+        res_data = res.json()
+        companies = list(map(lambda u: company_from_json(u), res_data))
+        return companies

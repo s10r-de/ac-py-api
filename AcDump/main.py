@@ -35,15 +35,20 @@ def run_dump_all(ac: ActiveCollab, config: configparser.ConfigParser):
     ac_storage.reset()
     ac_storage.ensure_dirs()
 
-    # get all project labels
-    project_labels = []
-    for project_label_dict in ac.get_project_labels():
-        ac_storage.save_project_label(project_label_from_json(project_label_dict))
+    # get all companies
+    companies = ac.get_all_companies()
+    for company in companies:
+        ac_storage.save_company(company)
 
     # get all users
     users = ac.get_all_users()
     for user in users:
         ac_storage.save_user(user)
+
+    # get all project labels
+    project_labels = []
+    for project_label_dict in ac.get_project_labels():
+        ac_storage.save_project_label(project_label_from_json(project_label_dict))
 
     # get all projects
     projects = ac.get_active_projects()
