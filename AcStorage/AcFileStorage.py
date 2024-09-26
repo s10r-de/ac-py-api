@@ -5,6 +5,7 @@ import shutil
 from AcCompany import AcCompany
 from AcProjectLabel import AcProjectLabel
 from AcTaskLabel import AcTaskLabel
+from AcTaskList import AcTaskList
 from ActiveCollabAPI.AcAttachment import AcAttachment
 from ActiveCollabAPI.AcComment import AcComment
 from ActiveCollabAPI.AcProject import AcProject
@@ -37,6 +38,7 @@ class AcFileStorage(object):
             os.makedirs(self.get_project_label_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_task_label_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_company_path(), DEFAULT_MODE_DIRS)
+            os.makedirs(self.get_task_lists_path(), DEFAULT_MODE_DIRS)
 
     def get_account_path(self) -> str:
         return os.path.join(self.root_path, "account-%08d" % self.account_id)
@@ -185,3 +187,19 @@ class AcFileStorage(object):
         with open(company_full_filename, "w") as f:
             json.dump(company.to_dict(), f, sort_keys=True, indent=2)
         return company_full_filename
+
+    def get_task_lists_path(self) -> str:
+        return os.path.join(self.get_account_path(), "task-lists")
+
+    def get_task_list_filename(self, task_list: AcTaskList) -> str:
+        return "task-list-%08d.json" % task_list.id
+
+    def get_task_list_full_filename(self, task_list_filename: str) -> str:
+        return os.path.join(self.get_task_lists_path(), task_list_filename)
+
+    def save_task_list(self, task_list: AcTaskList) -> str:
+        task_list_filename = self.get_task_list_filename(task_list)
+        task_list_full_filename = self.get_task_list_full_filename(task_list_filename)
+        with open(task_list_full_filename, "w") as f:
+            json.dump(task_list.to_dict(), f, sort_keys=True, indent=2)
+        return task_list_full_filename

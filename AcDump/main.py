@@ -57,6 +57,10 @@ def run_dump_all(ac: ActiveCollab, config: configparser.ConfigParser):
     projects.extend(ac.get_archived_projects())
     for project in projects:
         ac_storage.save_project(project)
+        # get all task lists for this project
+        task_lists = ac.get_project_task_lists(project)
+        for task_list in task_lists:
+            ac_storage.save_task_list(task_list)
         # get all tasks for this project
         tasks = ac.get_active_tasks(project.id)
         tasks.extend(ac.get_completed_tasks(project.id))

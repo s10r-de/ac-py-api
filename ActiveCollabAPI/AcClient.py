@@ -117,6 +117,9 @@ class AcClient:
 
     def get_task_labels(self) -> Response:
         return self._get('labels/task-labels')
-    
+
     def get_all_companies(self) -> Response:
         return self._get('companies/all')
+
+    def get_task_lists(self, project_id: int) -> Response:
+        return self._get('projects/%d/task-lists' % project_id)
