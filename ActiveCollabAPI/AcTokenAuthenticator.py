@@ -3,7 +3,7 @@ import json
 import requests
 from requests import Response
 
-from ActiveCollabAPI import AC_USER_AGENT, AC_API_VERSION, AC_API_CLIENT_NAME, AC_API_CLIENT_VENDOR
+from ActiveCollabAPI import AC_USER_AGENT, AC_API_CLIENT_NAME, AC_API_CLIENT_VENDOR
 
 
 class AcTokenAuthenticator:

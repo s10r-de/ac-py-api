@@ -112,8 +112,11 @@ class AcClient:
                     f.write(chunk)
         return tmp_filename
 
-    def get_labels(self) -> Response:
+    def get_project_labels(self) -> Response:
         return self._get('labels/project-labels')
 
+    def get_task_labels(self) -> Response:
+        return self._get('labels/task-labels')
+    
     def get_all_companies(self) -> Response:
         return self._get('companies/all')

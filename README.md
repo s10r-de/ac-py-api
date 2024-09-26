@@ -21,7 +21,7 @@ development.
 
 The project setup is already done for it.
 
-### Setup the Virtual Env
+### Set up the Virtual Env
 
 Create virtual environment and install the required modules:
 
@@ -37,7 +37,7 @@ Always run it inside this venv!
 ## Running
 
 Create a `config.ini` file from `config-example.ini`. You need to
-provide your credentials to login and give the account number.
+provide your credentials to log in and give the account number.
 
 ```ini
 [LOGIN]
@@ -69,7 +69,8 @@ Trigger the dump of all data:
 
 - **⚠️ Current implementation will always erase current data and create from scratch, this will change in a future version!!**
 - This script will only backup the data where it has access to, remember when configure the account to give enough permissions!
-- this script will not backup trashed projects or tasks or anything else what is trashed, but it will include completed projects tasks etc!
+- this script will not backup trashed projects or tasks or anything else
+  what is trashed, but it will include completed projects tasks etc.!
 
 
 ## API Documentation
