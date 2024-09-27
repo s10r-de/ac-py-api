@@ -4,6 +4,7 @@ import shutil
 
 from AcCompany import AcCompany
 from AcProjectLabel import AcProjectLabel
+from AcTaskHistory import AcTaskHistory
 from AcTaskLabel import AcTaskLabel
 from AcTaskList import AcTaskList
 from ActiveCollabAPI.AcAttachment import AcAttachment
@@ -39,6 +40,7 @@ class AcFileStorage(object):
             os.makedirs(self.get_task_label_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_company_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_task_lists_path(), DEFAULT_MODE_DIRS)
+            os.makedirs(self.get_task_history_path(), DEFAULT_MODE_DIRS)
 
     def get_account_path(self) -> str:
         return os.path.join(self.root_path, "account-%08d" % self.account_id)
@@ -203,3 +205,19 @@ class AcFileStorage(object):
         with open(task_list_full_filename, "w") as f:
             json.dump(task_list.to_dict(), f, sort_keys=True, indent=2)
         return task_list_full_filename
+
+    def get_task_history_path(self) -> str:
+        return os.path.join(self.get_account_path(), "task-history")
+
+    def get_task_history_filename(self, task_history: AcTaskHistory) -> str:
+        return "task-history-%08d-%010d.json" % (task_history.task_id, task_history.timestamp)
+
+    def get_task_history_full_filename(self, task_history_filename: str) -> str:
+        return os.path.join(self.get_task_history_path(), task_history_filename)
+
+    def save_task_history(self, task_history: AcTaskHistory) -> str:
+        task_history_filename = self.get_task_history_filename(task_history)
+        task_history_full_filename = self.get_task_history_full_filename(task_history_filename)
+        with open(task_history_full_filename, "w") as f:
+            json.dump(task_history.to_dict(), f, sort_keys=True, indent=2)
+        return task_history_full_filename

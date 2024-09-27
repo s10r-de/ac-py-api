@@ -2,6 +2,7 @@ from AcAttachment import AcAttachment
 from AcCompany import AcCompany, company_from_json
 from AcFileAccessToken import AcFileAccessToken, fileaccesstoken_from_json
 from AcProjectLabel import AcProjectLabel, project_label_from_json
+from AcTaskHistory import AcTaskHistory, task_history_from_json
 from AcTaskLabel import task_label_from_json, AcTaskLabel
 from AcTaskList import AcTaskList, task_list_from_json
 from ActiveCollabAPI import AC_API_VERSION, AcTask
@@ -193,3 +194,12 @@ class ActiveCollab:
         res_data = res.json()
         task_lists = list(map(lambda t: task_list_from_json(t), res_data))
         return task_lists
+
+    def get_task_history(self, task: AcTask) -> list[AcTaskHistory]:
+        client = AcClient(self.session.cur_account, self.session.token)
+        res = client.get_task_history(task.id)
+        if res.status_code != 200:
+            raise Exception("Error %d" % res.status_code)
+        res_data = res.json()
+        task_history = list(map(lambda u: task_history_from_json(u, task_id=task.id), res_data))
+        return task_history
