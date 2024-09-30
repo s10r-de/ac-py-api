@@ -2,6 +2,8 @@ import dataclasses
 import json
 from dataclasses import dataclass
 
+from ActiveCollabAPI import AC_CLASS_ATTACHMENT_WAREHOUSE, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
+
 
 @dataclass
 class AcAttachment:
@@ -33,8 +35,8 @@ class AcAttachment:
 
     def to_dict(self) -> dict:
         d = dataclasses.asdict(self)
-        d["class"] = d["class_"]
-        del d["class_"]
+        d[AC_PROPERTY_CLASS] = d[AC_PROPERTY_CLASS_]
+        del d[AC_PROPERTY_CLASS_]
         if d['extension'] is None:
             d['extension'] = 'none'
         d['extension'] = d['extension'].lower()
@@ -45,9 +47,9 @@ class AcAttachment:
 
 
 def attachment_from_json(json_obj: dict) -> AcAttachment:
-    assert json_obj["class"] == "WarehouseAttachment"
-    json_obj["class_"] = json_obj["class"]
-    del json_obj["class"]
+    assert json_obj[AC_PROPERTY_CLASS] == AC_CLASS_ATTACHMENT_WAREHOUSE
+    json_obj[AC_PROPERTY_CLASS_] = json_obj[AC_PROPERTY_CLASS]
+    del json_obj[AC_PROPERTY_CLASS]
     if json_obj["extension"] is None:
         json_obj["extension"] = "none"
     json_obj["extension"] = json_obj["extension"].lower()

@@ -1,6 +1,7 @@
 import json
 from unittest import TestCase
 
+from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 from ActiveCollabAPI.AcSubtask import subtask_from_json, AcSubtask
 
 
@@ -28,6 +29,8 @@ class TestAcSubtask(TestCase):
         subtask_dict = subtask.to_dict()
         self.assertEqual(subtask_id, subtask_dict["id"])
         self.assertEqual(task_id, subtask_dict["task_id"])
+        self.assertIn(AC_PROPERTY_CLASS, subtask_dict.keys())
+        self.assertNotIn(AC_PROPERTY_CLASS_, subtask_dict.keys())
 
     def test_to_json(self):
         task_id = 17614
@@ -36,3 +39,5 @@ class TestAcSubtask(TestCase):
         subtask_json = subtask.to_json()
         self.assertEqual(subtask_id, json.loads(subtask_json)["id"])
         self.assertEqual(task_id, json.loads(subtask_json)["task_id"])
+        self.assertIn(AC_PROPERTY_CLASS, json.loads(subtask_json).keys())
+        self.assertNotIn(AC_PROPERTY_CLASS_, json.loads(subtask_json).keys())

@@ -3,6 +3,7 @@ import time
 from unittest import TestCase
 
 from AcTaskLabel import AcTaskLabel
+from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 
 
 class TestAcTaskLabel(TestCase):
@@ -35,6 +36,8 @@ class TestAcTaskLabel(TestCase):
         label_dict = label.to_dict()
         self.assertEqual(label_id, label_dict["id"])
         self.assertEqual("TaskLabel", label_dict["class"])
+        self.assertIn(AC_PROPERTY_CLASS, label_dict.keys())
+        self.assertNotIn(AC_PROPERTY_CLASS_, label_dict.keys())
 
     def test_to_json(self):
         label_id = 747
@@ -42,3 +45,5 @@ class TestAcTaskLabel(TestCase):
         label_json = label.to_json()
         self.assertEqual(label_id, json.loads(label_json)["id"])
         self.assertEqual("TaskLabel", json.loads(label_json)["class"])
+        self.assertIn(AC_PROPERTY_CLASS, json.loads(label_json).keys())
+        self.assertNotIn(AC_PROPERTY_CLASS_, json.loads(label_json).keys())

@@ -3,6 +3,7 @@ from unittest import TestCase
 
 from AcAttachment import AcAttachment, attachment_from_json
 from AcTaskDependencies import AcTaskDependencies
+from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 from ActiveCollabAPI.AcTask import AcTask, task_from_json
 
 
@@ -32,12 +33,16 @@ class TestAcTask(TestCase):
         task = self._generate_test_task(task_id)
         task_dict = task.to_dict()
         self.assertEqual(task_id, task_dict["id"])
+        self.assertIn(AC_PROPERTY_CLASS, task_dict.keys())
+        self.assertNotIn(AC_PROPERTY_CLASS_, task_dict.keys())
 
     def test_to_json(self):
         task_id = 17614
         task = self._generate_test_task(task_id)
         task_json = task.to_json()
         self.assertEqual(task_id, json.loads(task_json)["id"])
+        self.assertIn(AC_PROPERTY_CLASS, json.loads(task_json).keys())
+        self.assertNotIn(AC_PROPERTY_CLASS_, json.loads(task_json).keys())
 
     def test_to_dict_with_dependencies(self):
         task_id = 17614

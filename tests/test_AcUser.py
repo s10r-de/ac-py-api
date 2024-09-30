@@ -1,6 +1,7 @@
 import json
 from unittest import TestCase
 
+from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 from ActiveCollabAPI.AcUser import AcUser, user_from_json
 
 
@@ -18,9 +19,13 @@ class TestAcUser(TestCase):
         user = self._generate_test_user(user_id)
         user_dict = user.to_dict()
         self.assertEqual(user_id, user_dict['id'])
+        self.assertIn(AC_PROPERTY_CLASS, user_dict.keys())
+        self.assertNotIn(AC_PROPERTY_CLASS_, user_dict.keys())
 
     def test_to_json(self):
         user_id = 102
         user = self._generate_test_user(user_id)
         user_json = user.to_json()
         self.assertEqual(user_id, json.loads(user_json)["id"])
+        self.assertIn(AC_PROPERTY_CLASS, json.loads(user_json).keys())
+        self.assertNotIn(AC_PROPERTY_CLASS_, json.loads(user_json).keys())

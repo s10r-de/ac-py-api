@@ -3,6 +3,7 @@ import time
 from unittest import TestCase
 
 from AcProjectCategory import AcProjectCategory
+from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 
 
 class TestAcProjectCategory(TestCase):
@@ -34,6 +35,8 @@ class TestAcProjectCategory(TestCase):
         category_dict = category.to_dict()
         self.assertEqual(category_id, category_dict["id"])
         self.assertEqual("ProjectCategory", category_dict["class"], )
+        self.assertIn(AC_PROPERTY_CLASS, category_dict.keys())
+        self.assertNotIn(AC_PROPERTY_CLASS_, category_dict.keys())
 
     def test_to_json(self):
         category_id = 737
@@ -41,3 +44,5 @@ class TestAcProjectCategory(TestCase):
         category_json = category.to_json()
         self.assertEqual(category_id, json.loads(category_json)["id"])
         self.assertEqual("ProjectCategory", json.loads(category_json)["class"], )
+        self.assertIn(AC_PROPERTY_CLASS, json.loads(category_json).keys())
+        self.assertNotIn(AC_PROPERTY_CLASS_, json.loads(category_json).keys())

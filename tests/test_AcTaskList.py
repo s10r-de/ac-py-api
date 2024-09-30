@@ -2,6 +2,7 @@ import json
 from unittest import TestCase
 
 from AcTaskList import task_list_from_json, AcTaskList
+from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 
 
 class TestAcTaskList(TestCase):
@@ -23,9 +24,13 @@ class TestAcTaskList(TestCase):
         task_list = self._generate_test_task_list(task_list_id)
         task_dict = task_list.to_dict()
         self.assertEqual(task_list_id, task_dict["id"])
+        self.assertIn(AC_PROPERTY_CLASS, task_dict.keys())
+        self.assertNotIn(AC_PROPERTY_CLASS_, task_dict.keys())
 
     def test_to_json(self):
         task_list_id = 37620
         task_list = self._generate_test_task_list(task_list_id)
         task_json = task_list.to_json()
         self.assertEqual(task_list_id, json.loads(task_json)["id"])
+        self.assertIn(AC_PROPERTY_CLASS, json.loads(task_json).keys())
+        self.assertNotIn(AC_PROPERTY_CLASS_, json.loads(task_json).keys())

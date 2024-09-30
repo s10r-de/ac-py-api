@@ -3,6 +3,7 @@ import json
 from dataclasses import dataclass
 
 from AcAttachment import AcAttachment, attachment_from_json
+from ActiveCollabAPI import AC_CLASS_COMMENT, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 
 
 @dataclass
@@ -35,8 +36,8 @@ class AcComment:
 
     def to_dict(self) -> dict:
         d = dataclasses.asdict(self)
-        d["class"] = d["class_"]
-        del d["class_"]
+        d[AC_PROPERTY_CLASS] = d[AC_PROPERTY_CLASS_]
+        del d[AC_PROPERTY_CLASS_]
         if d["attachments"] is not None:
             d["attachments"] = list(map(lambda a: a.to_dict(), self.get_attachments()))
         return d
@@ -49,9 +50,9 @@ class AcComment:
 
 
 def comment_from_json(json_obj: dict) -> AcComment:
-    assert json_obj["class"] == "Comment"
-    json_obj["class_"] = json_obj["class"]
-    del json_obj["class"]
+    assert json_obj[AC_PROPERTY_CLASS] == AC_CLASS_COMMENT
+    json_obj[AC_PROPERTY_CLASS_] = json_obj[AC_PROPERTY_CLASS]
+    del json_obj[AC_PROPERTY_CLASS]
     if json_obj["attachments"] is not None:
         json_obj["attachments"] = list(map(attachment_from_json, json_obj["attachments"]))
     return AcComment(**json_obj)

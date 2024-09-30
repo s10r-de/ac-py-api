@@ -3,6 +3,7 @@ from unittest import TestCase
 
 from AcAttachment import attachment_from_json, AcAttachment
 from AcComment import AcComment, comment_from_json
+from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 
 
 class TestAcComment(TestCase):
@@ -31,12 +32,16 @@ class TestAcComment(TestCase):
         comment = self._generate_test_comment(comment_id)
         comment_dict = comment.to_dict()
         self.assertEqual(comment_id, comment_dict["id"])
+        self.assertIn(AC_PROPERTY_CLASS, comment_dict.keys())
+        self.assertNotIn(AC_PROPERTY_CLASS_, comment_dict.keys())
 
     def test_to_json(self):
         comment_id = 59234
         comment = self._generate_test_comment(comment_id)
         comment_json = comment.to_json()
         self.assertEqual(comment_id, json.loads(comment_json)["id"])
+        self.assertIn(AC_PROPERTY_CLASS, json.loads(comment_json).keys())
+        self.assertNotIn(AC_PROPERTY_CLASS_, json.loads(comment_json).keys())
 
     def test_get_attachments(self):
         comment_id = 17614
