@@ -1,0 +1,13 @@
+{
+  "id": 2,
+  "class": "ProjectCategory",
+  "url_path": "\/categories\/2",
+  "name": "Mirror Confluence",
+  "parent_type": null,
+  "parent_id": null,
+  "created_on": 1699092418,
+  "created_by_id": 16,
+  "created_by_name": "Hollis Skyler (hs@example.com)",
+  "created_by_email": "hs@example.com",
+  "updated_on": 1699092418
+}

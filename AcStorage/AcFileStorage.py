@@ -3,6 +3,7 @@ import os
 import shutil
 
 from AcCompany import AcCompany
+from AcProjectCategory import AcProjectCategory
 from AcProjectLabel import AcProjectLabel
 from AcTaskHistory import AcTaskHistory
 from AcTaskLabel import AcTaskLabel
@@ -41,6 +42,7 @@ class AcFileStorage(object):
             os.makedirs(self.get_company_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_task_lists_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_task_history_path(), DEFAULT_MODE_DIRS)
+            os.makedirs(self.get_project_category_path(), DEFAULT_MODE_DIRS)
 
     def get_account_path(self) -> str:
         return os.path.join(self.root_path, "account-%08d" % self.account_id)
@@ -221,3 +223,20 @@ class AcFileStorage(object):
         with open(task_history_full_filename, "w") as f:
             json.dump(task_history.to_dict(), f, sort_keys=True, indent=2)
         return task_history_full_filename
+
+    def get_project_category_path(self) -> str:
+        return os.path.join(self.get_account_path(), "project-category")
+
+    def get_project_category_filename(self, project_category: AcProjectCategory) -> str:
+        return "project-category-%04d.json" % project_category.id
+
+    def get_project_category_full_filename(self, project_category_filename: str) -> str:
+        return os.path.join(self.get_project_category_path(), project_category_filename)
+
+    def save_project_category(self, project_category: AcProjectCategory) -> str:
+        assert project_category.class_ == "ProjectCategory"
+        project_category_filename = self.get_project_category_filename(project_category)
+        project_category_full_filename = self.get_project_category_full_filename(project_category_filename)
+        with open(project_category_full_filename, "w") as f:
+            json.dump(project_category.to_dict(), f, sort_keys=True, indent=2)
+        return project_category_full_filename
