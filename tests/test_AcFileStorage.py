@@ -7,6 +7,7 @@ from unittest import TestCase
 
 from AcAttachment import AcAttachment, attachment_from_json
 from AcCompany import company_from_json, AcCompany
+from AcProjectCategory import AcProjectCategory
 from AcProjectLabel import AcProjectLabel
 from AcStorage.AcFileStorage import AcFileStorage
 from AcTaskHistory import AcTaskHistory
@@ -39,6 +40,7 @@ class TestAcFileStorage(TestCase):
         self.assertFalse(os.path.isdir(ac_storage.get_company_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_task_lists_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_task_history_path()))
+        self.assertFalse(os.path.isdir(ac_storage.get_project_category_path()))
 
     def test_020_ensure_dirs(self):
         account_id = 12341234
@@ -57,6 +59,7 @@ class TestAcFileStorage(TestCase):
         self.assertTrue(os.path.isdir(ac_storage.get_company_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_task_lists_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_task_history_path()))
+        self.assertTrue(os.path.isdir(ac_storage.get_project_category_path()))
 
     def test_030_get_account_path(self):
         account_id = 12341234
@@ -207,6 +210,64 @@ class TestAcFileStorage(TestCase):
         ac_storage.ensure_dirs()
         test_project = self._generate_test_project(project_id)
         full_filename = ac_storage.save_project(test_project)
+        self.assertTrue(os.path.isfile(full_filename))
+
+    # project categories
+
+    def test_240_get_project_category_path(self):
+        account_id = 12341234
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        ac_storage.reset()
+        ac_storage.ensure_dirs()
+        path = ac_storage.get_project_category_path()
+        self.assertRegex(path, r'^.*\/account-' + str(account_id + 0) + r'\/project-category')
+        self.assertTrue(os.path.isdir(path))
+
+    def _generate_test_project_category(self, category_id: int) -> AcProjectCategory:
+        return AcProjectCategory(
+            class_="ProjectCategory",
+            created_by_email="admin@example.com",
+            created_by_id=2,
+            created_by_name="the creator",
+            created_on=int(time.time()),
+            id=category_id,
+            name="Test Project Category",
+            parent_id=None,
+            parent_type=None,
+            updated_on=int(time.time()) + 2,
+            url_path="/categories/%d" % category_id
+        )
+
+    def test_250_get_project_category_filename(self):
+        account_id = 12341234
+        category_id = 23
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        test_project_category = self._generate_test_project_category(category_id)
+        project_label_filename = ac_storage.get_project_category_filename(test_project_category)
+        self.assertGreater(len(project_label_filename), 0)
+        self.assertRegex(project_label_filename, r'project-category-%04d\.json$' % category_id)
+
+    def test_260_get_project_category_full_filename(self):
+        account_id = 12341234
+        category_id = 23
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        test_project_category = self._generate_test_project_category(category_id)
+        project_category_filename = ac_storage.get_project_category_filename(test_project_category)
+        full_filename = ac_storage.get_project_category_full_filename(project_category_filename)
+        self.assertGreater(len(full_filename), 0)
+        self.assertRegex(full_filename,
+                         r'^.*\/account-%08d\/project-category\/project-category-%04d\.json$' % (
+                             account_id, category_id))
+
+    def test_270_save_project_category(self):
+        account_id = 12341234
+        category_id = 23
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        ac_storage.reset()
+        ac_storage.ensure_dirs()
+        test_project_category = self._generate_test_project_category(category_id)
+        full_filename = ac_storage.save_project_category(test_project_category)
+        self.assertGreater(len(full_filename), 0)
         self.assertTrue(os.path.isfile(full_filename))
 
     # users

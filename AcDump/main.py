@@ -44,6 +44,10 @@ def run_dump_all(ac: ActiveCollab, config: configparser.ConfigParser):
     for user in users:
         ac_storage.save_user(user)
 
+    # get all project categories
+    for project_category in ac.get_project_categories():
+        ac_storage.save_project_category(project_category)
+
     # get all project labels
     for project_label in ac.get_project_labels():
         ac_storage.save_project_label(project_label)

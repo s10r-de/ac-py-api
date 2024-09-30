@@ -126,3 +126,6 @@ class AcClient:
 
     def get_task_history(self, task_id: int):
         return self._get('history/task/%d?verbose=1' % task_id)
+
+    def get_project_categories(self) -> Response:
+        return self._get('projects/categories')
