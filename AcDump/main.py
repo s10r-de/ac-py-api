@@ -107,11 +107,11 @@ def _login(config: configparser.ConfigParser) -> ActiveCollab:
 
 def run(args, parser, config: configparser.ConfigParser):
     # run the commands
-    if args.version:
+    if args.command == 'version':
         return run_version()
-    if args.info:
+    if args.command == 'info':
         return run_info(_login(config))
-    if args.dump:
+    if args.command == 'dump':
         return run_dump_all(_login(config), config)
 
     # no command given so show the help
@@ -125,14 +125,10 @@ def main():
         prog='acdump',
         description='This is a tool to dump data from Active-Collab',
         epilog='(c) 2024 by ACME VC, Charlie Sloan <cs@example.com>')
-    parser.add_argument('-v', '--version', action='store_true',
-                        help="show version information for this tool", default=False)
     parser.add_argument('-c', '--config', required=True,
                         help="use the named config file")
-    parser.add_argument('--info', action='store_true',
-                        help="show server information", default=False)
-    parser.add_argument('--dump', action='store_true',
-                        help="dump all data", default=False)
+    parser.add_argument('command', choices=['version', 'info', 'dump'],
+                        help='The command to run')
     args = parser.parse_args()
     config = load_config(args)
     output = run(args, parser, config)

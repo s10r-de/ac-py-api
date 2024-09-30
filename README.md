@@ -49,8 +49,18 @@ account_name = #123456
 Then test if execution will work by print the version number:
 
 ```console
-./acdump.sh -c config-test.ini --version
+./acdump.sh -c config-test.ini version
 {"version": "0.1"}
+```
+
+Get the servers version number:
+
+```console
+./acdump.sh -c config-test.ini info
+{
+    "application": "ActiveCollab",
+    "version": "7.4.613"
+}
 ```
 
 The script will currently always print JSON output.
@@ -58,7 +68,7 @@ The script will currently always print JSON output.
 Trigger the dump of all data:
 
 ```console
-./acdump.sh -c config-test.ini --dump
+./acdump.sh -c config-test.ini dump
 {
     "message": "data of account 416910 dumped to ./data"
 }
