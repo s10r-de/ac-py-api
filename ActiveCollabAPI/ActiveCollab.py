@@ -148,6 +148,7 @@ class ActiveCollab:
         return comments
 
     def get_file_access_token(self) -> AcFileAccessToken:
+        # Task#35: use TTL to limit amount of requests
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_file_access_token()
         if res.status_code != 200:
