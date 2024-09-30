@@ -26,13 +26,13 @@ class TestAcSubtask(TestCase):
         subtask_id = 70123
         subtask = self._generate_test_subtask(task_id, subtask_id)
         subtask_dict = subtask.to_dict()
-        self.assertEqual(subtask_dict["id"], subtask_id)
-        self.assertEqual(subtask_dict["task_id"], task_id)
+        self.assertEqual(subtask_id, subtask_dict["id"])
+        self.assertEqual(task_id, subtask_dict["task_id"])
 
     def test_to_json(self):
         task_id = 17614
         subtask_id = 70123
         subtask = self._generate_test_subtask(task_id, subtask_id)
         subtask_json = subtask.to_json()
-        self.assertEqual(json.loads(subtask_json)["id"], subtask_id)
-        self.assertEqual(json.loads(subtask_json)["task_id"], task_id)
+        self.assertEqual(subtask_id, json.loads(subtask_json)["id"])
+        self.assertEqual(task_id, json.loads(subtask_json)["task_id"])

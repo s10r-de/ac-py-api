@@ -26,18 +26,18 @@ class TestAcProjectLabel(TestCase):
     def test_constructor(self):
         label_id = 735
         label = self._generate_test_project_label(label_id)
-        self.assertEqual(label.id, label_id)
+        self.assertEqual(label_id, label.id)
 
     def test_to_dict(self):
         label_id = 736
         label = self._generate_test_project_label(label_id)
         label_dict = label.to_dict()
-        self.assertEqual(label_dict["id"], label_id)
-        self.assertEqual(label_dict["class"], "ProjectLabel")
+        self.assertEqual(label_id, label_dict["id"])
+        self.assertEqual("ProjectLabel", label_dict["class"], )
 
     def test_to_json(self):
         label_id = 737
         label = self._generate_test_project_label(label_id)
         label_json = label.to_json()
-        self.assertEqual(json.loads(label_json)["id"], label_id)
-        self.assertEqual(json.loads(label_json)["class"], "ProjectLabel")
+        self.assertEqual(label_id, json.loads(label_json)["id"])
+        self.assertEqual("ProjectLabel", json.loads(label_json)["class"], )

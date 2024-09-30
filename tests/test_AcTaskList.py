@@ -22,10 +22,10 @@ class TestAcTaskList(TestCase):
         task_list_id = 37617
         task_list = self._generate_test_task_list(task_list_id)
         task_dict = task_list.to_dict()
-        self.assertEqual(task_dict["id"], task_list_id)
+        self.assertEqual(task_list_id, task_dict["id"])
 
     def test_to_json(self):
         task_list_id = 37620
         task_list = self._generate_test_task_list(task_list_id)
         task_json = task_list.to_json()
-        self.assertEqual(json.loads(task_json)["id"], task_list_id)
+        self.assertEqual(task_list_id, json.loads(task_json)["id"])

@@ -30,13 +30,13 @@ class TestAcComment(TestCase):
         comment_id = 59234
         comment = self._generate_test_comment(comment_id)
         comment_dict = comment.to_dict()
-        self.assertEqual(comment_dict["id"], comment_id)
+        self.assertEqual(comment_id, comment_dict["id"])
 
     def test_to_json(self):
         comment_id = 59234
         comment = self._generate_test_comment(comment_id)
         comment_json = comment.to_json()
-        self.assertEqual(json.loads(comment_json)["id"], comment_id)
+        self.assertEqual(comment_id, json.loads(comment_json)["id"])
 
     def test_get_attachments(self):
         comment_id = 17614
@@ -46,7 +46,7 @@ class TestAcComment(TestCase):
             self._generate_test_attachment(79)
         ]
         attachments = comment.get_attachments()
-        self.assertEqual(len(attachments), 2)
+        self.assertEqual(2, len(attachments))
         self.assertIsInstance(attachments[0], AcAttachment)
         self.assertIsInstance(attachments[1], AcAttachment)
 
@@ -58,10 +58,10 @@ class TestAcComment(TestCase):
             self._generate_test_attachment(79)
         ]
         comment_dict = comment.to_dict()
-        self.assertEqual(comment_dict["id"], comment_id)
-        self.assertEqual(len(comment_dict["attachments"]), 2)
-        self.assertEqual(comment_dict["attachments"][0]["class"], "WarehouseAttachment")
-        self.assertEqual(comment_dict["attachments"][1]["class"], "WarehouseAttachment")
+        self.assertEqual(comment_id, comment_dict["id"])
+        self.assertEqual(2, len(comment_dict["attachments"]))
+        self.assertEqual("WarehouseAttachment", comment_dict["attachments"][0]["class"])
+        self.assertEqual("WarehouseAttachment", comment_dict["attachments"][1]["class"])
 
     def test_to_json_with_attachments(self):
         comment_id = 17614
@@ -72,10 +72,10 @@ class TestAcComment(TestCase):
         ]
         comment_json = comment.to_json()
         parsed_json = json.loads(comment_json)
-        self.assertEqual(parsed_json["id"], comment_id)
-        self.assertEqual(len(parsed_json["attachments"]), 2)
-        self.assertEqual(parsed_json["attachments"][0]["class"], "WarehouseAttachment")
-        self.assertEqual(parsed_json["attachments"][1]["class"], "WarehouseAttachment")
+        self.assertEqual(comment_id, parsed_json["id"])
+        self.assertEqual(2, len(parsed_json["attachments"]))
+        self.assertEqual("WarehouseAttachment", parsed_json["attachments"][0]["class"])
+        self.assertEqual("WarehouseAttachment", parsed_json["attachments"][1]["class"])
 
     @staticmethod
     def _generate_test_comment_with_attachments(comment_id: int) -> AcComment:
@@ -88,6 +88,6 @@ class TestAcComment(TestCase):
         comment_id = 17614
         comment = self._generate_test_comment_with_attachments(comment_id)
         attachments = comment.get_attachments()
-        self.assertEqual(len(attachments), 2)
+        self.assertEqual(2, len(attachments))
         self.assertIsInstance(attachments[0], AcAttachment)
         self.assertIsInstance(attachments[1], AcAttachment)

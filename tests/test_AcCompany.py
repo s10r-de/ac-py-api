@@ -17,10 +17,10 @@ class TestAcCompany(TestCase):
         company_id = 7
         company = self._generate_test_company(company_id)
         company_dict = company.to_dict()
-        self.assertEqual(company_dict['id'], company_id)
+        self.assertEqual(company_id, company_dict['id'])
 
     def test_to_json(self):
         company_id = 7
         company = self._generate_test_company(company_id)
         company_json = company.to_json()
-        self.assertEqual(json.loads(company_json)["id"], company_id)
+        self.assertEqual(company_id, json.loads(company_json)["id"])

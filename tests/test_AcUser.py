@@ -17,10 +17,10 @@ class TestAcUser(TestCase):
         user_id = 100
         user = self._generate_test_user(user_id)
         user_dict = user.to_dict()
-        self.assertEqual(user_dict['id'], user_id)
+        self.assertEqual(user_id, user_dict['id'])
 
     def test_to_json(self):
         user_id = 102
         user = self._generate_test_user(user_id)
         user_json = user.to_json()
-        self.assertEqual(json.loads(user_json)["id"], user_id)
+        self.assertEqual(user_id, json.loads(user_json)["id"])

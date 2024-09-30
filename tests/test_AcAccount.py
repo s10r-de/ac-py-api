@@ -22,13 +22,13 @@ class TestAcAccount(TestCase):
         account_id = 100
         user = self._generate_test_account(account_id)
         user_dict = user.to_dict()
-        self.assertEqual(user_dict['name'], account_id)
+        self.assertEqual(account_id, user_dict['name'])
 
     def test_to_json(self):
         account_id = 102
         account = self._generate_test_account(account_id)
         account_json = account.to_json()
-        self.assertEqual(json.loads(account_json)["name"], account_id)
+        self.assertEqual(account_id, json.loads(account_json)["name"])
 
     def test_account_from_json(self):
         account_id = 103
@@ -42,4 +42,4 @@ class TestAcAccount(TestCase):
             "status": "active"
         }
         account = account_from_json(account_json)
-        self.assertEqual(account.name, account_json["name"])
+        self.assertEqual(account_id, account.name)
