@@ -7,19 +7,21 @@ from AcComment import AcComment, comment_from_json
 
 class TestAcComment(TestCase):
 
-    def _generate_test_comment(self, comment_id: int) -> AcComment:
+    @staticmethod
+    def _generate_test_comment(comment_id: int) -> AcComment:
         with open('../example-data/example-comment-95993.json', 'r') as fh:
             comment = comment_from_json(json.load(fh))
         comment.id = comment_id
         return comment
 
-    def _generate_test_attachment(self, attachment_id: int) -> AcAttachment:
+    @staticmethod
+    def _generate_test_attachment(attachment_id: int) -> AcAttachment:
         with open('../example-data/example-attachment-29703.json', 'r') as fh:
             attachment = attachment_from_json(json.load(fh))
         attachment.id = attachment_id
         return attachment
 
-    def test_accomment_constructor(self):
+    def test_attachment_constructor(self):
         comment_id = 59234
         comment = self._generate_test_comment(comment_id)
         self.assertEqual(comment_id, comment.id)
@@ -75,7 +77,8 @@ class TestAcComment(TestCase):
         self.assertEqual(parsed_json["attachments"][0]["class"], "WarehouseAttachment")
         self.assertEqual(parsed_json["attachments"][1]["class"], "WarehouseAttachment")
 
-    def _generate_test_comment_with_attachments(self, comment_id: int) -> AcComment:
+    @staticmethod
+    def _generate_test_comment_with_attachments(comment_id: int) -> AcComment:
         with open('../example-data/example-comment-95993b.json', 'r') as fh:
             comment = comment_from_json(json.load(fh))
         comment.id = comment_id

@@ -62,6 +62,7 @@ class AcProject:
 
 
 def project_from_json(json_obj: dict) -> AcProject:
+    assert json_obj["class"] == "Project"
     json_obj["class_"] = json_obj["class"]
     del json_obj["class"]
     return AcProject(**json_obj)

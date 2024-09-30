@@ -7,7 +7,8 @@ from AcTaskLabel import AcTaskLabel
 
 class TestAcTaskLabel(TestCase):
 
-    def _generate_test_task_label(self, label_id: int) -> AcTaskLabel:
+    @staticmethod
+    def _generate_test_task_label(label_id: int) -> AcTaskLabel:
         return AcTaskLabel(
             id=label_id,
             class_="TaskLabel",

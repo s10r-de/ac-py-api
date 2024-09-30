@@ -45,6 +45,7 @@ class AcAttachment:
 
 
 def attachment_from_json(json_obj: dict) -> AcAttachment:
+    assert json_obj["class"] == "WarehouseAttachment"
     json_obj["class_"] = json_obj["class"]
     del json_obj["class"]
     if json_obj["extension"] is None:

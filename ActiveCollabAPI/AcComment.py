@@ -49,6 +49,7 @@ class AcComment:
 
 
 def comment_from_json(json_obj: dict) -> AcComment:
+    assert json_obj["class"] == "Comment"
     json_obj["class_"] = json_obj["class"]
     del json_obj["class"]
     if json_obj["attachments"] is not None:

@@ -70,6 +70,7 @@ class AcTask:
 
 
 def task_from_json(json_obj: dict) -> AcTask:
+    assert json_obj["class"] == "Task"
     json_obj["class_"] = json_obj["class"]
     del json_obj["class"]
     if json_obj["open_dependencies"] is not None:

@@ -6,7 +6,8 @@ from AcCompany import company_from_json, AcCompany
 
 class TestAcCompany(TestCase):
 
-    def _generate_test_company(self, company_id: int) -> AcCompany:
+    @staticmethod
+    def _generate_test_company(company_id: int) -> AcCompany:
         with open('../example-data/example-company-5.json', 'r') as fh:
             company = company_from_json(json.load(fh))
         company.id = company_id

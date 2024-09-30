@@ -29,6 +29,7 @@ class AcTaskLabel:
 
 
 def task_label_from_json(json_obj: dict) -> AcTaskLabel:
+    assert json_obj["class"] == "TaskLabel"
     json_obj["class_"] = json_obj["class"]
     del json_obj["class"]
     return AcTaskLabel(**json_obj)

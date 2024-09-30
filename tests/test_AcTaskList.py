@@ -6,7 +6,8 @@ from AcTaskList import task_list_from_json, AcTaskList
 
 class TestAcTaskList(TestCase):
 
-    def _generate_test_task_list(self, task_list_id: int) -> AcTaskList:
+    @staticmethod
+    def _generate_test_task_list(task_list_id: int) -> AcTaskList:
         with open('../example-data/example-task-list-37314.json', 'r') as fh:
             task_list = task_list_from_json(json.load(fh))
         task_list.id = task_list_id

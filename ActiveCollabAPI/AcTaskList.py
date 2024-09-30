@@ -39,6 +39,7 @@ class AcTaskList:
 
 
 def task_list_from_json(json_obj: dict) -> AcTaskList:
+    assert json_obj["class"] == "TaskList"
     json_obj["class_"] = json_obj["class"]
     del json_obj["class"]
     return AcTaskList(**json_obj)

@@ -7,7 +7,8 @@ from AcTaskHistory import AcTaskHistory, task_history_from_json
 
 class TestAcTaskHistory(TestCase):
 
-    def _generate_test_task_history(self, timestamp: int, task_id: int = None) -> AcTaskHistory:
+    @staticmethod
+    def _generate_test_task_history(timestamp: int, task_id: int = None) -> AcTaskHistory:
         return AcTaskHistory(
             timestamp=timestamp,
             created_by_id=12,

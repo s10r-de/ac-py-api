@@ -49,6 +49,7 @@ class AcUser:
 
 
 def user_from_json(json_obj: dict) -> AcUser:
+    assert json_obj["class"] == "Member" or json_obj["class"] == "Owner"
     json_obj["class_"] = json_obj["class"]
     del json_obj["class"]
     return AcUser(**json_obj)

@@ -7,7 +7,8 @@ from AcProjectCategory import AcProjectCategory
 
 class TestAcProjectCategory(TestCase):
 
-    def _generate_test_project_category(self, category_id: int) -> AcProjectCategory:
+    @staticmethod
+    def _generate_test_project_category(category_id: int) -> AcProjectCategory:
         return AcProjectCategory(
             class_="ProjectCategory",
             created_by_email="admin@example.com",

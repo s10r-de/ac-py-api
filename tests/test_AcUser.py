@@ -6,7 +6,8 @@ from ActiveCollabAPI.AcUser import AcUser, user_from_json
 
 class TestAcUser(TestCase):
 
-    def _generate_test_user(self, user_id: int) -> AcUser:
+    @staticmethod
+    def _generate_test_user(user_id: int) -> AcUser:
         with open('../example-data/example-user-00000240.json', 'r') as fh:
             user = user_from_json(json.load(fh))
         user.id = user_id

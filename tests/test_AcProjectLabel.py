@@ -7,7 +7,8 @@ from AcProjectLabel import AcProjectLabel
 
 class TestAcProjectLabel(TestCase):
 
-    def _generate_test_project_label(self, label_id: int) -> AcProjectLabel:
+    @staticmethod
+    def _generate_test_project_label(label_id: int) -> AcProjectLabel:
         return AcProjectLabel(
             id=label_id,
             class_="ProjectLabel",

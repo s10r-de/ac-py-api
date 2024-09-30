@@ -40,6 +40,7 @@ class AcSubtask:
 
 
 def subtask_from_json(json_obj: dict) -> AcSubtask:
+    assert json_obj["class"] == "Subtask"
     json_obj["class_"] = json_obj["class"]
     del json_obj["class"]
     return AcSubtask(**json_obj)

@@ -22,11 +22,11 @@ class TestAcTaskDependencies(TestCase):
         self.assertEqual(o['children_count'], 3)
 
     def test_from_dict(self):
-        taskdependency_json = '''{
+        task_dependency_json = '''{
             "parents_count": 5,
             "children_count": 6
         }'''
-        task_dependencies = taskdependency_from_json(json.loads(taskdependency_json))
+        task_dependencies = taskdependency_from_json(json.loads(task_dependency_json))
         self.assertIsInstance(task_dependencies, AcTaskDependencies)
         self.assertEqual(task_dependencies.parents_count, 5)
         self.assertEqual(task_dependencies.children_count, 6)

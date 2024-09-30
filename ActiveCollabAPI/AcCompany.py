@@ -37,6 +37,7 @@ class AcCompany:
 
 
 def company_from_json(json_obj: dict) -> AcCompany:
+    assert json_obj["class"] == "Company"
     json_obj["class_"] = json_obj["class"]
     del json_obj["class"]
     return AcCompany(**json_obj)

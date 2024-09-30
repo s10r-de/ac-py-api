@@ -28,6 +28,7 @@ class AcProjectLabel:
 
 
 def project_label_from_json(json_obj: dict) -> AcProjectLabel:
+    assert json_obj["class"] == "ProjectLabel"
     json_obj["class_"] = json_obj["class"]
     del json_obj["class"]
     return AcProjectLabel(**json_obj)
