@@ -3,18 +3,21 @@ from unittest import TestCase
 
 from AcAttachment import AcAttachment, attachment_from_json
 from AcTaskDependencies import AcTaskDependencies
+from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 from ActiveCollabAPI.AcTask import AcTask, task_from_json
 
 
 class TestAcTask(TestCase):
 
-    def _generate_test_task(self, task_id: int) -> AcTask:
+    @staticmethod
+    def _generate_test_task(task_id: int) -> AcTask:
         with open('../example-data/example-task-17614.json', 'r') as fh:
             task = task_from_json(json.load(fh))
         task.id = task_id
         return task
 
-    def _generate_test_attachment(self, attachment_id: int) -> AcAttachment:
+    @staticmethod
+    def _generate_test_attachment(attachment_id: int) -> AcAttachment:
         with open('../example-data/example-attachment-29703.json', 'r') as fh:
             attachment = attachment_from_json(json.load(fh))
         attachment.id = attachment_id
@@ -29,13 +32,17 @@ class TestAcTask(TestCase):
         task_id = 17614
         task = self._generate_test_task(task_id)
         task_dict = task.to_dict()
-        self.assertEqual(task_dict["id"], task_id)
+        self.assertEqual(task_id, task_dict["id"])
+        self.assertIn(AC_PROPERTY_CLASS, task_dict.keys())
+        self.assertNotIn(AC_PROPERTY_CLASS_, task_dict.keys())
 
     def test_to_json(self):
         task_id = 17614
         task = self._generate_test_task(task_id)
         task_json = task.to_json()
-        self.assertEqual(json.loads(task_json)["id"], task_id)
+        self.assertEqual(task_id, json.loads(task_json)["id"])
+        self.assertIn(AC_PROPERTY_CLASS, json.loads(task_json).keys())
+        self.assertNotIn(AC_PROPERTY_CLASS_, json.loads(task_json).keys())
 
     def test_to_dict_with_dependencies(self):
         task_id = 17614
@@ -43,9 +50,9 @@ class TestAcTask(TestCase):
         task.open_dependencies = AcTaskDependencies(parents_count=2, children_count=3)
         task.attachments = None
         task_dict = task.to_dict()
-        self.assertEqual(task_dict["id"], task_id)
-        self.assertEqual(task_dict["open_dependencies"]["parents_count"], 2)
-        self.assertEqual(task_dict["open_dependencies"]["children_count"], 3)
+        self.assertEqual(task_id, task_dict["id"])
+        self.assertEqual(2, task_dict["open_dependencies"]["parents_count"])
+        self.assertEqual(3, task_dict["open_dependencies"]["children_count"])
 
     def test_to_json_with_dependencies(self):
         task_id = 17614
@@ -54,9 +61,9 @@ class TestAcTask(TestCase):
         task.attachments = None
         task_json = task.to_json()
         parsed_json = json.loads(task_json)
-        self.assertEqual(parsed_json["id"], task_id)
-        self.assertEqual(parsed_json["open_dependencies"]["parents_count"], 2)
-        self.assertEqual(parsed_json["open_dependencies"]["children_count"], 3)
+        self.assertEqual(task_id, parsed_json["id"])
+        self.assertEqual(2, parsed_json["open_dependencies"]["parents_count"])
+        self.assertEqual(3, parsed_json["open_dependencies"]["children_count"])
 
     def test_get_attachments(self):
         task_id = 17614
@@ -67,7 +74,7 @@ class TestAcTask(TestCase):
             self._generate_test_attachment(79)
         ]
         attachments = task.get_attachments()
-        self.assertEqual(len(attachments), 2)
+        self.assertEqual(2, len(attachments))
         self.assertIsInstance(attachments[0], AcAttachment)
         self.assertIsInstance(attachments[1], AcAttachment)
 
@@ -80,8 +87,8 @@ class TestAcTask(TestCase):
             self._generate_test_attachment(79)
         ]
         task_dict = task.to_dict()
-        self.assertEqual(task_dict["id"], task_id)
-        self.assertEqual(len(task_dict["attachments"]), 2)
+        self.assertEqual(task_id, task_dict["id"])
+        self.assertEqual(2, len(task_dict["attachments"]))
         self.assertEqual(task_dict["attachments"][0]["class"], "WarehouseAttachment")
         self.assertEqual(task_dict["attachments"][1]["class"], "WarehouseAttachment")
 
@@ -95,12 +102,13 @@ class TestAcTask(TestCase):
         ]
         task_json = task.to_json()
         parsed_json = json.loads(task_json)
-        self.assertEqual(parsed_json["id"], task_id)
-        self.assertEqual(len(parsed_json["attachments"]), 2)
+        self.assertEqual(task_id, parsed_json["id"])
+        self.assertEqual(2, len(parsed_json["attachments"]))
         self.assertEqual(parsed_json["attachments"][0]["class"], "WarehouseAttachment")
         self.assertEqual(parsed_json["attachments"][1]["class"], "WarehouseAttachment")
 
-    def _generate_test_task_with_attachments(self, task_id: int) -> AcTask:
+    @staticmethod
+    def _generate_test_task_with_attachments(task_id: int) -> AcTask:
         with open('../example-data/example-task-17614b.json', 'r') as fh:
             task = task_from_json(json.load(fh))
         task.id = task_id
@@ -110,6 +118,6 @@ class TestAcTask(TestCase):
         task_id = 17614
         task = self._generate_test_task_with_attachments(task_id)
         attachments = task.get_attachments()
-        self.assertEqual(len(attachments), 2)
+        self.assertEqual(2, len(attachments))
         self.assertIsInstance(attachments[0], AcAttachment)
         self.assertIsInstance(attachments[1], AcAttachment)

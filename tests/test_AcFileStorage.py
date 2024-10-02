@@ -67,7 +67,8 @@ class TestAcFileStorage(TestCase):
         self.assertIsNotNone(re.search(str(account_id), ac_storage.get_account_path()))
 
     # tasks
-    def _generate_test_task(self, task_id: int) -> AcTask:
+    @staticmethod
+    def _generate_test_task(task_id: int) -> AcTask:
         with open('../example-data/example-task-17614.json', 'r') as fh:
             task = task_from_json(json.load(fh))
         task.id = task_id
@@ -116,7 +117,8 @@ class TestAcFileStorage(TestCase):
         self.assertRegex(path, r'^.*\/account-' + str(account_id + 0) + r'\/task-history')
         self.assertTrue(os.path.isdir(path))
 
-    def _generate_test_task_history(self, timestamp: int, task_id: int = None) -> AcTaskHistory:
+    @staticmethod
+    def _generate_test_task_history(timestamp: int, task_id: int = None) -> AcTaskHistory:
         return AcTaskHistory(
             timestamp=timestamp,
             created_by_id=12,
@@ -174,7 +176,8 @@ class TestAcFileStorage(TestCase):
 
     # projects
 
-    def _generate_test_project(self, project_id: int) -> AcProject:
+    @staticmethod
+    def _generate_test_project(project_id: int) -> AcProject:
         with open('../example-data/example-project-611.json', 'r') as fh:
             project = project_from_json(json.load(fh))
         project.id = project_id
@@ -223,7 +226,8 @@ class TestAcFileStorage(TestCase):
         self.assertRegex(path, r'^.*\/account-' + str(account_id + 0) + r'\/project-category')
         self.assertTrue(os.path.isdir(path))
 
-    def _generate_test_project_category(self, category_id: int) -> AcProjectCategory:
+    @staticmethod
+    def _generate_test_project_category(category_id: int) -> AcProjectCategory:
         return AcProjectCategory(
             class_="ProjectCategory",
             created_by_email="admin@example.com",
@@ -272,7 +276,8 @@ class TestAcFileStorage(TestCase):
 
     # users
 
-    def _generate_test_user(self, user_id: int) -> AcUser:
+    @staticmethod
+    def _generate_test_user(user_id: int) -> AcUser:
         with open('../example-data/example-user-00000240.json', 'r') as fh:
             user = user_from_json(json.load(fh))
         user.id = user_id
@@ -311,7 +316,8 @@ class TestAcFileStorage(TestCase):
         self.assertTrue(os.path.isfile(full_filename))
 
     # subtasks
-    def _generate_test_subtask(self, task_id: int, subtask_id: int) -> AcSubtask:
+    @staticmethod
+    def _generate_test_subtask(task_id: int, subtask_id: int) -> AcSubtask:
         with open('../example-data/example-subtask-00041071.json', 'r') as fh:
             subtask = subtask_from_json(json.load(fh))
         subtask.task_id = task_id
@@ -354,7 +360,8 @@ class TestAcFileStorage(TestCase):
         self.assertTrue(os.path.isfile(full_filename))
 
     # comments
-    def _generate_test_comment(self, task_id: int, comment_id: int) -> AcComment:
+    @staticmethod
+    def _generate_test_comment(task_id: int, comment_id: int) -> AcComment:
         with open('../example-data/example-comment-95993.json', 'r') as fh:
             comment = comment_from_json(json.load(fh))
         comment.parent_id = task_id
@@ -402,7 +409,8 @@ class TestAcFileStorage(TestCase):
         self.assertTrue(os.path.isfile(full_filename))
 
     # attachments
-    def _generate_test_attachment(self, attachment_id: int) -> AcAttachment:
+    @staticmethod
+    def _generate_test_attachment(attachment_id: int) -> AcAttachment:
         with open('../example-data/example-attachment-29703.json', 'r') as fh:
             attachment = attachment_from_json(json.load(fh))
         attachment.id = attachment_id
@@ -426,7 +434,7 @@ class TestAcFileStorage(TestCase):
         self.assertGreater(len(filename), 0)
         self.assertRegex(filename, r'^attachment-%08d\.json$' % attachment_id)
 
-    def test_620_get_attachemnt_full_filename(self):
+    def test_620_get_attachment_full_filename(self):
         account_id = 12341234
         attachment_id = 343421
         ac_storage = AcFileStorage(DATA_DIR, account_id)
@@ -459,7 +467,8 @@ class TestAcFileStorage(TestCase):
         self.assertRegex(path, r'^.*\/account-' + str(account_id + 0) + r'\/project-label')
         self.assertTrue(os.path.isdir(path))
 
-    def _generate_test_project_label(self, label_id):
+    @staticmethod
+    def _generate_test_project_label(label_id):
         return AcProjectLabel(
             id=label_id,
             class_="ProjectLabel",
@@ -515,7 +524,8 @@ class TestAcFileStorage(TestCase):
         self.assertRegex(path, r'^.*\/account-' + str(account_id + 0) + r'\/task-labels')
         self.assertTrue(os.path.isdir(path))
 
-    def _generate_test_task_label(self, label_id):
+    @staticmethod
+    def _generate_test_task_label(label_id):
         return AcTaskLabel(
             id=label_id,
             class_="TaskLabel",
@@ -563,7 +573,8 @@ class TestAcFileStorage(TestCase):
 
     # companies
 
-    def _generate_test_company(self, company_id: int) -> AcCompany:
+    @staticmethod
+    def _generate_test_company(company_id: int) -> AcCompany:
         with open('../example-data/example-company-5.json', 'r') as fh:
             company = company_from_json(json.load(fh))
         company.id = company_id
@@ -620,7 +631,8 @@ class TestAcFileStorage(TestCase):
         self.assertRegex(path, r'^.*\/account-' + str(account_id + 0) + r'\/task-lists')
         self.assertTrue(os.path.isdir(path))
 
-    def _generate_test_task_list(self, task_list_id: int) -> AcTaskList:
+    @staticmethod
+    def _generate_test_task_list(task_list_id: int) -> AcTaskList:
         with open('../example-data/example-task-list-37314.json', 'r') as fh:
             task_list = task_list_from_json(json.load(fh))
         task_list.id = task_list_id

@@ -53,16 +53,19 @@ class ActiveCollab:
         accounts = list(map(lambda a: account_from_json(a), res_data['accounts']))
         return AcLoginResponse(AcLoginUser(**res_data['user']), accounts)
 
-    def select_first_account(self, accounts: list[AcAccount]) -> AcAccount:
+    @staticmethod
+    def select_first_account(accounts: list[AcAccount]) -> AcAccount:
         return accounts[0]
 
-    def select_account(self, accounts: list[AcAccount], account: str) -> AcAccount:
+    @staticmethod
+    def select_account(accounts: list[AcAccount], account: str) -> AcAccount:
         found = list(filter(lambda a: a.display_name == account, accounts))
         if len(found) == 0:
             raise Exception('Account not found!')
         return found[0]
 
-    def create_token(self, account: AcAccount, user: AcLoginUser) -> AcToken:
+    @staticmethod
+    def create_token(account: AcAccount, user: AcLoginUser) -> AcToken:
         authenticator = AcTokenAuthenticator(account.url + '/api/v%s' % AC_API_VERSION)
         res = authenticator.issue_token_intent(user.intent)
         if res.status_code != 200:
@@ -95,7 +98,8 @@ class ActiveCollab:
         tasks = list(map(lambda p: task_from_json(p), res_data))
         return tasks
 
-    def filter_tasks(self, tasks: list[AcTask], compare_func: callable) -> list[AcTask]:
+    @staticmethod
+    def filter_tasks(tasks: list[AcTask], compare_func: callable) -> list[AcTask]:
         return list(filter(compare_func, tasks))
 
     def get_active_projects(self) -> list[AcProject]:
@@ -144,6 +148,7 @@ class ActiveCollab:
         return comments
 
     def get_file_access_token(self) -> AcFileAccessToken:
+        # Task#35: use TTL to limit amount of requests
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_file_access_token()
         if res.status_code != 200:

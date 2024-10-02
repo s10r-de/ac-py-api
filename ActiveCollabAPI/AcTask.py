@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 from AcAttachment import AcAttachment, attachment_from_json
 from AcTaskDependencies import taskdependency_from_json
-from ActiveCollabAPI import AcTaskDependencies
+from ActiveCollabAPI import AcTaskDependencies, AC_CLASS_TASK, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 
 
 @dataclass
@@ -54,8 +54,8 @@ class AcTask:
 
     def to_dict(self) -> dict:
         d = dataclasses.asdict(self)
-        d["class"] = d["class_"]
-        del d["class_"]
+        d[AC_PROPERTY_CLASS] = d[AC_PROPERTY_CLASS_]
+        del d[AC_PROPERTY_CLASS_]
         if d["open_dependencies"] is not None:
             d["open_dependencies"] = self.open_dependencies.to_dict()
         if d["attachments"] is not None:
@@ -70,8 +70,9 @@ class AcTask:
 
 
 def task_from_json(json_obj: dict) -> AcTask:
-    json_obj["class_"] = json_obj["class"]
-    del json_obj["class"]
+    assert json_obj[AC_PROPERTY_CLASS] == AC_CLASS_TASK
+    json_obj[AC_PROPERTY_CLASS_] = json_obj[AC_PROPERTY_CLASS]
+    del json_obj[AC_PROPERTY_CLASS]
     if json_obj["open_dependencies"] is not None:
         json_obj["open_dependencies"] = taskdependency_from_json(json_obj["open_dependencies"])
     if json_obj["attachments"] is not None:

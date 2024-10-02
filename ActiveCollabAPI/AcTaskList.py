@@ -2,6 +2,8 @@ import dataclasses
 import json
 from dataclasses import dataclass
 
+from ActiveCollabAPI import AC_CLASS_TASK_LIST, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
+
 
 @dataclass
 class AcTaskList:
@@ -30,8 +32,8 @@ class AcTaskList:
 
     def to_dict(self) -> dict:
         d = dataclasses.asdict(self)
-        d["class"] = d["class_"]
-        del d["class_"]
+        d[AC_PROPERTY_CLASS] = d[AC_PROPERTY_CLASS_]
+        del d[AC_PROPERTY_CLASS_]
         return d
 
     def to_json(self) -> str:
@@ -39,6 +41,7 @@ class AcTaskList:
 
 
 def task_list_from_json(json_obj: dict) -> AcTaskList:
-    json_obj["class_"] = json_obj["class"]
-    del json_obj["class"]
+    assert json_obj[AC_PROPERTY_CLASS] == AC_CLASS_TASK_LIST
+    json_obj[AC_PROPERTY_CLASS_] = json_obj[AC_PROPERTY_CLASS]
+    del json_obj[AC_PROPERTY_CLASS]
     return AcTaskList(**json_obj)

@@ -7,7 +7,8 @@ from AcTaskHistory import AcTaskHistory, task_history_from_json
 
 class TestAcTaskHistory(TestCase):
 
-    def _generate_test_task_history(self, timestamp: int, task_id: int = None) -> AcTaskHistory:
+    @staticmethod
+    def _generate_test_task_history(timestamp: int, task_id: int = None) -> AcTaskHistory:
         return AcTaskHistory(
             timestamp=timestamp,
             created_by_id=12,
@@ -50,8 +51,8 @@ class TestAcTaskHistory(TestCase):
                     ]
             }]
         )
-        self.assertEqual(task_history.timestamp, timestamp)
-        self.assertEqual(task_history.task_id, 0)
+        self.assertEqual(timestamp, task_history.timestamp)
+        self.assertEqual(0, task_history.task_id)
 
     def test_constructor_with_task_id(self):
         timestamp = int(time.time())
@@ -76,24 +77,24 @@ class TestAcTaskHistory(TestCase):
                     ]
             }]
         )
-        self.assertEqual(task_history.timestamp, timestamp)
-        self.assertEqual(task_history.task_id, task_id)
+        self.assertEqual(timestamp, task_history.timestamp)
+        self.assertEqual(task_id, task_history.task_id)
 
     def test_to_dict(self):
         timestamp = int(time.time())
         task_id = 78
         task_history = self._generate_test_task_history(timestamp, task_id)
         task_history_dict = task_history.to_dict()
-        self.assertEqual(task_history_dict["task_id"], task_id)
-        self.assertEqual(task_history_dict["timestamp"], timestamp)
+        self.assertEqual(task_id, task_history_dict["task_id"])
+        self.assertEqual(timestamp, task_history_dict["timestamp"])
 
     def test_to_json(self):
         timestamp = int(time.time())
         task_id = 78
         task_history = self._generate_test_task_history(timestamp, task_id)
         task_history_json = task_history.to_json()
-        self.assertEqual(json.loads(task_history_json)["task_id"], task_id)
-        self.assertEqual(json.loads(task_history_json)["timestamp"], timestamp)
+        self.assertEqual(task_id, json.loads(task_history_json)["task_id"])
+        self.assertEqual(timestamp, json.loads(task_history_json)["timestamp"])
 
     def test_from_json(self):
         with open("../example-data/example-task-history-1727425588.json", "r") as f:

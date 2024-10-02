@@ -34,56 +34,12 @@ def run_dump_all(ac: ActiveCollab, config: configparser.ConfigParser):
     ac_storage.reset()
     ac_storage.ensure_dirs()
 
-    # get all companies
-    companies = ac.get_all_companies()
-    for company in companies:
-        ac_storage.save_company(company)
-
-    # get all users
-    users = ac.get_all_users()
-    for user in users:
-        ac_storage.save_user(user)
-
-    # get all project categories
-    for project_category in ac.get_project_categories():
-        ac_storage.save_project_category(project_category)
-
-    # get all project labels
-    for project_label in ac.get_project_labels():
-        ac_storage.save_project_label(project_label)
-
-    # get all task labels
-    for task_label in ac.get_task_labels():
-        ac_storage.save_task_label(task_label)
-
-    # get all projects
-    projects = ac.get_active_projects()
-    projects.extend(ac.get_archived_projects())
-    for project in projects:
-        ac_storage.save_project(project)
-        # get all task lists for this project
-        task_lists = ac.get_project_task_lists(project)
-        for task_list in task_lists:
-            ac_storage.save_task_list(task_list)
-        # get all tasks for this project
-        tasks = ac.get_active_tasks(project.id)
-        tasks.extend(ac.get_completed_tasks(project.id))
-        for task in tasks:
-            ac_storage.save_task(task)
-            for attachment in task.get_attachments():
-                ac_storage.save_attachment(attachment, ac.download_attachment(attachment))
-            if task.total_subtasks > 0:
-                subtasks = ac.get_subtasks(task)
-                for subtask in subtasks:
-                    ac_storage.save_subtask(subtask)
-            if task.comments_count > 0:
-                comments = ac.get_comments(task)
-                for comment in comments:
-                    ac_storage.save_comment(comment)
-                    for attachment in comment.get_attachments():
-                        ac_storage.save_attachment(attachment, ac.download_attachment(attachment))
-            for history in ac.get_task_history(task):
-                ac_storage.save_task_history(history)
+    dump_all_companies(ac, ac_storage)
+    dump_all_users(ac, ac_storage)
+    dump_all_project_categories(ac, ac_storage)
+    dump_all_project_labels(ac, ac_storage)
+    dump_all_task_labels(ac, ac_storage)
+    dump_all_projects_with_all_data(ac, ac_storage)
 
     return {'message': "data of account %d dumped to %s" % (account_id, storage_path)}
 
@@ -91,6 +47,80 @@ def run_dump_all(ac: ActiveCollab, config: configparser.ConfigParser):
     # tasks = ac.filter_tasks(tasks, lambda t: t.updated_on > 1723452690)
     # tasks = ac.filter_tasks(tasks, lambda t: t.id == 18440)
     # return list(map(lambda task: task.to_dict(), projects))
+
+
+def dump_all_projects_with_all_data(ac, ac_storage):
+    projects = ac.get_active_projects()
+    projects.extend(ac.get_archived_projects())
+    for project in projects:
+        ac_storage.save_project(project)
+        dump_all_task_lists_of_project(ac, ac_storage, project)
+        dump_all_tasks_of_project(ac, ac_storage, project)
+
+
+def dump_all_task_lists_of_project(ac, ac_storage, project):
+    for task_list in ac.get_project_task_lists(project):
+        ac_storage.save_task_list(task_list)
+
+
+def dump_all_tasks_of_project(ac, ac_storage, project):
+    tasks = ac.get_active_tasks(project.id)
+    tasks.extend(ac.get_completed_tasks(project.id))
+    for task in tasks:
+        ac_storage.save_task(task)
+        for attachment in task.get_attachments():
+            dump_attachment(ac, ac_storage, attachment)
+        if task.total_subtasks > 0:
+            dump_task_subtasks(ac, ac_storage, task)
+        if task.comments_count > 0:
+            dump_task_comments(ac, ac_storage, task)
+        dump_task_history(ac, ac_storage, task)
+
+
+def dump_attachment(ac, ac_storage, attachment):
+    ac_storage.save_attachment(attachment, ac.download_attachment(attachment))
+
+
+def dump_task_comments(ac, ac_storage, task):
+    for comment in ac.get_comments(task):
+        ac_storage.save_comment(comment)
+        for attachment in comment.get_attachments():
+            dump_attachment(ac, ac_storage, attachment)
+
+
+def dump_task_history(ac, ac_storage, task):
+    for history in ac.get_task_history(task):
+        ac_storage.save_task_history(history)
+
+
+def dump_task_subtasks(ac, ac_storage, task):
+    for subtask in ac.get_subtasks(task):
+        ac_storage.save_subtask(subtask)
+
+
+def dump_all_task_labels(ac, ac_storage):
+    for task_label in ac.get_task_labels():
+        ac_storage.save_task_label(task_label)
+
+
+def dump_all_project_labels(ac, ac_storage):
+    for project_label in ac.get_project_labels():
+        ac_storage.save_project_label(project_label)
+
+
+def dump_all_project_categories(ac, ac_storage):
+    for project_category in ac.get_project_categories():
+        ac_storage.save_project_category(project_category)
+
+
+def dump_all_users(ac, ac_storage):
+    for user in ac.get_all_users():
+        ac_storage.save_user(user)
+
+
+def dump_all_companies(ac, ac_storage):
+    for company in ac.get_all_companies():
+        ac_storage.save_company(company)
 
 
 def _login(config: configparser.ConfigParser) -> ActiveCollab:
@@ -107,11 +137,11 @@ def _login(config: configparser.ConfigParser) -> ActiveCollab:
 
 def run(args, parser, config: configparser.ConfigParser):
     # run the commands
-    if args.version:
+    if args.command == 'version':
         return run_version()
-    if args.info:
+    if args.command == 'info':
         return run_info(_login(config))
-    if args.dump:
+    if args.command == 'dump':
         return run_dump_all(_login(config), config)
 
     # no command given so show the help
@@ -125,14 +155,10 @@ def main():
         prog='acdump',
         description='This is a tool to dump data from Active-Collab',
         epilog='(c) 2024 by ACME VC, Charlie Sloan <cs@example.com>')
-    parser.add_argument('-v', '--version', action='store_true',
-                        help="show version information for this tool", default=False)
     parser.add_argument('-c', '--config', required=True,
                         help="use the named config file")
-    parser.add_argument('--info', action='store_true',
-                        help="show server information", default=False)
-    parser.add_argument('--dump', action='store_true',
-                        help="dump all data", default=False)
+    parser.add_argument('command', choices=['version', 'info', 'dump'],
+                        help='The command to run')
     args = parser.parse_args()
     config = load_config(args)
     output = run(args, parser, config)

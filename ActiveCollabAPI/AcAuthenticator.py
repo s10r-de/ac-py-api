@@ -14,7 +14,8 @@ class AcAuthenticator:
     def __init__(self, base_url: str):
         self.base_url = base_url
 
-    def headers(self):
+    @staticmethod
+    def headers():
         return {
             'Content-Type': 'application/json; charset=utf8',
             'Accept': 'application/json',

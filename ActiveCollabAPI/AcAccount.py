@@ -2,6 +2,8 @@ import dataclasses
 import json
 from dataclasses import dataclass
 
+from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
+
 
 @dataclass
 class AcAccount:
@@ -15,8 +17,8 @@ class AcAccount:
 
     def to_dict(self) -> dict:
         d = dataclasses.asdict(self)
-        d["class"] = d["class_"]
-        del d["class_"]
+        d[AC_PROPERTY_CLASS] = d[AC_PROPERTY_CLASS_]
+        del d[AC_PROPERTY_CLASS_]
         return d
 
     def to_json(self) -> json:
@@ -24,6 +26,6 @@ class AcAccount:
 
 
 def account_from_json(a) -> AcAccount:
-    a["class_"] = a["class"]
-    del a["class"]
+    a[AC_PROPERTY_CLASS_] = a[AC_PROPERTY_CLASS]
+    del a[AC_PROPERTY_CLASS]
     return AcAccount(**a)
