@@ -1,0 +1,31 @@
+{
+  "id": 94,
+  "class": "Note",
+  "url_path": "\/projects\/611\/notes\/94",
+  "name": "Test note 2",
+  "comments_count": 0,
+  "attachments": [],
+  "is_trashed": false,
+  "trashed_on": null,
+  "trashed_by_id": 0,
+  "project_id": 611,
+  "is_hidden_from_clients": false,
+  "body": "<p><strong>Lorem<\/strong> ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum <strong>dolor<\/strong> sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.<\/p> <p>\u00a0<\/p> <p>\u00a0<\/p>",
+  "body_formatted": "<p><strong>Lorem<\/strong> ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum <strong>dolor<\/strong> sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.<\/p> <p>\u00a0<\/p> <p>\u00a0<\/p>",
+  "body_mode": "paragraph",
+  "body_plain_text": "LOREM ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum DOLOR sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. \n\n\u00a0 \n\n\u00a0",
+  "created_on": 1727872835,
+  "created_by_id": 30,
+  "created_by_name": "Charlie Sloan",
+  "created_by_email": "cs@example.com",
+  "updated_on": 1727872835,
+  "updated_by_id": 30,
+  "notebook_id": 0,
+  "note_group_id": 0,
+  "in_notebook": false,
+  "is_pinned": false,
+  "position": 0,
+  "contributor_ids": [
+    30
+  ]
+}

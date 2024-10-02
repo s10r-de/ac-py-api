@@ -9,10 +9,12 @@ from AcAttachment import AcAttachment, attachment_from_json
 from AcCompany import company_from_json, AcCompany
 from AcProjectCategory import AcProjectCategory
 from AcProjectLabel import AcProjectLabel
+from AcProjectNote import project_note_from_json
 from AcStorage.AcFileStorage import AcFileStorage
 from AcTaskHistory import AcTaskHistory
 from AcTaskLabel import AcTaskLabel
 from AcTaskList import AcTaskList, task_list_from_json
+from ActiveCollabAPI import AC_ERROR_WRONG_CLASS
 from ActiveCollabAPI.AcComment import AcComment, comment_from_json
 from ActiveCollabAPI.AcProject import AcProject, project_from_json
 from ActiveCollabAPI.AcSubtask import AcSubtask, subtask_from_json
@@ -41,6 +43,7 @@ class TestAcFileStorage(TestCase):
         self.assertFalse(os.path.isdir(ac_storage.get_task_lists_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_task_history_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_project_category_path()))
+        self.assertFalse(os.path.isdir(ac_storage.get_project_notes_path()))
 
     def test_020_ensure_dirs(self):
         account_id = 12341234
@@ -60,6 +63,7 @@ class TestAcFileStorage(TestCase):
         self.assertTrue(os.path.isdir(ac_storage.get_task_lists_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_task_history_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_project_category_path()))
+        self.assertTrue(os.path.isdir(ac_storage.get_project_notes_path()))
 
     def test_030_get_account_path(self):
         account_id = 12341234
@@ -667,3 +671,60 @@ class TestAcFileStorage(TestCase):
         full_filename = ac_storage.save_task_list(test_task_list)
         self.assertGreater(len(full_filename), 0)
         self.assertTrue(os.path.isfile(full_filename))
+
+    # project notes
+
+    def test_1000_get_project_notes_path(self):
+        account_id = 12341234
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        ac_storage.reset()
+        ac_storage.ensure_dirs()
+        path = ac_storage.get_project_notes_path()
+        self.assertRegex(path, r'^.*\/account-' + str(account_id + 0) + r'\/project-notes')
+        self.assertTrue(os.path.isdir(path))
+
+    @staticmethod
+    def _generate_test_project_note(note_id: int) -> dict:
+        with open("../example-data/example-note-94-without-attachment.json", "r") as f:
+            project_note_json = json.load(f)
+        project_note_json["id"] = note_id
+        return project_note_json
+
+    def test_1010_get_project_note_filename(self):
+        account_id = 12341234
+        project_note_id = 5231
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        project_note_json = self._generate_test_project_note(project_note_id)
+        project_note = project_note_from_json(project_note_json)
+        filename = ac_storage.get_project_note_filename(project_note)
+        self.assertGreater(len(filename), 0)
+        self.assertRegex(filename, r'project-note-%08d\.json$' % project_note_id)
+
+    def test_1020_get_project_note_full_filename(self):
+        account_id = 12341234
+        project_note_id = 5237
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        project_note_json = self._generate_test_project_note(project_note_id)
+        project_note = project_note_from_json(project_note_json)
+        filename = ac_storage.get_project_note_filename(project_note)
+        full_filename = ac_storage.get_project_note_full_filename(filename)
+        self.assertGreater(len(full_filename), 0)
+        self.assertRegex(full_filename,
+                         r'^.*\/account-%08d\/project-notes\/project-note-%08d\.json$' % (
+                             account_id, project_note_id))
+
+    def test_1030_save_project_note(self):
+        account_id = 12341234
+        project_note_id = 5227
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        ac_storage.ensure_dirs()
+        project_note_json = self._generate_test_project_note(project_note_id)
+        project_note = project_note_from_json(project_note_json)
+        full_filename = ac_storage.save_project_note(project_note)
+        self.assertGreater(len(full_filename), 0)
+        self.assertTrue(os.path.isfile(full_filename))
+        # test catch the wrong class
+        project_note.class_ = "dummy"
+        with self.assertRaises(AssertionError) as cm:
+            ac_storage.save_project_note(project_note)
+        self.assertEqual(AC_ERROR_WRONG_CLASS, cm.exception.args[0])
