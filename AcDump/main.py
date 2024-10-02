@@ -62,6 +62,8 @@ def dump_all_projects_with_all_data(ac, ac_storage):
 def dump_all_project_notes(ac, ac_storage, project):
     for project_note in ac.get_project_notes(project):
         ac_storage.save_project_note(project_note)
+        for attachment in project_note.attachments:
+            dump_attachment(ac, ac_storage, attachment)
 
 
 def dump_all_task_lists_of_project(ac, ac_storage, project):

@@ -2,7 +2,7 @@ import dataclasses
 import json
 from dataclasses import dataclass
 
-from AcAttachment import AcAttachment
+from AcAttachment import AcAttachment, attachment_from_json
 from ActiveCollabAPI import AC_CLASS_PROJECT_NOTE, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_, AC_ERROR_WRONG_CLASS
 
 
@@ -40,7 +40,6 @@ class AcProjectNote:
         d = dataclasses.asdict(self)
         d[AC_PROPERTY_CLASS] = d[AC_PROPERTY_CLASS_]
         del d[AC_PROPERTY_CLASS_]
-        d["attachments"] = []
         return d
 
     def to_json(self) -> str:
@@ -51,4 +50,5 @@ def project_note_from_json(json_obj: dict) -> AcProjectNote:
     assert json_obj[AC_PROPERTY_CLASS] == AC_CLASS_PROJECT_NOTE, AC_ERROR_WRONG_CLASS
     json_obj[AC_PROPERTY_CLASS_] = json_obj[AC_PROPERTY_CLASS]
     del json_obj[AC_PROPERTY_CLASS]
+    json_obj["attachments"] = list(map(lambda a: attachment_from_json(a), json_obj["attachments"]))
     return AcProjectNote(**json_obj)
