@@ -9,13 +9,13 @@ from AcFileStorageProjectCategory import AcFileStorageProjectCategory
 from AcFileStorageProjectLabel import AcFileStorageProjectLabel
 from AcFileStorageProjectNote import AcFileStorageProjectNote
 from AcFileStorageTask import AcFileStorageTask
+from AcFileStorageTaskLabel import AcFileStorageTaskLabel
+from AcFileStorageTaskList import AcFileStorageTaskList
 from AcFileStorageUser import AcFileStorageUser
 from AcStorage import DEFAULT_MODE_DIRS
 from AcTaskHistory import AcTaskHistory
-from AcTaskList import AcTaskList
 from ActiveCollabAPI import AC_CLASS_COMMENT, AC_CLASS_ATTACHMENT_WAREHOUSE
 from ActiveCollabAPI import AC_CLASS_SUBTASK
-from ActiveCollabAPI import AC_CLASS_TASK_LIST
 from ActiveCollabAPI.AcAttachment import AcAttachment
 from ActiveCollabAPI.AcComment import AcComment
 from ActiveCollabAPI.AcSubtask import AcSubtask
@@ -34,7 +34,8 @@ class AcFileStorage:
         self.data_objects["project-labels"] = AcFileStorageProjectLabel(root_path, account_id)
         self.data_objects["project-notes"] = AcFileStorageProjectNote(root_path, account_id)
         self.data_objects["tasks"] = AcFileStorageTask(root_path, account_id)
-        self.data_objects["task-labels"] = AcFileStorageTask(root_path, account_id)
+        self.data_objects["task-labels"] = AcFileStorageTaskLabel(root_path, account_id)
+        self.data_objects["task-lists"] = AcFileStorageTaskList(root_path, account_id)
 
     def reset(self):
         if os.path.exists(self.root_path):
@@ -50,7 +51,6 @@ class AcFileStorage:
             os.makedirs(self.get_subtasks_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_comments_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_attachments_path(), DEFAULT_MODE_DIRS)
-            os.makedirs(self.get_task_lists_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_task_history_path(), DEFAULT_MODE_DIRS)
         for obj in self.data_objects.keys():
             self.data_objects[obj].ensure_dirs()
@@ -112,24 +112,6 @@ class AcFileStorage:
             json.dump(attachment.to_dict(), f, sort_keys=True, indent=2)
         shutil.move(tmp_download, attachment_full_filename + '.' + attachment.extension)
         return attachment_full_filename
-
-    def get_task_lists_path(self) -> str:
-        return os.path.join(self.get_account_path(), "task-lists")
-
-    @staticmethod
-    def get_task_list_filename(task_list: AcTaskList) -> str:
-        return "task-list-%08d.json" % task_list.id
-
-    def get_task_list_full_filename(self, task_list_filename: str) -> str:
-        return os.path.join(self.get_task_lists_path(), task_list_filename)
-
-    def save_task_list(self, task_list: AcTaskList) -> str:
-        assert task_list.class_ == AC_CLASS_TASK_LIST
-        task_list_filename = self.get_task_list_filename(task_list)
-        task_list_full_filename = self.get_task_list_full_filename(task_list_filename)
-        with open(task_list_full_filename, "w") as f:
-            json.dump(task_list.to_dict(), f, sort_keys=True, indent=2)
-        return task_list_full_filename
 
     def get_task_history_path(self) -> str:
         return os.path.join(self.get_account_path(), "task-history")
