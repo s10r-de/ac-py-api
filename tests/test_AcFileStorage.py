@@ -12,7 +12,6 @@ from AcTaskLabel import AcTaskLabel
 from AcTaskList import AcTaskList, task_list_from_json
 from ActiveCollabAPI.AcComment import AcComment, comment_from_json
 from ActiveCollabAPI.AcSubtask import AcSubtask, subtask_from_json
-from ActiveCollabAPI.AcTask import AcTask, task_from_json
 
 DATA_DIR = './data'
 
@@ -24,7 +23,7 @@ class TestAcFileStorage(TestCase):
         ac_storage = AcFileStorage(DATA_DIR, account_id)
         ac_storage.reset()
         self.assertFalse(os.path.isdir(ac_storage.get_account_path()))
-        self.assertFalse(os.path.isdir(ac_storage.get_tasks_path()))
+        self.assertFalse(os.path.isdir(ac_storage.data_objects["tasks"].get_path()))
         self.assertFalse(os.path.isdir(ac_storage.data_objects["projects"].get_path()))
         self.assertFalse(os.path.isdir(ac_storage.data_objects["users"].get_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_subtasks_path()))
@@ -44,7 +43,7 @@ class TestAcFileStorage(TestCase):
         ac_storage.reset()
         ac_storage.ensure_dirs()
         self.assertTrue(os.path.isdir(ac_storage.get_account_path()))
-        self.assertTrue(os.path.isdir(ac_storage.get_tasks_path()))
+        self.assertTrue(os.path.isdir(ac_storage.data_objects["tasks"].get_path()))
         self.assertTrue(os.path.isdir(ac_storage.data_objects["projects"].get_path()))
         self.assertTrue(os.path.isdir(ac_storage.data_objects["users"].get_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_subtasks_path()))
@@ -62,46 +61,6 @@ class TestAcFileStorage(TestCase):
         account_id = 12341234
         ac_storage = AcFileStorage(DATA_DIR, account_id)
         self.assertIsNotNone(re.search(str(account_id), ac_storage.get_account_path()))
-
-    # tasks
-    @staticmethod
-    def _generate_test_task(task_id: int) -> AcTask:
-        with open('../example-data/example-task-17614.json', 'r') as fh:
-            task = task_from_json(json.load(fh))
-        task.id = task_id
-        return task
-
-    def test_100_get_tasks_path(self):
-        account_id = 12341234
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        self.assertIsNotNone(re.search(str(account_id), ac_storage.get_tasks_path()))
-
-    def test_110_get_task_filename(self):
-        account_id = 12341234
-        task_id = 3456
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        test_task = self._generate_test_task(task_id)
-        filename = ac_storage.get_task_filename(test_task)
-        self.assertGreater(len(filename), 0)
-
-    def test_120_get_task_full_filename(self):
-        account_id = 12341234
-        task_id = 3456
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        test_task = self._generate_test_task(task_id)
-        filename = ac_storage.get_task_filename(test_task)
-        full_filename = ac_storage.get_task_full_filename(filename)
-        self.assertGreater(len(full_filename), 0)
-
-    def test_130_save_task(self):
-        account_id = 12341234
-        task_id = 3456
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        ac_storage.reset()
-        ac_storage.ensure_dirs()
-        test_task = self._generate_test_task(task_id)
-        full_filename = ac_storage.save_task(test_task)
-        self.assertTrue(os.path.isfile(full_filename))
 
     # task history
 

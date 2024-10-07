@@ -8,21 +8,18 @@ from AcFileStorageProject import AcFileStorageProject
 from AcFileStorageProjectCategory import AcFileStorageProjectCategory
 from AcFileStorageProjectLabel import AcFileStorageProjectLabel
 from AcFileStorageProjectNote import AcFileStorageProjectNote
+from AcFileStorageTask import AcFileStorageTask
 from AcFileStorageUser import AcFileStorageUser
-from AcProjectLabel import AcProjectLabel
-from AcProjectNote import AcProjectNote
 from AcStorage import DEFAULT_MODE_DIRS
 from AcTaskHistory import AcTaskHistory
 from AcTaskLabel import AcTaskLabel
 from AcTaskList import AcTaskList
-from ActiveCollabAPI import AC_CLASS_COMMENT, AC_CLASS_ATTACHMENT_WAREHOUSE, \
-    AC_CLASS_PROJECT_NOTE, AC_ERROR_WRONG_CLASS
-from ActiveCollabAPI import AC_CLASS_SUBTASK, AC_CLASS_PROJECT_LABEL
-from ActiveCollabAPI import AC_CLASS_TASK, AC_CLASS_TASK_LABEL, AC_CLASS_TASK_LIST
+from ActiveCollabAPI import AC_CLASS_COMMENT, AC_CLASS_ATTACHMENT_WAREHOUSE
+from ActiveCollabAPI import AC_CLASS_SUBTASK
+from ActiveCollabAPI import AC_CLASS_TASK_LABEL, AC_CLASS_TASK_LIST
 from ActiveCollabAPI.AcAttachment import AcAttachment
 from ActiveCollabAPI.AcComment import AcComment
 from ActiveCollabAPI.AcSubtask import AcSubtask
-from ActiveCollabAPI.AcTask import AcTask
 
 
 class AcFileStorage:
@@ -37,6 +34,7 @@ class AcFileStorage:
         self.data_objects["project-categories"] = AcFileStorageProjectCategory(root_path, account_id)
         self.data_objects["project-labels"] = AcFileStorageProjectLabel(root_path, account_id)
         self.data_objects["project-notes"] = AcFileStorageProjectNote(root_path, account_id)
+        self.data_objects["tasks"] = AcFileStorageTask(root_path, account_id)
 
     def reset(self):
         if os.path.exists(self.root_path):
@@ -49,7 +47,6 @@ class AcFileStorage:
     def ensure_dirs(self):
         if not os.path.exists(self.get_account_path()):
             os.makedirs(self.get_account_path(), DEFAULT_MODE_DIRS)
-            os.makedirs(self.get_tasks_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_subtasks_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_comments_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_attachments_path(), DEFAULT_MODE_DIRS)
@@ -61,26 +58,6 @@ class AcFileStorage:
 
     def get_account_path(self) -> str:
         return os.path.join(self.root_path, "account-%08d" % self.account_id)
-
-    def get_tasks_path(self) -> str:
-        return os.path.join(self.get_account_path(), "tasks")
-
-    @staticmethod
-    def get_task_filename(task: AcTask) -> str:
-        return "task-%08d.json" % task.id
-
-    # TODO: save_account
-
-    def save_task(self, task: AcTask) -> str:
-        assert task.class_ == AC_CLASS_TASK
-        task_filename = self.get_task_filename(task)
-        task_full_filename = self.get_task_full_filename(task_filename)
-        with open(task_full_filename, "w") as f:
-            json.dump(task.to_dict(), f, sort_keys=True, indent=2)
-        return task_full_filename
-
-    def get_task_full_filename(self, task_filename: str) -> str:
-        return os.path.join(self.get_tasks_path(), task_filename)
 
     def get_subtasks_path(self) -> str:
         return os.path.join(self.get_account_path(), "subtasks")
