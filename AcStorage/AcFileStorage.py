@@ -53,11 +53,9 @@ class AcFileStorage:
             os.makedirs(self.get_subtasks_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_comments_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_attachments_path(), DEFAULT_MODE_DIRS)
-            os.makedirs(self.get_project_label_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_task_label_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_task_lists_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_task_history_path(), DEFAULT_MODE_DIRS)
-            os.makedirs(self.get_project_notes_path(), DEFAULT_MODE_DIRS)
         for obj in self.data_objects.keys():
             self.data_objects[obj].ensure_dirs()
 
@@ -139,24 +137,6 @@ class AcFileStorage:
         shutil.move(tmp_download, attachment_full_filename + '.' + attachment.extension)
         return attachment_full_filename
 
-    def get_project_label_path(self) -> str:
-        return os.path.join(self.get_account_path(), "project-labels")
-
-    @staticmethod
-    def get_project_label_filename(project_label: AcProjectLabel) -> str:
-        return "project-label-%08d.json" % project_label.id
-
-    def get_project_label_full_filename(self, project_label_filename: str) -> str:
-        return os.path.join(self.get_project_label_path(), project_label_filename)
-
-    def save_project_label(self, project_label: AcProjectLabel) -> str:
-        assert project_label.class_ == AC_CLASS_PROJECT_LABEL
-        project_label_filename = self.get_project_label_filename(project_label)
-        project_label_full_filename = self.get_project_label_full_filename(project_label_filename)
-        with open(project_label_full_filename, "w") as f:
-            json.dump(project_label.to_dict(), f, sort_keys=True, indent=2)
-        return project_label_full_filename
-
     def get_task_label_path(self) -> str:
         return os.path.join(self.get_account_path(), "task-labels")
 
@@ -210,20 +190,3 @@ class AcFileStorage:
             json.dump(task_history.to_dict(), f, sort_keys=True, indent=2)
         return task_history_full_filename
 
-    def get_project_notes_path(self) -> str:
-        return os.path.join(self.get_account_path(), "project-notes")
-
-    @staticmethod
-    def get_project_note_filename(project_note: AcProjectNote) -> str:
-        return "project-note-%08d.json" % project_note.id
-
-    def get_project_note_full_filename(self, project_note_filename: str) -> str:
-        return os.path.join(self.get_project_notes_path(), project_note_filename)
-
-    def save_project_note(self, project_note: AcProjectNote) -> str:
-        assert project_note.class_ == AC_CLASS_PROJECT_NOTE, AC_ERROR_WRONG_CLASS
-        project_note_filename = self.get_project_note_filename(project_note)
-        project_note_full_filename = self.get_project_note_full_filename(project_note_filename)
-        with open(project_note_full_filename, "w") as f:
-            json.dump(project_note.to_dict(), f, sort_keys=True, indent=2)
-        return project_note_full_filename
