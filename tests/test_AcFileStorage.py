@@ -15,7 +15,6 @@ from AcTaskLabel import AcTaskLabel
 from AcTaskList import AcTaskList, task_list_from_json
 from ActiveCollabAPI import AC_ERROR_WRONG_CLASS
 from ActiveCollabAPI.AcComment import AcComment, comment_from_json
-from ActiveCollabAPI.AcProject import AcProject, project_from_json
 from ActiveCollabAPI.AcSubtask import AcSubtask, subtask_from_json
 from ActiveCollabAPI.AcTask import AcTask, task_from_json
 
@@ -30,9 +29,9 @@ class TestAcFileStorage(TestCase):
         ac_storage.reset()
         self.assertFalse(os.path.isdir(ac_storage.get_account_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_tasks_path()))
-        self.assertFalse(os.path.isdir(ac_storage.get_projects_path()))
-        self.assertFalse(os.path.isdir(ac_storage.data_objects["user"].get_path()))
-        self.assertFalse(os.path.isdir(ac_storage.get_subtasks_path()))
+        self.assertFalse(os.path.isdir(ac_storage.data_objects["projects"].get_path()))
+        self.assertFalse(os.path.isdir(ac_storage.data_objects["users"].get_path()))
+        self.assertFalse(os.path.isdir(ac_storage.get_subtasksk_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_comments_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_attachments_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_project_label_path()))
@@ -50,8 +49,8 @@ class TestAcFileStorage(TestCase):
         ac_storage.ensure_dirs()
         self.assertTrue(os.path.isdir(ac_storage.get_account_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_tasks_path()))
-        self.assertTrue(os.path.isdir(ac_storage.get_projects_path()))
-        self.assertTrue(os.path.isdir(ac_storage.data_objects["user"].get_path()))
+        self.assertTrue(os.path.isdir(ac_storage.data_objects["projects"].get_path()))
+        self.assertTrue(os.path.isdir(ac_storage.data_objects["users"].get_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_subtasks_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_comments_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_attachments_path()))
@@ -174,47 +173,6 @@ class TestAcFileStorage(TestCase):
         test_task_history = self._generate_test_task_history(timestamp, task_id)
         full_filename = ac_storage.save_task_history(test_task_history)
         self.assertGreater(len(full_filename), 0)
-        self.assertTrue(os.path.isfile(full_filename))
-
-    # projects
-
-    @staticmethod
-    def _generate_test_project(project_id: int) -> AcProject:
-        with open('../example-data/example-project-611.json', 'r') as fh:
-            project = project_from_json(json.load(fh))
-        project.id = project_id
-        return project
-
-    def test_200_get_projects_path(self):
-        account_id = 12341234
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        self.assertIsNotNone(re.search(str(account_id), ac_storage.get_projects_path()))
-
-    def test_210_get_project_filename(self):
-        account_id = 12341234
-        project_id = 4321
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        test_project = self._generate_test_project(project_id)
-        filename = ac_storage.get_project_filename(test_project)
-        self.assertGreater(len(filename), 0)
-
-    def test_220_get_project_full_filename(self):
-        account_id = 12341234
-        project_id = 4321
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        test_project = self._generate_test_project(project_id)
-        filename = ac_storage.get_project_filename(test_project)
-        full_filename = ac_storage.get_project_full_filename(filename)
-        self.assertGreater(len(full_filename), 0)
-
-    def test_230_save_project(self):
-        account_id = 12341234
-        project_id = 4321
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        ac_storage.reset()
-        ac_storage.ensure_dirs()
-        test_project = self._generate_test_project(project_id)
-        full_filename = ac_storage.save_project(test_project)
         self.assertTrue(os.path.isfile(full_filename))
 
     # project categories
