@@ -9,11 +9,11 @@ from AcFileStorageProjectCategory import AcFileStorageProjectCategory
 from AcFileStorageProjectLabel import AcFileStorageProjectLabel
 from AcFileStorageProjectNote import AcFileStorageProjectNote
 from AcFileStorageTask import AcFileStorageTask
+from AcFileStorageTaskHistory import AcFileStorageTaskHistory
 from AcFileStorageTaskLabel import AcFileStorageTaskLabel
 from AcFileStorageTaskList import AcFileStorageTaskList
 from AcFileStorageUser import AcFileStorageUser
 from AcStorage import DEFAULT_MODE_DIRS
-from AcTaskHistory import AcTaskHistory
 from ActiveCollabAPI import AC_CLASS_COMMENT, AC_CLASS_ATTACHMENT_WAREHOUSE
 from ActiveCollabAPI import AC_CLASS_SUBTASK
 from ActiveCollabAPI.AcAttachment import AcAttachment
@@ -36,6 +36,7 @@ class AcFileStorage:
         self.data_objects["tasks"] = AcFileStorageTask(root_path, account_id)
         self.data_objects["task-labels"] = AcFileStorageTaskLabel(root_path, account_id)
         self.data_objects["task-lists"] = AcFileStorageTaskList(root_path, account_id)
+        self.data_objects["task-history"] = AcFileStorageTaskHistory(root_path, account_id)
 
     def reset(self):
         if os.path.exists(self.root_path):
@@ -51,7 +52,6 @@ class AcFileStorage:
             os.makedirs(self.get_subtasks_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_comments_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_attachments_path(), DEFAULT_MODE_DIRS)
-            os.makedirs(self.get_task_history_path(), DEFAULT_MODE_DIRS)
         for obj in self.data_objects.keys():
             self.data_objects[obj].ensure_dirs()
 
@@ -112,21 +112,3 @@ class AcFileStorage:
             json.dump(attachment.to_dict(), f, sort_keys=True, indent=2)
         shutil.move(tmp_download, attachment_full_filename + '.' + attachment.extension)
         return attachment_full_filename
-
-    def get_task_history_path(self) -> str:
-        return os.path.join(self.get_account_path(), "task-history")
-
-    @staticmethod
-    def get_task_history_filename(task_history: AcTaskHistory) -> str:
-        return "task-history-%08d-%010d.json" % (task_history.task_id, task_history.timestamp)
-
-    def get_task_history_full_filename(self, task_history_filename: str) -> str:
-        return os.path.join(self.get_task_history_path(), task_history_filename)
-
-    def save_task_history(self, task_history: AcTaskHistory) -> str:
-        task_history_filename = self.get_task_history_filename(task_history)
-        task_history_full_filename = self.get_task_history_full_filename(task_history_filename)
-        with open(task_history_full_filename, "w") as f:
-            json.dump(task_history.to_dict(), f, sort_keys=True, indent=2)
-        return task_history_full_filename
-

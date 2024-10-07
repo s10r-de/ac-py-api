@@ -1,13 +1,11 @@
 import json
 import os.path
 import re
-import time
 from tempfile import mkstemp
 from unittest import TestCase
 
 from AcAttachment import AcAttachment, attachment_from_json
 from AcStorage.AcFileStorage import AcFileStorage
-from AcTaskHistory import AcTaskHistory
 from ActiveCollabAPI.AcComment import AcComment, comment_from_json
 from ActiveCollabAPI.AcSubtask import AcSubtask, subtask_from_json
 
@@ -31,7 +29,7 @@ class TestAcFileStorage(TestCase):
         self.assertFalse(os.path.isdir(ac_storage.data_objects["task-labels"].get_path()))
         self.assertFalse(os.path.isdir(ac_storage.data_objects["company"].get_path()))
         self.assertFalse(os.path.isdir(ac_storage.data_objects["task-lists"].get_path()))
-        self.assertFalse(os.path.isdir(ac_storage.get_task_history_path()))
+        self.assertFalse(os.path.isdir(ac_storage.data_objects["task-history"].get_path()))
         self.assertFalse(os.path.isdir(ac_storage.data_objects["project-categories"].get_path()))
         self.assertFalse(os.path.isdir(ac_storage.data_objects["project-notes"].get_path()))
 
@@ -51,7 +49,7 @@ class TestAcFileStorage(TestCase):
         self.assertTrue(os.path.isdir(ac_storage.data_objects["task-labels"].get_path()))
         self.assertTrue(os.path.isdir(ac_storage.data_objects["company"].get_path()))
         self.assertTrue(os.path.isdir(ac_storage.data_objects["task-lists"].get_path()))
-        self.assertTrue(os.path.isdir(ac_storage.get_task_history_path()))
+        self.assertTrue(os.path.isdir(ac_storage.data_objects["task-history"].get_path()))
         self.assertTrue(os.path.isdir(ac_storage.data_objects["project-categories"].get_path()))
         self.assertTrue(os.path.isdir(ac_storage.data_objects["project-notes"].get_path()))
 
@@ -59,74 +57,6 @@ class TestAcFileStorage(TestCase):
         account_id = 12341234
         ac_storage = AcFileStorage(DATA_DIR, account_id)
         self.assertIsNotNone(re.search(str(account_id), ac_storage.get_account_path()))
-
-    # task history
-
-    def test_140_get_task_history_path(self):
-        account_id = 12341234
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        ac_storage.reset()
-        ac_storage.ensure_dirs()
-        path = ac_storage.get_task_history_path()
-        self.assertRegex(path, r'^.*\/account-' + str(account_id + 0) + r'\/task-history')
-        self.assertTrue(os.path.isdir(path))
-
-    @staticmethod
-    def _generate_test_task_history(timestamp: int, task_id: int = None) -> AcTaskHistory:
-        return AcTaskHistory(
-            timestamp=timestamp,
-            created_by_id=12,
-            created_by_name='Tester',
-            created_by_email='ac-api-test@example.com',
-            task_id=task_id,
-            modifications=[{
-                "due_on": [
-                    "2024-08-13",
-                    "2024-08-20",
-                    "Due date changed from <b>13. Aug 2024</b> to <b>20. Aug 2024</b>"
-                ],
-                "start_on":
-                    [
-                        "2024-08-13",
-                        "2024-08-20",
-                        "Start date changed from <b>13. Aug 2024</b> to <b>20. Aug 2024</b>"
-                    ]
-            }]
-        )
-
-    def test_150_get_task_history_filename(self):
-        account_id = 12341234
-        task_id = 56712
-        timestamp = int(time.time())
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        test_task_history = self._generate_test_task_history(timestamp, task_id)
-        filename = ac_storage.get_task_history_filename(test_task_history)
-        self.assertGreater(len(filename), 0)
-        self.assertRegex(filename, r'task-history-%08d-%010d\.json$' % (task_id, timestamp))
-
-    def test_160_get_task_history_full_filename(self):
-        account_id = 12341234
-        task_id = 56712
-        timestamp = int(time.time())
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        test_task_history = self._generate_test_task_history(timestamp, task_id)
-        filename = ac_storage.get_task_history_filename(test_task_history)
-        full_filename = ac_storage.get_task_history_full_filename(filename)
-        self.assertGreater(len(full_filename), 0)
-        self.assertRegex(full_filename,
-                         r'^.*\/account-%08d\/task-history\/task-history-%08d-%010d\.json$' %
-                         (account_id, task_id, timestamp))
-
-    def test_170_save_task_history(self):
-        account_id = 12341234
-        timestamp = int(time.time())
-        task_id = 56712
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        ac_storage.ensure_dirs()
-        test_task_history = self._generate_test_task_history(timestamp, task_id)
-        full_filename = ac_storage.save_task_history(test_task_history)
-        self.assertGreater(len(full_filename), 0)
-        self.assertTrue(os.path.isfile(full_filename))
 
     # subtasks
     @staticmethod
