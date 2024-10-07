@@ -20,3 +20,5 @@ erDiagram
     Task ||--o{ Comment: "parent_id+parent_type"
     Comment |o--o{ Attachment: "parent_id+parent_type"
 ```
+
+You need a Markdown Viewer with "[Mermaid](https://mermaid.js.org/)" Plugin to see the diagram.
