@@ -7,7 +7,6 @@ from unittest import TestCase
 from AcAttachment import AcAttachment, attachment_from_json
 from AcStorage.AcFileStorage import AcFileStorage
 from ActiveCollabAPI.AcComment import AcComment, comment_from_json
-from ActiveCollabAPI.AcSubtask import AcSubtask, subtask_from_json
 
 DATA_DIR = './data'
 
@@ -22,7 +21,7 @@ class TestAcFileStorage(TestCase):
         self.assertFalse(os.path.isdir(ac_storage.data_objects["tasks"].get_path()))
         self.assertFalse(os.path.isdir(ac_storage.data_objects["projects"].get_path()))
         self.assertFalse(os.path.isdir(ac_storage.data_objects["users"].get_path()))
-        self.assertFalse(os.path.isdir(ac_storage.get_subtasks_path()))
+        self.assertFalse(os.path.isdir(ac_storage.data_objects["subtasks"].get_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_comments_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_attachments_path()))
         self.assertFalse(os.path.isdir(ac_storage.data_objects["project-labels"].get_path()))
@@ -42,7 +41,7 @@ class TestAcFileStorage(TestCase):
         self.assertTrue(os.path.isdir(ac_storage.data_objects["tasks"].get_path()))
         self.assertTrue(os.path.isdir(ac_storage.data_objects["projects"].get_path()))
         self.assertTrue(os.path.isdir(ac_storage.data_objects["users"].get_path()))
-        self.assertTrue(os.path.isdir(ac_storage.get_subtasks_path()))
+        self.assertTrue(os.path.isdir(ac_storage.data_objects["subtasks"].get_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_comments_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_attachments_path()))
         self.assertTrue(os.path.isdir(ac_storage.data_objects["project-labels"].get_path()))
@@ -57,50 +56,6 @@ class TestAcFileStorage(TestCase):
         account_id = 12341234
         ac_storage = AcFileStorage(DATA_DIR, account_id)
         self.assertIsNotNone(re.search(str(account_id), ac_storage.get_account_path()))
-
-    # subtasks
-    @staticmethod
-    def _generate_test_subtask(task_id: int, subtask_id: int) -> AcSubtask:
-        with open('../example-data/example-subtask-00041071.json', 'r') as fh:
-            subtask = subtask_from_json(json.load(fh))
-        subtask.task_id = task_id
-        subtask.id = subtask_id
-        return subtask
-
-    def test_400_get_subtasks_path(self):
-        account_id = 12341234
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        self.assertIsNotNone(re.search(str(account_id), ac_storage.get_subtasks_path()))
-
-    def test_410_get_subtask_filename(self):
-        account_id = 12341234
-        task_id = 3456
-        subtask_id = 987
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        subtest_task = self._generate_test_subtask(task_id, subtask_id)
-        filename = ac_storage.get_subtask_filename(subtest_task)
-        self.assertGreater(len(filename), 0)
-
-    def test_420_get_subtask_full_filename(self):
-        account_id = 12341234
-        task_id = 3456
-        subtask_id = 987
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        subtest_task = self._generate_test_subtask(task_id, subtask_id)
-        filename = ac_storage.get_subtask_filename(subtest_task)
-        full_filename = ac_storage.get_subtask_full_filename(filename)
-        self.assertGreater(len(full_filename), 0)
-
-    def test_430_save_subtask(self):
-        account_id = 12341234
-        task_id = 3456
-        subtask_id = 987
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        ac_storage.reset()
-        ac_storage.ensure_dirs()
-        subtest_task = self._generate_test_subtask(task_id, subtask_id)
-        full_filename = ac_storage.save_subtask(subtest_task)
-        self.assertTrue(os.path.isfile(full_filename))
 
     # comments
     @staticmethod
