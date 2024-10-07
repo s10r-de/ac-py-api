@@ -7,6 +7,7 @@ from AcFileStorageCompany import AcFileStorageCompany
 from AcFileStorageProject import AcFileStorageProject
 from AcFileStorageProjectCategory import AcFileStorageProjectCategory
 from AcFileStorageProjectLabel import AcFileStorageProjectLabel
+from AcFileStorageProjectNote import AcFileStorageProjectNote
 from AcFileStorageUser import AcFileStorageUser
 from AcProjectLabel import AcProjectLabel
 from AcProjectNote import AcProjectNote
@@ -35,6 +36,7 @@ class AcFileStorage:
         self.data_objects["projects"] = AcFileStorageProject(root_path, account_id)
         self.data_objects["project-categories"] = AcFileStorageProjectCategory(root_path, account_id)
         self.data_objects["project-labels"] = AcFileStorageProjectLabel(root_path, account_id)
+        self.data_objects["project-notes"] = AcFileStorageProjectNote(root_path, account_id)
 
     def reset(self):
         if os.path.exists(self.root_path):
