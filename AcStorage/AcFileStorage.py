@@ -4,6 +4,7 @@ import shutil
 import time
 
 from AcFileStorageCompany import AcFileStorageCompany
+from AcFileStorageUser import AcFileStorageUser
 from AcProjectCategory import AcProjectCategory
 from AcProjectLabel import AcProjectLabel
 from AcProjectNote import AcProjectNote
@@ -13,14 +14,13 @@ from AcTaskLabel import AcTaskLabel
 from AcTaskList import AcTaskList
 from ActiveCollabAPI import AC_CLASS_PROJECT, AC_CLASS_COMMENT, AC_CLASS_ATTACHMENT_WAREHOUSE, \
     AC_CLASS_PROJECT_NOTE, AC_ERROR_WRONG_CLASS
-from ActiveCollabAPI import AC_CLASS_TASK, AC_CLASS_TASK_LABEL, AC_CLASS_TASK_LIST, AC_CLASS_USER_MEMBER
-from ActiveCollabAPI import AC_CLASS_USER_OWNER, AC_CLASS_SUBTASK, AC_CLASS_PROJECT_LABEL, AC_CLASS_PROJECT_CATEGORY
+from ActiveCollabAPI import AC_CLASS_SUBTASK, AC_CLASS_PROJECT_LABEL, AC_CLASS_PROJECT_CATEGORY
+from ActiveCollabAPI import AC_CLASS_TASK, AC_CLASS_TASK_LABEL, AC_CLASS_TASK_LIST
 from ActiveCollabAPI.AcAttachment import AcAttachment
 from ActiveCollabAPI.AcComment import AcComment
 from ActiveCollabAPI.AcProject import AcProject
 from ActiveCollabAPI.AcSubtask import AcSubtask
 from ActiveCollabAPI.AcTask import AcTask
-from ActiveCollabAPI.AcUser import AcUser
 
 
 class AcFileStorage:
@@ -29,9 +29,11 @@ class AcFileStorage:
         self.root_path = root_path
         self.account_id = account_id
         self.company = AcFileStorageCompany(root_path, account_id)
+        self.user = AcFileStorageUser(root_path, account_id)
 
     def reset(self):
         if os.path.exists(self.root_path):
+            self.user.reset()
             self.company.reset()
             tmp_path = '%s_%d' % (self.root_path, time.time())
             os.rename(self.root_path, tmp_path)
@@ -42,7 +44,6 @@ class AcFileStorage:
             os.makedirs(self.get_account_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_tasks_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_projects_path(), DEFAULT_MODE_DIRS)
-            os.makedirs(self.get_users_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_subtasks_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_comments_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_attachments_path(), DEFAULT_MODE_DIRS)
@@ -53,6 +54,7 @@ class AcFileStorage:
             os.makedirs(self.get_project_category_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_project_notes_path(), DEFAULT_MODE_DIRS)
         self.company.ensure_dirs()
+        self.user.ensure_dirs()
 
     def get_account_path(self) -> str:
         return os.path.join(self.root_path, "account-%08d" % self.account_id)
@@ -94,24 +96,6 @@ class AcFileStorage:
         with open(project_full_filename, "w") as f:
             json.dump(project.to_dict(), f, sort_keys=True, indent=2)
         return project_full_filename
-
-    def get_users_path(self) -> str:
-        return os.path.join(self.get_account_path(), "users")
-
-    @staticmethod
-    def get_user_filename(user: AcUser) -> str:
-        return "user-%08d.json" % user.id
-
-    def get_user_full_filename(self, user_filename: str) -> str:
-        return os.path.join(self.get_users_path(), user_filename)
-
-    def save_user(self, user: AcUser) -> str:
-        assert user.class_ == AC_CLASS_USER_MEMBER or user.class_ == AC_CLASS_USER_OWNER
-        user_filename = self.get_user_filename(user)
-        user_full_filename = self.get_user_full_filename(user_filename)
-        with open(user_full_filename, "w") as f:
-            json.dump(user.to_dict(), f, sort_keys=True, indent=2)
-        return user_full_filename
 
     def get_subtasks_path(self) -> str:
         return os.path.join(self.get_account_path(), "subtasks")

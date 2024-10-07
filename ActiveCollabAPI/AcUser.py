@@ -2,11 +2,12 @@ import dataclasses
 import json
 from dataclasses import dataclass
 
+from AcDataObject import AcDataObject
 from ActiveCollabAPI import AC_CLASS_USER_MEMBER, AC_CLASS_USER_OWNER, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 
 
 @dataclass
-class AcUser:
+class AcUser(AcDataObject):
     additional_email_addresses: []
     avatar_url: str
     avatar_version: str

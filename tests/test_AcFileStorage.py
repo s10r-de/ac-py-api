@@ -18,7 +18,6 @@ from ActiveCollabAPI.AcComment import AcComment, comment_from_json
 from ActiveCollabAPI.AcProject import AcProject, project_from_json
 from ActiveCollabAPI.AcSubtask import AcSubtask, subtask_from_json
 from ActiveCollabAPI.AcTask import AcTask, task_from_json
-from ActiveCollabAPI.AcUser import user_from_json, AcUser
 
 DATA_DIR = './data'
 
@@ -32,7 +31,7 @@ class TestAcFileStorage(TestCase):
         self.assertFalse(os.path.isdir(ac_storage.get_account_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_tasks_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_projects_path()))
-        self.assertFalse(os.path.isdir(ac_storage.get_users_path()))
+        self.assertFalse(os.path.isdir(ac_storage.user.get_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_subtasks_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_comments_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_attachments_path()))
@@ -52,7 +51,7 @@ class TestAcFileStorage(TestCase):
         self.assertTrue(os.path.isdir(ac_storage.get_account_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_tasks_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_projects_path()))
-        self.assertTrue(os.path.isdir(ac_storage.get_users_path()))
+        self.assertTrue(os.path.isdir(ac_storage.user.get_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_subtasks_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_comments_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_attachments_path()))
@@ -275,47 +274,6 @@ class TestAcFileStorage(TestCase):
         test_project_category = self._generate_test_project_category(category_id)
         full_filename = ac_storage.save_project_category(test_project_category)
         self.assertGreater(len(full_filename), 0)
-        self.assertTrue(os.path.isfile(full_filename))
-
-    # users
-
-    @staticmethod
-    def _generate_test_user(user_id: int) -> AcUser:
-        with open('../example-data/example-user-00000240.json', 'r') as fh:
-            user = user_from_json(json.load(fh))
-        user.id = user_id
-        return user
-
-    def test_300_get_users_path(self):
-        account_id = 12341234
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        self.assertIsNotNone(re.search(str(account_id), ac_storage.get_users_path()))
-
-    def test_310_get_user_filename(self):
-        account_id = 12341234
-        user_id = 4711
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        test_user = self._generate_test_user(user_id)
-        filename = ac_storage.get_user_filename(test_user)
-        self.assertGreater(len(filename), 0)
-
-    def test_320_get_user_full_filename(self):
-        account_id = 12341234
-        user_id = 4712
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        test_user = self._generate_test_user(user_id)
-        filename = ac_storage.get_user_filename(test_user)
-        full_filename = ac_storage.get_user_full_filename(filename)
-        self.assertGreater(len(full_filename), 0)
-
-    def test_330_save_user(self):
-        account_id = 12341234
-        user_id = 4323
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        ac_storage.reset()
-        ac_storage.ensure_dirs()
-        test_user = self._generate_test_user(user_id)
-        full_filename = ac_storage.save_user(test_user)
         self.assertTrue(os.path.isfile(full_filename))
 
     # subtasks
