@@ -3,6 +3,7 @@ from AcCompany import AcCompany, company_from_json
 from AcFileAccessToken import AcFileAccessToken, fileaccesstoken_from_json
 from AcProjectCategory import AcProjectCategory, project_category_from_json
 from AcProjectLabel import AcProjectLabel, project_label_from_json
+from AcProjectNote import AcProjectNote, project_note_from_json
 from AcTaskHistory import AcTaskHistory, task_history_from_json
 from AcTaskLabel import task_label_from_json, AcTaskLabel
 from AcTaskList import AcTaskList, task_list_from_json
@@ -218,3 +219,12 @@ class ActiveCollab:
         res_data = res.json()
         project_categories = list(map(lambda l: project_category_from_json(l), res_data))
         return project_categories
+
+    def get_project_notes(self, project: AcProject) -> list[AcProjectNote]:
+        client = AcClient(self.session.cur_account, self.session.token)
+        res = client.get_project_notes(project.id)
+        if res.status_code != 200:
+            raise Exception("Error %d" % res.status_code)
+        res_data = res.json()
+        project_notes = list(map(lambda l: project_note_from_json(l), res_data))
+        return project_notes

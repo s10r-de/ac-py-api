@@ -5,10 +5,12 @@ import shutil
 from AcCompany import AcCompany
 from AcProjectCategory import AcProjectCategory
 from AcProjectLabel import AcProjectLabel
+from AcProjectNote import AcProjectNote
 from AcTaskHistory import AcTaskHistory
 from AcTaskLabel import AcTaskLabel
 from AcTaskList import AcTaskList
-from ActiveCollabAPI import AC_CLASS_PROJECT, AC_CLASS_COMPANY, AC_CLASS_COMMENT, AC_CLASS_ATTACHMENT_WAREHOUSE
+from ActiveCollabAPI import AC_CLASS_PROJECT, AC_CLASS_COMPANY, AC_CLASS_COMMENT, AC_CLASS_ATTACHMENT_WAREHOUSE, \
+    AC_CLASS_PROJECT_NOTE, AC_ERROR_WRONG_CLASS
 from ActiveCollabAPI import AC_CLASS_TASK, AC_CLASS_TASK_LABEL, AC_CLASS_TASK_LIST, AC_CLASS_USER_MEMBER
 from ActiveCollabAPI import AC_CLASS_USER_OWNER, AC_CLASS_SUBTASK, AC_CLASS_PROJECT_LABEL, AC_CLASS_PROJECT_CATEGORY
 from ActiveCollabAPI.AcAttachment import AcAttachment
@@ -46,6 +48,7 @@ class AcFileStorage(object):
             os.makedirs(self.get_task_lists_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_task_history_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_project_category_path(), DEFAULT_MODE_DIRS)
+            os.makedirs(self.get_project_notes_path(), DEFAULT_MODE_DIRS)
 
     def get_account_path(self) -> str:
         return os.path.join(self.root_path, "account-%08d" % self.account_id)
@@ -267,3 +270,21 @@ class AcFileStorage(object):
         with open(project_category_full_filename, "w") as f:
             json.dump(project_category.to_dict(), f, sort_keys=True, indent=2)
         return project_category_full_filename
+
+    def get_project_notes_path(self) -> str:
+        return os.path.join(self.get_account_path(), "project-notes")
+
+    @staticmethod
+    def get_project_note_filename(project_note: AcProjectNote) -> str:
+        return "project-note-%08d.json" % project_note.id
+
+    def get_project_note_full_filename(self, project_note_filename: str) -> str:
+        return os.path.join(self.get_project_notes_path(), project_note_filename)
+
+    def save_project_note(self, project_note: AcProjectNote) -> str:
+        assert project_note.class_ == AC_CLASS_PROJECT_NOTE, AC_ERROR_WRONG_CLASS
+        project_note_filename = self.get_project_note_filename(project_note)
+        project_note_full_filename = self.get_project_note_full_filename(project_note_filename)
+        with open(project_note_full_filename, "w") as f:
+            json.dump(project_note.to_dict(), f, sort_keys=True, indent=2)
+        return project_note_full_filename
