@@ -6,7 +6,6 @@ from tempfile import mkstemp
 from unittest import TestCase
 
 from AcAttachment import AcAttachment, attachment_from_json
-from AcProjectLabel import AcProjectLabel
 from AcProjectNote import project_note_from_json
 from AcStorage.AcFileStorage import AcFileStorage
 from AcTaskHistory import AcTaskHistory
@@ -33,7 +32,7 @@ class TestAcFileStorage(TestCase):
         self.assertFalse(os.path.isdir(ac_storage.get_subtasks_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_comments_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_attachments_path()))
-        self.assertFalse(os.path.isdir(ac_storage.get_project_label_path()))
+        self.assertFalse(os.path.isdir(ac_storage.data_objects["project-labels"].get_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_task_label_path()))
         self.assertFalse(os.path.isdir(ac_storage.data_objects["company"].get_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_task_lists_path()))
@@ -53,7 +52,7 @@ class TestAcFileStorage(TestCase):
         self.assertTrue(os.path.isdir(ac_storage.get_subtasks_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_comments_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_attachments_path()))
-        self.assertTrue(os.path.isdir(ac_storage.get_project_label_path()))
+        self.assertTrue(os.path.isdir(ac_storage.data_objects["project-labels"].get_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_task_label_path()))
         self.assertTrue(os.path.isdir(ac_storage.data_objects["company"].get_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_task_lists_path()))
@@ -313,63 +312,6 @@ class TestAcFileStorage(TestCase):
         test_attachment = self._generate_test_attachment(attachment_id)
         tmp_filename = mkstemp()[1]
         full_filename = ac_storage.save_attachment(test_attachment, tmp_filename)
-        self.assertTrue(os.path.isfile(full_filename))
-
-    # project labels
-
-    def test_700_get_project_labels_path(self):
-        account_id = 12341234
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        ac_storage.reset()
-        ac_storage.ensure_dirs()
-        path = ac_storage.get_project_label_path()
-        self.assertRegex(path, r'^.*\/account-' + str(account_id + 0) + r'\/project-label')
-        self.assertTrue(os.path.isdir(path))
-
-    @staticmethod
-    def _generate_test_project_label(label_id):
-        return AcProjectLabel(
-            id=label_id,
-            class_="ProjectLabel",
-            url_path="/project-label/%d" % label_id,
-            name="Test Label",
-            updated_on=123,
-            color="#f02",
-            lighter_text_color="#ffffff",
-            darker_text_color="#000000",
-            is_default=False,
-            position=1,
-            project_id=1234
-        )
-
-    def test_710_get_project_label_filename(self):
-        account_id = 12341234
-        project_label_id = 23
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        test_project_label = self._generate_test_project_label(project_label_id)
-        project_label_filename = ac_storage.get_project_label_filename(test_project_label)
-        self.assertGreater(len(project_label_filename), 0)
-        self.assertRegex(project_label_filename, r'project-label-%08d\.json$' % project_label_id)
-
-    def test_720_get_project_label_full_filename(self):
-        account_id = 12341234
-        project_label_id = 23
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        test_project_label = self._generate_test_project_label(project_label_id)
-        project_label_filename = ac_storage.get_project_label_filename(test_project_label)
-        full_filename = ac_storage.get_project_label_full_filename(project_label_filename)
-        self.assertGreater(len(full_filename), 0)
-        self.assertRegex(full_filename,
-                         r'^.*\/account-%08d\/project-labels\/project-label-%08d\.json$' % (
-                             account_id, project_label_id))
-
-    def test_730_save_project_label(self):
-        account_id = 12341234
-        project_label_id = 23
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        test_project_label = self._generate_test_project_label(project_label_id)
-        full_filename = ac_storage.save_project_label(test_project_label)
-        self.assertGreater(len(full_filename), 0)
         self.assertTrue(os.path.isfile(full_filename))
 
     # task labels
