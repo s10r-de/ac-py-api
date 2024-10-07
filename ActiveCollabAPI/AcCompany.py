@@ -2,11 +2,12 @@ import dataclasses
 import json
 from dataclasses import dataclass
 
+from AcDataObject import AcDataObject
 from ActiveCollabAPI import AC_CLASS_COMPANY, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 
 
 @dataclass
-class AcCompany:
+class AcCompany(AcDataObject):
     address: str | None
     class_: str
     created_by_email: str | None

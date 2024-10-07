@@ -6,7 +6,6 @@ from tempfile import mkstemp
 from unittest import TestCase
 
 from AcAttachment import AcAttachment, attachment_from_json
-from AcCompany import company_from_json, AcCompany
 from AcProjectCategory import AcProjectCategory
 from AcProjectLabel import AcProjectLabel
 from AcProjectNote import project_note_from_json
@@ -39,7 +38,7 @@ class TestAcFileStorage(TestCase):
         self.assertFalse(os.path.isdir(ac_storage.get_attachments_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_project_label_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_task_label_path()))
-        self.assertFalse(os.path.isdir(ac_storage.get_company_path()))
+        self.assertFalse(os.path.isdir(ac_storage.company.get_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_task_lists_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_task_history_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_project_category_path()))
@@ -59,7 +58,7 @@ class TestAcFileStorage(TestCase):
         self.assertTrue(os.path.isdir(ac_storage.get_attachments_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_project_label_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_task_label_path()))
-        self.assertTrue(os.path.isdir(ac_storage.get_company_path()))
+        self.assertTrue(os.path.isdir(ac_storage.company.get_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_task_lists_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_task_history_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_project_category_path()))
@@ -573,55 +572,6 @@ class TestAcFileStorage(TestCase):
         test_task_label = self._generate_test_task_label(task_label_id)
         full_filename = ac_storage.save_task_label(test_task_label)
         self.assertGreater(len(full_filename), 0)
-        self.assertTrue(os.path.isfile(full_filename))
-
-    # companies
-
-    @staticmethod
-    def _generate_test_company(company_id: int) -> AcCompany:
-        with open('../example-data/example-company-5.json', 'r') as fh:
-            company = company_from_json(json.load(fh))
-        company.id = company_id
-        return company
-
-    def test_800_get_companies_path(self):
-        account_id = 12341234
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        ac_storage.reset()
-        ac_storage.ensure_dirs()
-        path = ac_storage.get_company_path()
-        self.assertRegex(path, r'^.*\/account-' + str(account_id + 0) + r'\/companies')
-        self.assertTrue(os.path.isdir(path))
-
-    def test_810_get_company_filename(self):
-        account_id = 12341234
-        company_id = 8
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        test_company = self._generate_test_company(company_id)
-        filename = ac_storage.get_company_filename(test_company)
-        self.assertGreater(len(filename), 0)
-        self.assertRegex(filename, r'company-%08d\.json$' % company_id)
-
-    def test_820_get_company_full_filename(self):
-        account_id = 12341234
-        company_id = 9
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        test_company = self._generate_test_company(company_id)
-        filename = ac_storage.get_company_filename(test_company)
-        full_filename = ac_storage.get_company_full_filename(filename)
-        self.assertGreater(len(full_filename), 0)
-        self.assertRegex(full_filename,
-                         r'^.*\/account-%08d\/companies\/company-%08d\.json$' % (
-                             account_id, company_id))
-
-    def test_830_save_company(self):
-        account_id = 12341234
-        company_id = 4
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        ac_storage.reset()
-        ac_storage.ensure_dirs()
-        test_company = self._generate_test_company(company_id)
-        full_filename = ac_storage.save_company(test_company)
         self.assertTrue(os.path.isfile(full_filename))
 
     # task lists

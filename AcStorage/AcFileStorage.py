@@ -1,15 +1,17 @@
 import json
 import os
 import shutil
+import time
 
-from AcCompany import AcCompany
+from AcFileStorageCompany import AcFileStorageCompany
 from AcProjectCategory import AcProjectCategory
 from AcProjectLabel import AcProjectLabel
 from AcProjectNote import AcProjectNote
+from AcStorage import DEFAULT_MODE_DIRS
 from AcTaskHistory import AcTaskHistory
 from AcTaskLabel import AcTaskLabel
 from AcTaskList import AcTaskList
-from ActiveCollabAPI import AC_CLASS_PROJECT, AC_CLASS_COMPANY, AC_CLASS_COMMENT, AC_CLASS_ATTACHMENT_WAREHOUSE, \
+from ActiveCollabAPI import AC_CLASS_PROJECT, AC_CLASS_COMMENT, AC_CLASS_ATTACHMENT_WAREHOUSE, \
     AC_CLASS_PROJECT_NOTE, AC_ERROR_WRONG_CLASS
 from ActiveCollabAPI import AC_CLASS_TASK, AC_CLASS_TASK_LABEL, AC_CLASS_TASK_LIST, AC_CLASS_USER_MEMBER
 from ActiveCollabAPI import AC_CLASS_USER_OWNER, AC_CLASS_SUBTASK, AC_CLASS_PROJECT_LABEL, AC_CLASS_PROJECT_CATEGORY
@@ -20,18 +22,20 @@ from ActiveCollabAPI.AcSubtask import AcSubtask
 from ActiveCollabAPI.AcTask import AcTask
 from ActiveCollabAPI.AcUser import AcUser
 
-DEFAULT_MODE_DIRS = 0o700
 
-
-class AcFileStorage(object):
+class AcFileStorage:
 
     def __init__(self, root_path: str, account_id: int):
         self.root_path = root_path
         self.account_id = account_id
+        self.company = AcFileStorageCompany(root_path, account_id)
 
     def reset(self):
         if os.path.exists(self.root_path):
-            shutil.rmtree(self.root_path)
+            self.company.reset()
+            tmp_path = '%s_%d' % (self.root_path, time.time())
+            os.rename(self.root_path, tmp_path)
+            shutil.rmtree(tmp_path)
 
     def ensure_dirs(self):
         if not os.path.exists(self.get_account_path()):
@@ -44,11 +48,11 @@ class AcFileStorage(object):
             os.makedirs(self.get_attachments_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_project_label_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_task_label_path(), DEFAULT_MODE_DIRS)
-            os.makedirs(self.get_company_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_task_lists_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_task_history_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_project_category_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_project_notes_path(), DEFAULT_MODE_DIRS)
+        self.company.ensure_dirs()
 
     def get_account_path(self) -> str:
         return os.path.join(self.root_path, "account-%08d" % self.account_id)
@@ -199,24 +203,6 @@ class AcFileStorage(object):
         with open(task_label_full_filename, "w") as f:
             json.dump(task_label.to_dict(), f, sort_keys=True, indent=2)
         return task_label_full_filename
-
-    def get_company_path(self) -> str:
-        return os.path.join(self.get_account_path(), "companies")
-
-    @staticmethod
-    def get_company_filename(company: AcCompany) -> str:
-        return "company-%08d.json" % company.id
-
-    def get_company_full_filename(self, company_filename: str) -> str:
-        return os.path.join(self.get_company_path(), company_filename)
-
-    def save_company(self, company: AcCompany) -> str:
-        assert company.class_ == AC_CLASS_COMPANY
-        company_filename = self.get_company_filename(company)
-        company_full_filename = self.get_company_full_filename(company_filename)
-        with open(company_full_filename, "w") as f:
-            json.dump(company.to_dict(), f, sort_keys=True, indent=2)
-        return company_full_filename
 
     def get_task_lists_path(self) -> str:
         return os.path.join(self.get_account_path(), "task-lists")
