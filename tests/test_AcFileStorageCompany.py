@@ -4,6 +4,7 @@ from unittest import TestCase
 
 from AcCompany import company_from_json
 from AcFileStorageCompany import AcFileStorageCompany
+from ActiveCollabAPI import AC_ERROR_WRONG_CLASS
 
 DATA_DIR = './data'
 ACCOUNT_ID = 12345
@@ -59,3 +60,9 @@ class TestAcFileStorageCompany(TestCase):
         full_filename = storage.save(company)
         self.assertGreater(len(full_filename), 0)
         self.assertTrue(os.path.isfile(full_filename))
+        # test catch the wrong class
+        company2 = company_from_json(self._generate_test_company(50))
+        company2.class_ = "dummy"
+        with self.assertRaises(AssertionError) as cm:
+            storage.save(company2)
+        self.assertEqual(AC_ERROR_WRONG_CLASS, cm.exception.args[0])

@@ -5,7 +5,7 @@ import time
 
 from AcStorage import DEFAULT_MODE_DIRS
 from AcUser import AcUser
-from ActiveCollabAPI import AC_CLASS_USER_MEMBER, AC_CLASS_USER_OWNER
+from ActiveCollabAPI import AC_CLASS_USER_MEMBER, AC_CLASS_USER_OWNER, AC_ERROR_WRONG_CLASS
 
 
 class AcFileStorageUser:
@@ -37,7 +37,7 @@ class AcFileStorageUser:
         return os.path.join(self.get_path(), user_filename)
 
     def save(self, user: AcUser) -> str:
-        assert user.class_ == AC_CLASS_USER_MEMBER or user.class_ == AC_CLASS_USER_OWNER
+        assert user.class_ == AC_CLASS_USER_MEMBER or user.class_ == AC_CLASS_USER_OWNER, AC_ERROR_WRONG_CLASS
         user_filename = self.get_filename(user)
         user_full_filename = self.get_full_filename(user_filename)
         with open(user_full_filename, "w") as f:

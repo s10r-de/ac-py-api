@@ -5,7 +5,7 @@ import time
 
 from AcCompany import AcCompany
 from AcStorage import DEFAULT_MODE_DIRS
-from ActiveCollabAPI import AC_CLASS_COMPANY
+from ActiveCollabAPI import AC_CLASS_COMPANY, AC_ERROR_WRONG_CLASS
 
 
 class AcFileStorageCompany:
@@ -37,7 +37,7 @@ class AcFileStorageCompany:
         return os.path.join(self.get_path(), company_filename)
 
     def save(self, company: AcCompany) -> str:
-        assert company.class_ == AC_CLASS_COMPANY
+        assert company.class_ == AC_CLASS_COMPANY, AC_ERROR_WRONG_CLASS
         company_filename = self.get_filename(company)
         company_full_filename = self.get_full_filename(company_filename)
         with open(company_full_filename, "w") as f:

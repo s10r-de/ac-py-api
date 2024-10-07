@@ -5,7 +5,7 @@ import time
 
 from AcProjectCategory import AcProjectCategory
 from AcStorage import DEFAULT_MODE_DIRS
-from ActiveCollabAPI import AC_CLASS_PROJECT_CATEGORY
+from ActiveCollabAPI import AC_CLASS_PROJECT_CATEGORY, AC_ERROR_WRONG_CLASS
 
 
 class AcFileStorageProjectCategory:
@@ -37,7 +37,7 @@ class AcFileStorageProjectCategory:
         return os.path.join(self.get_path(), project_filename)
 
     def save(self, project_category: AcProjectCategory) -> str:
-        assert project_category.class_ == AC_CLASS_PROJECT_CATEGORY
+        assert project_category.class_ == AC_CLASS_PROJECT_CATEGORY, AC_ERROR_WRONG_CLASS
         project_category_filename = self.get_filename(project_category)
         project_category_full_filename = self.get_full_filename(project_category_filename)
         with open(project_category_full_filename, "w") as f:

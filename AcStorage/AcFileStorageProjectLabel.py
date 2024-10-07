@@ -5,7 +5,7 @@ import time
 
 from AcProjectLabel import AcProjectLabel
 from AcStorage import DEFAULT_MODE_DIRS
-from ActiveCollabAPI import AC_CLASS_PROJECT_LABEL
+from ActiveCollabAPI import AC_CLASS_PROJECT_LABEL, AC_ERROR_WRONG_CLASS
 
 
 class AcFileStorageProjectLabel:
@@ -37,7 +37,7 @@ class AcFileStorageProjectLabel:
         return os.path.join(self.get_path(), project_filename)
 
     def save(self, project_label: AcProjectLabel) -> str:
-        assert project_label.class_ == AC_CLASS_PROJECT_LABEL
+        assert project_label.class_ == AC_CLASS_PROJECT_LABEL, AC_ERROR_WRONG_CLASS
         project_label_filename = self.get_filename(project_label)
         project_label_full_filename = self.get_full_filename(project_label_filename)
         with open(project_label_full_filename, "w") as f:
