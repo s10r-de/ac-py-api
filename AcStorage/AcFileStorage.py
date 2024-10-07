@@ -28,13 +28,14 @@ class AcFileStorage:
     def __init__(self, root_path: str, account_id: int):
         self.root_path = root_path
         self.account_id = account_id
-        self.company = AcFileStorageCompany(root_path, account_id)
-        self.user = AcFileStorageUser(root_path, account_id)
+        self.data_objects = {}
+        self.data_objects["company"] = AcFileStorageCompany(root_path, account_id)
+        self.data_objects["user"] = AcFileStorageUser(root_path, account_id)
 
     def reset(self):
         if os.path.exists(self.root_path):
-            self.user.reset()
-            self.company.reset()
+            for obj in self.data_objects.keys():
+                self.data_objects[obj].reset()
             tmp_path = '%s_%d' % (self.root_path, time.time())
             os.rename(self.root_path, tmp_path)
             shutil.rmtree(tmp_path)
@@ -53,8 +54,8 @@ class AcFileStorage:
             os.makedirs(self.get_task_history_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_project_category_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_project_notes_path(), DEFAULT_MODE_DIRS)
-        self.company.ensure_dirs()
-        self.user.ensure_dirs()
+        for obj in self.data_objects.keys():
+            self.data_objects[obj].ensure_dirs()
 
     def get_account_path(self) -> str:
         return os.path.join(self.root_path, "account-%08d" % self.account_id)
