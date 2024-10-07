@@ -5,8 +5,8 @@ import time
 
 from AcFileStorageCompany import AcFileStorageCompany
 from AcFileStorageProject import AcFileStorageProject
+from AcFileStorageProjectCategory import AcFileStorageProjectCategory
 from AcFileStorageUser import AcFileStorageUser
-from AcProjectCategory import AcProjectCategory
 from AcProjectLabel import AcProjectLabel
 from AcProjectNote import AcProjectNote
 from AcStorage import DEFAULT_MODE_DIRS
@@ -15,7 +15,7 @@ from AcTaskLabel import AcTaskLabel
 from AcTaskList import AcTaskList
 from ActiveCollabAPI import AC_CLASS_COMMENT, AC_CLASS_ATTACHMENT_WAREHOUSE, \
     AC_CLASS_PROJECT_NOTE, AC_ERROR_WRONG_CLASS
-from ActiveCollabAPI import AC_CLASS_SUBTASK, AC_CLASS_PROJECT_LABEL, AC_CLASS_PROJECT_CATEGORY
+from ActiveCollabAPI import AC_CLASS_SUBTASK, AC_CLASS_PROJECT_LABEL
 from ActiveCollabAPI import AC_CLASS_TASK, AC_CLASS_TASK_LABEL, AC_CLASS_TASK_LIST
 from ActiveCollabAPI.AcAttachment import AcAttachment
 from ActiveCollabAPI.AcComment import AcComment
@@ -32,6 +32,7 @@ class AcFileStorage:
         self.data_objects["company"] = AcFileStorageCompany(root_path, account_id)
         self.data_objects["users"] = AcFileStorageUser(root_path, account_id)
         self.data_objects["projects"] = AcFileStorageProject(root_path, account_id)
+        self.data_objects["project-categories"] = AcFileStorageProjectCategory(root_path, account_id)
 
     def reset(self):
         if os.path.exists(self.root_path):
@@ -52,7 +53,6 @@ class AcFileStorage:
             os.makedirs(self.get_task_label_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_task_lists_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_task_history_path(), DEFAULT_MODE_DIRS)
-            os.makedirs(self.get_project_category_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_project_notes_path(), DEFAULT_MODE_DIRS)
         for obj in self.data_objects.keys():
             self.data_objects[obj].ensure_dirs()
@@ -205,24 +205,6 @@ class AcFileStorage:
         with open(task_history_full_filename, "w") as f:
             json.dump(task_history.to_dict(), f, sort_keys=True, indent=2)
         return task_history_full_filename
-
-    def get_project_category_path(self) -> str:
-        return os.path.join(self.get_account_path(), "project-category")
-
-    @staticmethod
-    def get_project_category_filename(project_category: AcProjectCategory) -> str:
-        return "project-category-%04d.json" % project_category.id
-
-    def get_project_category_full_filename(self, project_category_filename: str) -> str:
-        return os.path.join(self.get_project_category_path(), project_category_filename)
-
-    def save_project_category(self, project_category: AcProjectCategory) -> str:
-        assert project_category.class_ == AC_CLASS_PROJECT_CATEGORY
-        project_category_filename = self.get_project_category_filename(project_category)
-        project_category_full_filename = self.get_project_category_full_filename(project_category_filename)
-        with open(project_category_full_filename, "w") as f:
-            json.dump(project_category.to_dict(), f, sort_keys=True, indent=2)
-        return project_category_full_filename
 
     def get_project_notes_path(self) -> str:
         return os.path.join(self.get_account_path(), "project-notes")
