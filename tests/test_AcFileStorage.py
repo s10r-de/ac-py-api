@@ -8,7 +8,6 @@ from unittest import TestCase
 from AcAttachment import AcAttachment, attachment_from_json
 from AcStorage.AcFileStorage import AcFileStorage
 from AcTaskHistory import AcTaskHistory
-from AcTaskLabel import AcTaskLabel
 from AcTaskList import AcTaskList, task_list_from_json
 from ActiveCollabAPI.AcComment import AcComment, comment_from_json
 from ActiveCollabAPI.AcSubtask import AcSubtask, subtask_from_json
@@ -30,7 +29,7 @@ class TestAcFileStorage(TestCase):
         self.assertFalse(os.path.isdir(ac_storage.get_comments_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_attachments_path()))
         self.assertFalse(os.path.isdir(ac_storage.data_objects["project-labels"].get_path()))
-        self.assertFalse(os.path.isdir(ac_storage.get_task_label_path()))
+        self.assertFalse(os.path.isdir(ac_storage.data_objects["task-labels"].get_path()))
         self.assertFalse(os.path.isdir(ac_storage.data_objects["company"].get_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_task_lists_path()))
         self.assertFalse(os.path.isdir(ac_storage.get_task_history_path()))
@@ -50,7 +49,7 @@ class TestAcFileStorage(TestCase):
         self.assertTrue(os.path.isdir(ac_storage.get_comments_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_attachments_path()))
         self.assertTrue(os.path.isdir(ac_storage.data_objects["project-labels"].get_path()))
-        self.assertTrue(os.path.isdir(ac_storage.get_task_label_path()))
+        self.assertTrue(os.path.isdir(ac_storage.data_objects["task-labels"].get_path()))
         self.assertTrue(os.path.isdir(ac_storage.data_objects["company"].get_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_task_lists_path()))
         self.assertTrue(os.path.isdir(ac_storage.get_task_history_path()))
@@ -269,64 +268,6 @@ class TestAcFileStorage(TestCase):
         test_attachment = self._generate_test_attachment(attachment_id)
         tmp_filename = mkstemp()[1]
         full_filename = ac_storage.save_attachment(test_attachment, tmp_filename)
-        self.assertTrue(os.path.isfile(full_filename))
-
-    # task labels
-
-    def test_740_get_task_labels_path(self):
-        account_id = 12341234
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        ac_storage.reset()
-        ac_storage.ensure_dirs()
-        path = ac_storage.get_task_label_path()
-        self.assertRegex(path, r'^.*\/account-' + str(account_id + 0) + r'\/task-labels')
-        self.assertTrue(os.path.isdir(path))
-
-    @staticmethod
-    def _generate_test_task_label(label_id):
-        return AcTaskLabel(
-            id=label_id,
-            class_="TaskLabel",
-            url_path="/task-label/%d" % label_id,
-            name="Test Task Label",
-            updated_on=123,
-            color="#f02",
-            lighter_text_color="#ffffff",
-            darker_text_color="#000000",
-            is_default=False,
-            is_global=True,
-            position=1,
-            project_id=1234
-        )
-
-    def test_750_get_task_label_filename(self):
-        account_id = 12341234
-        task_label_id = 230
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        test_task_label = self._generate_test_task_label(task_label_id)
-        filename = ac_storage.get_task_label_filename(test_task_label)
-        self.assertGreater(len(filename), 0)
-        self.assertRegex(filename, r'task-label-%08d\.json$' % task_label_id)
-
-    def test_760_get_task_label_full_filename(self):
-        account_id = 12341234
-        task_label_id = 237
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        test_task_label = self._generate_test_task_label(task_label_id)
-        filename = ac_storage.get_task_label_filename(test_task_label)
-        full_filename = ac_storage.get_task_label_full_filename(filename)
-        self.assertGreater(len(full_filename), 0)
-        self.assertRegex(full_filename,
-                         r'^.*\/account-%08d\/task-labels\/task-label-%08d\.json$' % (
-                             account_id, task_label_id))
-
-    def test_770_save_task_label(self):
-        account_id = 12341234
-        task_label_id = 238
-        ac_storage = AcFileStorage(DATA_DIR, account_id)
-        test_task_label = self._generate_test_task_label(task_label_id)
-        full_filename = ac_storage.save_task_label(test_task_label)
-        self.assertGreater(len(full_filename), 0)
         self.assertTrue(os.path.isfile(full_filename))
 
     # task lists

@@ -12,11 +12,10 @@ from AcFileStorageTask import AcFileStorageTask
 from AcFileStorageUser import AcFileStorageUser
 from AcStorage import DEFAULT_MODE_DIRS
 from AcTaskHistory import AcTaskHistory
-from AcTaskLabel import AcTaskLabel
 from AcTaskList import AcTaskList
 from ActiveCollabAPI import AC_CLASS_COMMENT, AC_CLASS_ATTACHMENT_WAREHOUSE
 from ActiveCollabAPI import AC_CLASS_SUBTASK
-from ActiveCollabAPI import AC_CLASS_TASK_LABEL, AC_CLASS_TASK_LIST
+from ActiveCollabAPI import AC_CLASS_TASK_LIST
 from ActiveCollabAPI.AcAttachment import AcAttachment
 from ActiveCollabAPI.AcComment import AcComment
 from ActiveCollabAPI.AcSubtask import AcSubtask
@@ -35,6 +34,7 @@ class AcFileStorage:
         self.data_objects["project-labels"] = AcFileStorageProjectLabel(root_path, account_id)
         self.data_objects["project-notes"] = AcFileStorageProjectNote(root_path, account_id)
         self.data_objects["tasks"] = AcFileStorageTask(root_path, account_id)
+        self.data_objects["task-labels"] = AcFileStorageTask(root_path, account_id)
 
     def reset(self):
         if os.path.exists(self.root_path):
@@ -50,7 +50,6 @@ class AcFileStorage:
             os.makedirs(self.get_subtasks_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_comments_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_attachments_path(), DEFAULT_MODE_DIRS)
-            os.makedirs(self.get_task_label_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_task_lists_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_task_history_path(), DEFAULT_MODE_DIRS)
         for obj in self.data_objects.keys():
@@ -113,24 +112,6 @@ class AcFileStorage:
             json.dump(attachment.to_dict(), f, sort_keys=True, indent=2)
         shutil.move(tmp_download, attachment_full_filename + '.' + attachment.extension)
         return attachment_full_filename
-
-    def get_task_label_path(self) -> str:
-        return os.path.join(self.get_account_path(), "task-labels")
-
-    @staticmethod
-    def get_task_label_filename(task_label: AcTaskLabel) -> str:
-        return "task-label-%08d.json" % task_label.id
-
-    def get_task_label_full_filename(self, task_label_filename: str) -> str:
-        return os.path.join(self.get_task_label_path(), task_label_filename)
-
-    def save_task_label(self, task_label: AcTaskLabel) -> str:
-        assert task_label.class_ == AC_CLASS_TASK_LABEL
-        task_label_filename = self.get_task_label_filename(task_label)
-        task_label_full_filename = self.get_task_label_full_filename(task_label_filename)
-        with open(task_label_full_filename, "w") as f:
-            json.dump(task_label.to_dict(), f, sort_keys=True, indent=2)
-        return task_label_full_filename
 
     def get_task_lists_path(self) -> str:
         return os.path.join(self.get_account_path(), "task-lists")
