@@ -1,8 +1,8 @@
-import json
 import os
 import shutil
 import time
 
+from AcFileStorageAttachment import AcFileStorageAttachment
 from AcFileStorageComment import AcFileStorageComment
 from AcFileStorageCompany import AcFileStorageCompany
 from AcFileStorageProject import AcFileStorageProject
@@ -16,8 +16,6 @@ from AcFileStorageTaskLabel import AcFileStorageTaskLabel
 from AcFileStorageTaskList import AcFileStorageTaskList
 from AcFileStorageUser import AcFileStorageUser
 from AcStorage import DEFAULT_MODE_DIRS
-from ActiveCollabAPI import AC_CLASS_ATTACHMENT_WAREHOUSE
-from ActiveCollabAPI.AcAttachment import AcAttachment
 
 
 class AcFileStorage:
@@ -38,11 +36,12 @@ class AcFileStorage:
         self.data_objects["task-history"] = AcFileStorageTaskHistory(root_path, account_id)
         self.data_objects["subtasks"] = AcFileStorageSubtask(root_path, account_id)
         self.data_objects["comments"] = AcFileStorageComment(root_path, account_id)
+        self.data_objects["attachments"] = AcFileStorageAttachment(root_path, account_id)
 
     def reset(self):
+        for obj in self.data_objects.keys():
+            self.data_objects[obj].reset()
         if os.path.exists(self.root_path):
-            for obj in self.data_objects.keys():
-                self.data_objects[obj].reset()
             tmp_path = '%s_%d' % (self.root_path, time.time())
             os.rename(self.root_path, tmp_path)
             shutil.rmtree(tmp_path)
@@ -50,28 +49,8 @@ class AcFileStorage:
     def ensure_dirs(self):
         if not os.path.exists(self.get_account_path()):
             os.makedirs(self.get_account_path(), DEFAULT_MODE_DIRS)
-            os.makedirs(self.get_attachments_path(), DEFAULT_MODE_DIRS)
         for obj in self.data_objects.keys():
             self.data_objects[obj].ensure_dirs()
 
     def get_account_path(self) -> str:
         return os.path.join(self.root_path, "account-%08d" % self.account_id)
-
-    def get_attachments_path(self) -> str:
-        return os.path.join(self.get_account_path(), "attachments")
-
-    @staticmethod
-    def get_attachment_filename(attachment: AcAttachment) -> str:
-        return "attachment-%08d.json" % attachment.id
-
-    def get_attachment_full_filename(self, attachment_filename: str) -> str:
-        return os.path.join(self.get_attachments_path(), attachment_filename)
-
-    def save_attachment(self, attachment: AcAttachment, tmp_download: str) -> str:
-        assert attachment.class_ == AC_CLASS_ATTACHMENT_WAREHOUSE
-        attachment_filename = self.get_attachment_filename(attachment)
-        attachment_full_filename = self.get_attachment_full_filename(attachment_filename)
-        with open(attachment_full_filename, "w") as f:
-            json.dump(attachment.to_dict(), f, sort_keys=True, indent=2)
-        shutil.move(tmp_download, attachment_full_filename + '.' + attachment.extension)
-        return attachment_full_filename
