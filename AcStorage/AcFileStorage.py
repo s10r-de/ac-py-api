@@ -3,6 +3,7 @@ import os
 import shutil
 import time
 
+from AcFileStorageComment import AcFileStorageComment
 from AcFileStorageCompany import AcFileStorageCompany
 from AcFileStorageProject import AcFileStorageProject
 from AcFileStorageProjectCategory import AcFileStorageProjectCategory
@@ -15,9 +16,8 @@ from AcFileStorageTaskLabel import AcFileStorageTaskLabel
 from AcFileStorageTaskList import AcFileStorageTaskList
 from AcFileStorageUser import AcFileStorageUser
 from AcStorage import DEFAULT_MODE_DIRS
-from ActiveCollabAPI import AC_CLASS_COMMENT, AC_CLASS_ATTACHMENT_WAREHOUSE
+from ActiveCollabAPI import AC_CLASS_ATTACHMENT_WAREHOUSE
 from ActiveCollabAPI.AcAttachment import AcAttachment
-from ActiveCollabAPI.AcComment import AcComment
 
 
 class AcFileStorage:
@@ -26,7 +26,7 @@ class AcFileStorage:
         self.root_path = root_path
         self.account_id = account_id
         self.data_objects = {}
-        self.data_objects["company"] = AcFileStorageCompany(root_path, account_id)
+        self.data_objects["company"] = AcFileStorageCompany(root_path, account_id)  # FIXME companies
         self.data_objects["users"] = AcFileStorageUser(root_path, account_id)
         self.data_objects["projects"] = AcFileStorageProject(root_path, account_id)
         self.data_objects["project-categories"] = AcFileStorageProjectCategory(root_path, account_id)
@@ -37,6 +37,7 @@ class AcFileStorage:
         self.data_objects["task-lists"] = AcFileStorageTaskList(root_path, account_id)
         self.data_objects["task-history"] = AcFileStorageTaskHistory(root_path, account_id)
         self.data_objects["subtasks"] = AcFileStorageSubtask(root_path, account_id)
+        self.data_objects["comments"] = AcFileStorageComment(root_path, account_id)
 
     def reset(self):
         if os.path.exists(self.root_path):
@@ -49,31 +50,12 @@ class AcFileStorage:
     def ensure_dirs(self):
         if not os.path.exists(self.get_account_path()):
             os.makedirs(self.get_account_path(), DEFAULT_MODE_DIRS)
-            os.makedirs(self.get_comments_path(), DEFAULT_MODE_DIRS)
             os.makedirs(self.get_attachments_path(), DEFAULT_MODE_DIRS)
         for obj in self.data_objects.keys():
             self.data_objects[obj].ensure_dirs()
 
     def get_account_path(self) -> str:
         return os.path.join(self.root_path, "account-%08d" % self.account_id)
-
-    def get_comments_path(self) -> str:
-        return os.path.join(self.get_account_path(), "comments")
-
-    @staticmethod
-    def get_comment_filename(comment: AcComment) -> str:
-        return "comment-%08d.json" % comment.id
-
-    def get_comment_full_filename(self, comment_filename: str) -> str:
-        return os.path.join(self.get_comments_path(), comment_filename)
-
-    def save_comment(self, comment: AcComment) -> str:
-        assert comment.class_ == AC_CLASS_COMMENT
-        comment_filename = self.get_comment_filename(comment)
-        comment_full_filename = self.get_comment_full_filename(comment_filename)
-        with open(comment_full_filename, "w") as f:
-            json.dump(comment.to_dict(), f, sort_keys=True, indent=2)
-        return comment_full_filename
 
     def get_attachments_path(self) -> str:
         return os.path.join(self.get_account_path(), "attachments")
