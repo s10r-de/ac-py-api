@@ -2,7 +2,7 @@ import json
 from unittest import TestCase
 
 from AcAccount import AcAccount, account_from_json
-from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
+from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_, AC_ERROR_WRONG_CLASS
 
 
 class TestAcAccount(TestCase):
@@ -48,3 +48,18 @@ class TestAcAccount(TestCase):
         }
         account = account_from_json(account_json)
         self.assertEqual(account_id, account.name)
+
+    def test_account_from_json_wrong_class(self):
+        account_id = 103
+        account_json = {
+            "name": account_id,
+            "url": "'https://app.activecollab.com/%d" % account_id,
+            "display_name": "#%d" % account_id,
+            "user_display_name": "Account display name",
+            "position": 1,
+            "class": 'dummy',
+            "status": "active"
+        }
+        with self.assertRaises(AssertionError) as cm:
+            account = account_from_json(account_json)
+        self.assertEqual(AC_ERROR_WRONG_CLASS, cm.exception.args[0])
