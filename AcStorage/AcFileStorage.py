@@ -24,7 +24,7 @@ class AcFileStorage:
         self.root_path = root_path
         self.account_id = account_id
         self.data_objects = {}
-        self.data_objects["company"] = AcFileStorageCompany(root_path, account_id)  # FIXME companies
+        self.data_objects["companies"] = AcFileStorageCompany(root_path, account_id)
         self.data_objects["users"] = AcFileStorageUser(root_path, account_id)
         self.data_objects["projects"] = AcFileStorageProject(root_path, account_id)
         self.data_objects["project-categories"] = AcFileStorageProjectCategory(root_path, account_id)

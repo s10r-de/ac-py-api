@@ -128,7 +128,7 @@ def dump_all_users(ac, ac_storage):
 
 def dump_all_companies(ac, ac_storage):
     for company in ac.get_all_companies():
-        ac_storage.data_objects["company"].save(company)
+        ac_storage.data_objects["companies"].save(company)
 
 
 def _login(config: configparser.ConfigParser) -> ActiveCollab:
