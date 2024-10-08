@@ -23,20 +23,21 @@ class AcFileStorage:
     def __init__(self, root_path: str, account_id: int):
         self.root_path = root_path
         self.account_id = account_id
-        self.data_objects = {}
-        self.data_objects["companies"] = AcFileStorageCompany(root_path, account_id)
-        self.data_objects["users"] = AcFileStorageUser(root_path, account_id)
-        self.data_objects["projects"] = AcFileStorageProject(root_path, account_id)
-        self.data_objects["project-categories"] = AcFileStorageProjectCategory(root_path, account_id)
-        self.data_objects["project-labels"] = AcFileStorageProjectLabel(root_path, account_id)
-        self.data_objects["project-notes"] = AcFileStorageProjectNote(root_path, account_id)
-        self.data_objects["tasks"] = AcFileStorageTask(root_path, account_id)
-        self.data_objects["task-labels"] = AcFileStorageTaskLabel(root_path, account_id)
-        self.data_objects["task-lists"] = AcFileStorageTaskList(root_path, account_id)
-        self.data_objects["task-history"] = AcFileStorageTaskHistory(root_path, account_id)
-        self.data_objects["subtasks"] = AcFileStorageSubtask(root_path, account_id)
-        self.data_objects["comments"] = AcFileStorageComment(root_path, account_id)
-        self.data_objects["attachments"] = AcFileStorageAttachment(root_path, account_id)
+        self.data_objects = {
+            "companies": AcFileStorageCompany(root_path, account_id),
+            "users": AcFileStorageUser(root_path, account_id),
+            "projects": AcFileStorageProject(root_path, account_id),
+            "project-categories": AcFileStorageProjectCategory(root_path, account_id),
+            "project-labels": AcFileStorageProjectLabel(root_path, account_id),
+            "project-notes": AcFileStorageProjectNote(root_path, account_id),
+            "tasks": AcFileStorageTask(root_path, account_id),
+            "task-labels": AcFileStorageTaskLabel(root_path, account_id),
+            "task-lists": AcFileStorageTaskList(root_path, account_id),
+            "task-history": AcFileStorageTaskHistory(root_path, account_id),
+            "subtasks": AcFileStorageSubtask(root_path, account_id),
+            "comments": AcFileStorageComment(root_path, account_id),
+            "attachments": AcFileStorageAttachment(root_path, account_id)
+        }
 
     def reset(self):
         for obj in self.data_objects.keys():
