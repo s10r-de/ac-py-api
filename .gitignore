@@ -3,3 +3,5 @@
 /data/
 /tests/data/
 __pycache__
+ActiveCollabServer/env
+*.zip
