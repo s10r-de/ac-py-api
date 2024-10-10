@@ -1,5 +1,9 @@
 .DS_Store
 /config.ini
+/config-selfhosted.ini
 /data/
+/data-self-hosted/
 /tests/data/
 __pycache__
+ActiveCollabServer/env
+*.zip

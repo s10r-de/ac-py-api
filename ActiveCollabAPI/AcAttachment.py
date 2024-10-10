@@ -2,7 +2,8 @@ import dataclasses
 import json
 from dataclasses import dataclass
 
-from ActiveCollabAPI import AC_CLASS_ATTACHMENT_WAREHOUSE, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
+from ActiveCollabAPI import AC_CLASS_ATTACHMENT_WAREHOUSE, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_, \
+    AC_CLASS_ATTACHMENT_LOCAL, AC_ERROR_WRONG_CLASS
 
 
 @dataclass
@@ -47,7 +48,8 @@ class AcAttachment:
 
 
 def attachment_from_json(json_obj: dict) -> AcAttachment:
-    assert json_obj[AC_PROPERTY_CLASS] == AC_CLASS_ATTACHMENT_WAREHOUSE
+    assert json_obj[AC_PROPERTY_CLASS] == AC_CLASS_ATTACHMENT_WAREHOUSE or json_obj[
+        AC_PROPERTY_CLASS] == AC_CLASS_ATTACHMENT_LOCAL, AC_ERROR_WRONG_CLASS
     json_obj[AC_PROPERTY_CLASS_] = json_obj[AC_PROPERTY_CLASS]
     del json_obj[AC_PROPERTY_CLASS]
     if json_obj["extension"] is None:

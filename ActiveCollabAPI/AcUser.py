@@ -10,7 +10,6 @@ from ActiveCollabAPI import AC_CLASS_USER_MEMBER, AC_CLASS_USER_OWNER, AC_PROPER
 class AcUser(AcDataObject):
     additional_email_addresses: []
     avatar_url: str
-    avatar_version: str
     class_: str
     company_id: int
     created_by_email: str
@@ -23,7 +22,6 @@ class AcUser(AcDataObject):
     email: str
     first_login_on: int
     first_name: str
-    has_custom_avatar: bool
     id: int
     im_handle: str | None
     im_type: str | None
@@ -42,6 +40,8 @@ class AcUser(AcDataObject):
     updated_on: int
     url_path: str
     workspace_count: int
+    avatar_version: str = dataclasses.field(default="")
+    has_custom_avatar: bool = dataclasses.field(default=False)
 
     def to_dict(self) -> dict:
         d = dataclasses.asdict(self)

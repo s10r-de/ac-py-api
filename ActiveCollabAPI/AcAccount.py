@@ -8,7 +8,7 @@ from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_, AC_ERROR_WRON
 @dataclass
 class AcAccount:
     name: int
-    url: str
+    url: str  # = dataclasses.field(default="")
     display_name: str
     user_display_name: str
     position: int

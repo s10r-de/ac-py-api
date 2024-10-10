@@ -12,6 +12,7 @@ AC_PROPERTY_CLASS_ = "class_"
 
 # Most AC Objects have a class name
 AC_CLASS_ATTACHMENT_WAREHOUSE = "WarehouseAttachment"
+AC_CLASS_ATTACHMENT_LOCAL = 'LocalAttachment'
 AC_CLASS_COMMENT = "Comment"
 AC_CLASS_COMPANY = "Company"
 AC_CLASS_PROJECT = "Project"

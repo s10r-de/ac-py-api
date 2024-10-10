@@ -82,6 +82,8 @@ Trigger the dump of all data:
 - this script will not backup trashed projects or tasks or anything else
   what is trashed, but it will include completed projects tasks etc.!
 
+To run the local self-hosted Active-Collab please read
+the [Server Setup Page](./ActiveCollabServer/docs/Setup.md)
 
 ## API Documentation
 
