@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from AcAccount import AcAccount
-from AcLoginResponse import AcLoginResponse
+from AcCloudLoginResponse import AcCloudLoginResponse
 from AcLoginUser import AcLoginUser
 
 
@@ -29,10 +29,10 @@ class TestAcLoginResponse(TestCase):
             status="active"
         )
 
-        response = AcLoginResponse(
+        response = AcCloudLoginResponse(
             user=login_user,
             accounts=[account]
         )
-        self.assertIsInstance(response, AcLoginResponse)
+        self.assertIsInstance(response, AcCloudLoginResponse)
         self.assertEqual(first_name, response.user.first_name)
         self.assertEqual(account_id, response.accounts[0].name)

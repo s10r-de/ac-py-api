@@ -1,6 +1,7 @@
 from AcAttachment import AcAttachment
 from AcCompany import AcCompany, company_from_json
 from AcFileAccessToken import AcFileAccessToken, fileaccesstoken_from_json
+from AcLoginResponse import AcLoginResponse
 from AcProjectCategory import AcProjectCategory, project_category_from_json
 from AcProjectLabel import AcProjectLabel, project_label_from_json
 from AcProjectNote import AcProjectNote, project_note_from_json
@@ -11,8 +12,8 @@ from ActiveCollabAPI import AC_API_VERSION, AcTask
 from ActiveCollabAPI.AcAccount import AcAccount, account_from_json
 from ActiveCollabAPI.AcAuthenticator import AcAuthenticator
 from ActiveCollabAPI.AcClient import AcClient
+from ActiveCollabAPI.AcCloudLoginResponse import AcCloudLoginResponse
 from ActiveCollabAPI.AcComment import AcComment, comment_from_json
-from ActiveCollabAPI.AcLoginResponse import AcLoginResponse
 from ActiveCollabAPI.AcLoginUser import AcLoginUser
 from ActiveCollabAPI.AcProject import AcProject, project_from_json
 from ActiveCollabAPI.AcSession import AcSession
@@ -31,28 +32,65 @@ class ActiveCollab:
 
     session: AcSession = None
 
-    def __init__(self, base_url: str):
-        self.base_url = base_url
+    def __init__(self, base_url: str, is_self_hosted: bool = False):
+        self.base_url = base_url.rstrip('/')
+        self.is_self_hosted = is_self_hosted
 
     def login_to_account(self, email: str, password: str, account: str | None) -> AcSession:
-        login_res = self.user_login(email, password)
+        if self.is_self_hosted is False:
+            self.login_to_cloud(account, email, password)
+        else:
+            self.login_to_self_hosted(email, password)
+        return self.session
+
+    def login_to_self_hosted(self, email, password):
+        login_res = self.login_self_hosted(email, password)
+        token = AcToken(login_res.token)
+        user = AcLoginUser(avatar_url="",
+                           first_name="",
+                           last_name="",
+                           intent="")
+        accounts = []
+        cur_account = AcAccount(
+            name=0,
+            url=self.base_url,
+            display_name="self-hosted account",
+            user_display_name="self-hosted account",
+            position=0,
+            class_="",
+            status=""
+        )
+        self.session = AcSession(user, accounts, cur_account, token)
+
+    def login_to_cloud(self, account, email, password):
+        login_res = self.auth_cloud(email, password)
         cur_account = self.select_first_account(login_res.accounts)
         if account is not None:
             cur_account = self.select_account(login_res.accounts, account)
         token = self.create_token(cur_account, login_res.user)
         self.session = AcSession(login_res.user, login_res.accounts, cur_account, token)
-        return self.session
 
-    def user_login(self, email: str, password: str) -> AcLoginResponse:
+    def auth_cloud(self, email: str, password: str) -> AcCloudLoginResponse:
         auth = AcAuthenticator(self.base_url)
-        res = auth.login(email, password)
+        res = auth.login_cloud(email, password)
         if res.status_code != 200:
             raise Exception('Login failed!')
         res_data = res.json()
         if res_data['is_ok'] != 1:
             raise Exception('Login failed! (2)')
         accounts = list(map(lambda a: account_from_json(a), res_data['accounts']))
-        return AcLoginResponse(AcLoginUser(**res_data['user']), accounts)
+        user = AcLoginUser(**res_data['user'])
+        return AcCloudLoginResponse(user, accounts)
+
+    def login_self_hosted(self, email: str, password: str) -> AcLoginResponse:
+        auth = AcAuthenticator(self.base_url)
+        res = auth.login_self_hosted(email, password)
+        if res.status_code != 200:
+            raise Exception('Login failed!')
+        res_data = res.json()
+        if res_data['is_ok'] != 1:
+            raise Exception('Login failed! (2)')
+        return AcLoginResponse(**res_data)
 
     @staticmethod
     def select_first_account(accounts: list[AcAccount]) -> AcAccount:

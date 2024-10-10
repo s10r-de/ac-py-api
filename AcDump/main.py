@@ -134,7 +134,8 @@ def dump_all_companies(ac, ac_storage):
 def _login(config: configparser.ConfigParser) -> ActiveCollab:
     # create the AC Client
     base_url = config.get("DEFAULT", "base_url")
-    ac = ActiveCollab(base_url)
+    is_self_hosted = config.getboolean("DEFAULT", "self_hosted", fallback=False)
+    ac = ActiveCollab(base_url, is_self_hosted)
     ac.login_to_account(
         config.get("LOGIN", "username"),
         config.get("LOGIN", "password"),
