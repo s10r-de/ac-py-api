@@ -3,7 +3,7 @@ import json
 from dataclasses import dataclass
 
 from AcAttachment import AcAttachment, attachment_from_json
-from ActiveCollabAPI import AC_CLASS_COMMENT, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
+from ActiveCollabAPI import AC_CLASS_COMMENT, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_, AC_ERROR_WRONG_CLASS
 
 
 @dataclass
@@ -50,7 +50,7 @@ class AcComment:
 
 
 def comment_from_json(json_obj: dict) -> AcComment:
-    assert json_obj[AC_PROPERTY_CLASS] == AC_CLASS_COMMENT
+    assert json_obj[AC_PROPERTY_CLASS] == AC_CLASS_COMMENT, AC_ERROR_WRONG_CLASS
     json_obj[AC_PROPERTY_CLASS_] = json_obj[AC_PROPERTY_CLASS]
     del json_obj[AC_PROPERTY_CLASS]
     if json_obj["attachments"] is not None:

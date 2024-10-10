@@ -25,5 +25,6 @@ AC_CLASS_TASK_LABEL = "TaskLabel"
 AC_CLASS_TASK_LIST = "TaskList"
 AC_CLASS_USER_MEMBER = "Member"
 AC_CLASS_USER_OWNER = "Owner"
+AC_CLASS_ACCOUNT = 'ActiveCollab\\Shepherd\\Model\\Account\\ActiveCollab\\FeatherAccount'
 
 AC_ERROR_WRONG_CLASS = "Wrong Object Class!"

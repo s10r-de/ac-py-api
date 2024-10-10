@@ -97,7 +97,7 @@ And the third and most valuable one is the StackOverflow here: https://stackover
 
 If you need some further assistance on this, I encourage you to post all the questions about the API on Stack Overflow so that our developers can take a look and answer.
 
-You can find [ER-Diagram](./AcObjects.md)
+You can find [ER-Diagram](AcObjects.md)
 
 ## API Problems
 

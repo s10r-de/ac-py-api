@@ -2,7 +2,7 @@ import dataclasses
 import json
 from dataclasses import dataclass
 
-from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
+from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_, AC_ERROR_WRONG_CLASS, AC_CLASS_ACCOUNT
 
 
 @dataclass
@@ -26,6 +26,7 @@ class AcAccount:
 
 
 def account_from_json(a) -> AcAccount:
+    assert a[AC_PROPERTY_CLASS] == AC_CLASS_ACCOUNT, AC_ERROR_WRONG_CLASS
     a[AC_PROPERTY_CLASS_] = a[AC_PROPERTY_CLASS]
     del a[AC_PROPERTY_CLASS]
     return AcAccount(**a)

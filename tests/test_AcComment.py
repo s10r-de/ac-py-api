@@ -3,7 +3,7 @@ from unittest import TestCase
 
 from AcAttachment import attachment_from_json, AcAttachment
 from AcComment import AcComment, comment_from_json
-from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
+from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_, AC_ERROR_WRONG_CLASS
 
 
 class TestAcComment(TestCase):
@@ -42,6 +42,15 @@ class TestAcComment(TestCase):
         self.assertEqual(comment_id, json.loads(comment_json)["id"])
         self.assertIn(AC_PROPERTY_CLASS, json.loads(comment_json).keys())
         self.assertNotIn(AC_PROPERTY_CLASS_, json.loads(comment_json).keys())
+
+    def test_from_json_wrong_class(self):
+        comment_id = 17614
+        comment = self._generate_test_comment_with_attachments(comment_id)
+        comment["class"] = "dummy"
+        with self.assertRaises(AssertionError) as cm:
+            comment_from_json(comment)
+        self.assertEqual(AC_ERROR_WRONG_CLASS, cm.exception.args[0])
+
 
     def test_get_attachments(self):
         comment_id = 17614
@@ -83,15 +92,16 @@ class TestAcComment(TestCase):
         self.assertEqual("WarehouseAttachment", parsed_json["attachments"][1]["class"])
 
     @staticmethod
-    def _generate_test_comment_with_attachments(comment_id: int) -> AcComment:
+    def _generate_test_comment_with_attachments(comment_id: int) -> dict:
         with open('../example-data/example-comment-95993b.json', 'r') as fh:
-            comment = comment_from_json(json.load(fh))
-        comment.id = comment_id
+            comment = json.load(fh)
+        comment["id"] = comment_id
         return comment
 
     def test_from_json_with_attachments(self):
         comment_id = 17614
-        comment = self._generate_test_comment_with_attachments(comment_id)
+        comment_json = self._generate_test_comment_with_attachments(comment_id)
+        comment = comment_from_json(comment_json)
         attachments = comment.get_attachments()
         self.assertEqual(2, len(attachments))
         self.assertIsInstance(attachments[0], AcAttachment)

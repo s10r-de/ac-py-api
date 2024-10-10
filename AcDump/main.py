@@ -53,7 +53,7 @@ def dump_all_projects_with_all_data(ac, ac_storage):
     projects = ac.get_active_projects()
     projects.extend(ac.get_archived_projects())
     for project in projects:
-        ac_storage.save_project(project)
+        ac_storage.data_objects["projects"].save(project)
         dump_all_project_notes(ac, ac_storage, project)
         dump_all_task_lists_of_project(ac, ac_storage, project)
         dump_all_tasks_of_project(ac, ac_storage, project)
@@ -61,21 +61,21 @@ def dump_all_projects_with_all_data(ac, ac_storage):
 
 def dump_all_project_notes(ac, ac_storage, project):
     for project_note in ac.get_project_notes(project):
-        ac_storage.save_project_note(project_note)
+        ac_storage.data_objects["project-notes"].save(project_note)
         for attachment in project_note.attachments:
             dump_attachment(ac, ac_storage, attachment)
 
 
 def dump_all_task_lists_of_project(ac, ac_storage, project):
     for task_list in ac.get_project_task_lists(project):
-        ac_storage.save_task_list(task_list)
+        ac_storage.data_objects["task-lists"].save(task_list)
 
 
 def dump_all_tasks_of_project(ac, ac_storage, project):
     tasks = ac.get_active_tasks(project.id)
     tasks.extend(ac.get_completed_tasks(project.id))
     for task in tasks:
-        ac_storage.save_task(task)
+        ac_storage.data_objects["tasks"].save(task)
         for attachment in task.get_attachments():
             dump_attachment(ac, ac_storage, attachment)
         if task.total_subtasks > 0:
@@ -86,49 +86,49 @@ def dump_all_tasks_of_project(ac, ac_storage, project):
 
 
 def dump_attachment(ac, ac_storage, attachment):
-    ac_storage.save_attachment(attachment, ac.download_attachment(attachment))
+    ac_storage.data_objects["attachments"].save(attachment, ac.download_attachment(attachment))
 
 
 def dump_task_comments(ac, ac_storage, task):
     for comment in ac.get_comments(task):
-        ac_storage.save_comment(comment)
+        ac_storage.data_objects["comments"].save(comment)
         for attachment in comment.get_attachments():
             dump_attachment(ac, ac_storage, attachment)
 
 
 def dump_task_history(ac, ac_storage, task):
     for history in ac.get_task_history(task):
-        ac_storage.save_task_history(history)
+        ac_storage.data_objects["task-history"].save(history)
 
 
 def dump_task_subtasks(ac, ac_storage, task):
     for subtask in ac.get_subtasks(task):
-        ac_storage.save_subtask(subtask)
+        ac_storage.data_objects["subtasks"].save(subtask)
 
 
 def dump_all_task_labels(ac, ac_storage):
     for task_label in ac.get_task_labels():
-        ac_storage.save_task_label(task_label)
+        ac_storage.data_objects["task-labels"].save(task_label)
 
 
 def dump_all_project_labels(ac, ac_storage):
     for project_label in ac.get_project_labels():
-        ac_storage.save_project_label(project_label)
+        ac_storage.data_objects["project-labels"].save(project_label)
 
 
 def dump_all_project_categories(ac, ac_storage):
     for project_category in ac.get_project_categories():
-        ac_storage.save_project_category(project_category)
+        ac_storage.data_objects["project-categories"].save(project_category)
 
 
 def dump_all_users(ac, ac_storage):
     for user in ac.get_all_users():
-        ac_storage.save_user(user)
+        ac_storage.data_objects["users"].save(user)
 
 
 def dump_all_companies(ac, ac_storage):
     for company in ac.get_all_companies():
-        ac_storage.save_company(company)
+        ac_storage.data_objects["companies"].save(company)
 
 
 def _login(config: configparser.ConfigParser) -> ActiveCollab:
