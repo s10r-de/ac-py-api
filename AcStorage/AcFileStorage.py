@@ -10,7 +10,7 @@ from AcTaskHistory import AcTaskHistory
 from AcTaskLabel import AcTaskLabel
 from AcTaskList import AcTaskList
 from ActiveCollabAPI import AC_CLASS_PROJECT, AC_CLASS_COMPANY, AC_CLASS_COMMENT, AC_CLASS_ATTACHMENT_WAREHOUSE, \
-    AC_CLASS_PROJECT_NOTE, AC_ERROR_WRONG_CLASS
+    AC_CLASS_PROJECT_NOTE, AC_ERROR_WRONG_CLASS, AC_CLASS_ATTACHMENT_LOCAL
 from ActiveCollabAPI import AC_CLASS_TASK, AC_CLASS_TASK_LABEL, AC_CLASS_TASK_LIST, AC_CLASS_USER_MEMBER
 from ActiveCollabAPI import AC_CLASS_USER_OWNER, AC_CLASS_SUBTASK, AC_CLASS_PROJECT_LABEL, AC_CLASS_PROJECT_CATEGORY
 from ActiveCollabAPI.AcAttachment import AcAttachment
@@ -156,7 +156,7 @@ class AcFileStorage(object):
         return os.path.join(self.get_attachments_path(), attachment_filename)
 
     def save_attachment(self, attachment: AcAttachment, tmp_download: str) -> str:
-        assert attachment.class_ == AC_CLASS_ATTACHMENT_WAREHOUSE
+        assert attachment.class_ == AC_CLASS_ATTACHMENT_WAREHOUSE or attachment.class_ == AC_CLASS_ATTACHMENT_LOCAL, AC_ERROR_WRONG_CLASS
         attachment_filename = self.get_attachment_filename(attachment)
         attachment_full_filename = self.get_attachment_full_filename(attachment_filename)
         with open(attachment_full_filename, "w") as f:
