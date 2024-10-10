@@ -107,6 +107,7 @@ class AcClient:
     def download_attachment(self, download_url: str, file_access_token: str, filename: str) -> str:
         # replace &intent=--DOWNLOAD-TOKEN--  with download token
         download_url = download_url.replace('intent=--DOWNLOAD-TOKEN--', 'intent=%s' % file_access_token)
+        download_url = download_url.replace('i=--DOWNLOAD-TOKEN--', 'i=%s' % file_access_token)
         with requests.get(download_url, headers=self.headers(), stream=True) as r:
             r.raise_for_status()
             tmp_filename = os.path.join(gettempdir(), filename)
