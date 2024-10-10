@@ -32,19 +32,19 @@ class ActiveCollab:
 
     session: AcSession = None
 
-    def __init__(self, base_url: str, is_self_hosted: bool = False):
+    def __init__(self, base_url: str, is_cloud: bool = False):
         self.base_url = base_url.rstrip('/')
-        self.is_self_hosted = is_self_hosted
+        self.is_cloud = is_cloud
 
-    def login_to_account(self, email: str, password: str, account: str | None) -> AcSession:
-        if self.is_self_hosted is False:
+    def login(self, email: str, password: str, account: str) -> AcSession:
+        if self.is_cloud is True:
             self.login_to_cloud(account, email, password)
         else:
             self.login_to_self_hosted(email, password)
         return self.session
 
     def login_to_self_hosted(self, email, password):
-        login_res = self.login_self_hosted(email, password)
+        login_res = self.auth_self_hosted(email, password)
         token = AcToken(login_res.token)
         user = AcLoginUser(avatar_url="",
                            first_name="",
@@ -74,7 +74,7 @@ class ActiveCollab:
         auth = AcAuthenticator(self.base_url)
         res = auth.login_cloud(email, password)
         if res.status_code != 200:
-            raise Exception('Login failed!')
+            raise Exception('Login to cloud failed!')
         res_data = res.json()
         if res_data['is_ok'] != 1:
             raise Exception('Login failed! (2)')
@@ -82,7 +82,7 @@ class ActiveCollab:
         user = AcLoginUser(**res_data['user'])
         return AcCloudLoginResponse(user, accounts)
 
-    def login_self_hosted(self, email: str, password: str) -> AcLoginResponse:
+    def auth_self_hosted(self, email: str, password: str) -> AcLoginResponse:
         auth = AcAuthenticator(self.base_url)
         res = auth.login_self_hosted(email, password)
         if res.status_code != 200:
