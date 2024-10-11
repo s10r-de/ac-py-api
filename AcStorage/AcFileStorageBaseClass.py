@@ -5,7 +5,7 @@ import os
 import shutil
 import time
 
-from AcStorage import DEFAULT_MODE_DIRS
+from AcStorage import DEFAULT_MODE_DIRS, AC_ERROR_ID_MUST_BE_INT
 
 
 class AcFileStorageBaseClass:
@@ -33,12 +33,15 @@ class AcFileStorageBaseClass:
         return os.path.join(self.get_account_path(), self.dir_name)
 
     def get_filename(self, obj, generate_id=None) -> str:
-        id = obj.id
+        id = None
+        if hasattr(obj, 'id'):
+            id = obj.id
         if generate_id:
             id = generate_id(obj)
         return self.filename_with_id(id)
 
     def filename_with_id(self, id: int) -> str:
+        assert isinstance(id, int), AC_ERROR_ID_MUST_BE_INT
         return "%s-%08d.json" % (self.filename_prefix, id)
 
     def get_full_filename(self, task_filename: str) -> str:
@@ -58,8 +61,8 @@ class AcFileStorageBaseClass:
         def extract_number(f: str) -> int:
             return locale.atoi(os.path.basename(f)[n + 1:-5])
 
-        return map(extract_number,
-                   glob.iglob(os.path.join(self.get_path(), self.filename_prefix + "-*.json")))
+        return list(map(extract_number,
+                        glob.iglob(os.path.join(self.get_path(), self.filename_prefix + "-*.json"))))
 
     def load(self, id: int) -> dict:
         filename = self.filename_with_id(id)

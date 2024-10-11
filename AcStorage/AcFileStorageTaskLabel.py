@@ -7,6 +7,6 @@ class AcFileStorageTaskLabel(AcFileStorageBaseClass):
     filename_prefix = "task-label"
     dir_name = "task-labels"
 
-    def save(self, task_label: AcTaskLabel) -> str:
+    def save(self, task_label: AcTaskLabel, generate_id=None) -> str:
         assert task_label.class_ == AC_CLASS_TASK_LABEL, AC_ERROR_WRONG_CLASS
         return super().save(task_label)

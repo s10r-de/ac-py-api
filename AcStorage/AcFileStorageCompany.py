@@ -11,7 +11,7 @@ class AcFileStorageCompany(AcFileStorageBaseClass):
     filename_prefix = "company"
     dir_name = "companies"
 
-    def save(self, company: AcCompany) -> str:
+    def save(self, company: AcCompany, generate_id=None) -> str:
         assert company.class_ == AC_CLASS_COMPANY, AC_ERROR_WRONG_CLASS
         return super().save(company)
 

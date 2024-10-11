@@ -7,7 +7,7 @@ class AcFileStorageUser(AcFileStorageBaseClass):
     filename_prefix = "user"
     dir_name = "users"
 
-    def save(self, user: AcUser) -> str:
+    def save(self, user: AcUser, generate_id=None) -> str:
         assert user.class_ == AC_CLASS_USER_MEMBER or user.class_ == AC_CLASS_USER_OWNER, AC_ERROR_WRONG_CLASS
         return super().save(user)
 

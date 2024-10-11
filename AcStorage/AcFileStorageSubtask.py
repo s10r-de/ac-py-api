@@ -7,6 +7,6 @@ class AcFileStorageSubtask(AcFileStorageBaseClass):
     filename_prefix = "subtask"
     dir_name = "subtasks"
 
-    def save(self, subtask: AcSubtask) -> str:
+    def save(self, subtask: AcSubtask, generate_id=None) -> str:
         assert subtask.class_ == AC_CLASS_SUBTASK, AC_ERROR_WRONG_CLASS
         return super().save(subtask)
