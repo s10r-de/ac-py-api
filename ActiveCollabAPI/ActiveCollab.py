@@ -8,7 +8,7 @@ from AcProjectNote import AcProjectNote, project_note_from_json
 from AcTaskHistory import AcTaskHistory, task_history_from_json
 from AcTaskLabel import task_label_from_json, AcTaskLabel
 from AcTaskList import AcTaskList, task_list_from_json
-from ActiveCollabAPI import AC_API_VERSION, AcTask
+from ActiveCollabAPI import AC_API_VERSION, AcTask, AC_ERROR_CAN_NOT_CREATE_OWNER_COMPANY
 from ActiveCollabAPI.AcAccount import AcAccount, account_from_json
 from ActiveCollabAPI.AcAuthenticator import AcAuthenticator
 from ActiveCollabAPI.AcClient import AcClient
@@ -235,6 +235,15 @@ class ActiveCollab:
         res_data = res.json()
         companies = list(map(lambda u: company_from_json(u), res_data))
         return companies
+
+    def create_company(self, company: AcCompany):
+        assert company.is_owner is False, AC_ERROR_CAN_NOT_CREATE_OWNER_COMPANY
+        client = AcClient(self.session.cur_account, self.session.token)
+        res = client.post_company(company.to_json())
+        if res.status_code != 200:
+            raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
+        res_data = res.json()
+        return res_data
 
     def get_project_task_lists(self, project: AcProject) -> list[AcTaskList]:
         client = AcClient(self.session.cur_account, self.session.token)

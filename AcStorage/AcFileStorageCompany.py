@@ -19,3 +19,7 @@ class AcFileStorageCompany(AcFileStorageBaseClass):
         # strip path and "company-" and ".json"
         return map(lambda f: locale.atoi(os.path.basename(f)[8:-5]),
                    glob.iglob(os.path.join(self.get_path(), "company-*.json")))
+
+    def load(self, company_id) -> AcCompany:
+        data = super().load(company_id)
+        return company_from_json(data)

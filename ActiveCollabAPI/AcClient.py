@@ -31,6 +31,10 @@ if DEBUG:
 class AcClient:
     """
     Active Collab REST API Client
+
+    This class implements only the basic HTTP API handling and not
+    the business logic.  For the business logic look into class "ActiveCollab".
+
     """
     base_url = None
     account = None
@@ -62,7 +66,7 @@ class AcClient:
         return requests.post(
             self.base_url + '/' + url,
             headers=self.headers(),
-            data=json.dumps(data))
+            data=data)
 
     def _put(self, url, data):
         return requests.put(
@@ -124,6 +128,9 @@ class AcClient:
 
     def get_all_companies(self) -> Response:
         return self._get('companies/all')
+
+    def post_company(self, data: dict) -> Response:
+        return self._post('companies', data)
 
     def get_task_lists(self, project_id: int) -> Response:
         return self._get('projects/%d/task-lists' % project_id)
