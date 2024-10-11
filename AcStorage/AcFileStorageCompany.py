@@ -43,3 +43,5 @@ class AcFileStorageCompany:
         with open(company_full_filename, "w") as f:
             json.dump(company.to_dict(), f, sort_keys=True, indent=2)
         return company_full_filename
+        return super().save(company)
+

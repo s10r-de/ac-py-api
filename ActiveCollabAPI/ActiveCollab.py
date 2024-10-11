@@ -27,6 +27,11 @@ from ActiveCollabAPI.AcUser import AcUser, user_from_json
 class ActiveCollab:
     """
     Active Collab Client library coming from the use case
+
+    This class implements the business logic, it uses the AcClient to call
+    the HTTP API to call the Active Collab Server.
+
+    For local persistence we use the AcFileStorage* classes.
     """
     base_url: str = ""
 
