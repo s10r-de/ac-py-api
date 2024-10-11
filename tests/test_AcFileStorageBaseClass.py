@@ -61,7 +61,7 @@ class TestAcFileStorageBaseClass(TestCase):
             company = company_from_json(company_json)
         filename = storage.get_filename(company)
         self.assertGreater(len(filename), 0)
-        regex = r'.*-%08d.json$' % (company.id)
+        regex = r'.*-%08d.json$' % company.id
         self.assertRegex(filename, regex)
 
     def test_filename_with_id(self):
@@ -78,7 +78,7 @@ class TestAcFileStorageBaseClass(TestCase):
         storage = AcFileStorageBaseClass(DATA_DIR + m_name, ACCOUNT_ID, TEST_FILENAME_PREFIX, TEST_DIR_NAME)
         filename = storage.get_full_filename(TEST_FILENAME_PREFIX)
         self.assertGreater(len(filename), 0)
-        regex = r'.*/%s$' % (TEST_FILENAME_PREFIX)
+        regex = r'.*/%s$' % TEST_FILENAME_PREFIX
         self.assertRegex(filename, regex)
         regex_ac = r'%s/account-%08d/%s/%s' % (DATA_DIR + m_name, ACCOUNT_ID, TEST_DIR_NAME, TEST_FILENAME_PREFIX)
         self.assertRegex(filename, regex_ac)
@@ -93,7 +93,7 @@ class TestAcFileStorageBaseClass(TestCase):
             company = company_from_json(company_json)
         filename = storage.save(company)
         self.assertGreater(len(filename), 0)
-        regex = r'.*-%08d.json$' % (company.id)
+        regex = r'.*-%08d.json$' % company.id
         self.assertRegex(filename, regex)
         self.assertTrue(os.path.exists(filename))
 
