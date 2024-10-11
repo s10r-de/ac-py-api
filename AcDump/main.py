@@ -1,6 +1,7 @@
 import argparse
 import configparser
 import json
+from collections.abc import Iterator
 
 from AcStorage.AcFileStorage import AcFileStorage
 from ActiveCollabAPI.ActiveCollab import ActiveCollab
@@ -15,6 +16,13 @@ def load_config(args):
 def serialize_output(output):
     # serialize the output
     return json.dumps(output, indent=4)
+
+
+def run_testing(ac, config: configparser.ConfigParser):
+    account_id = config.getint('LOGIN', 'account')
+    storage_path = config.get('STORAGE', 'path')
+    ac_storage = AcFileStorage(storage_path, account_id)
+    return ac_storage.data_objects["task-history"].list()
 
 
 def run_version():
@@ -147,6 +155,15 @@ def _login(config: configparser.ConfigParser) -> ActiveCollab:
     return ac
 
 
+def run_load_all(ac: ActiveCollab, config: configparser.ConfigParser):
+    account_id = config.getint('LOGIN', 'account')
+    storage_path = config.get('STORAGE', 'path')
+    ac_storage = AcFileStorage(storage_path, account_id)
+
+    for company_id in ac_storage.data_objects["companies"].list():
+        company = ac_storage.data_objects["companies"].load(company_id)
+        ac.create_company(company)
+
 def run(args, parser, config: configparser.ConfigParser):
     # run the commands
     if args.command == 'version':
@@ -155,6 +172,10 @@ def run(args, parser, config: configparser.ConfigParser):
         return run_info(_login(config))
     if args.command == 'dump':
         return run_dump_all(_login(config), config)
+    if args.command == 'load':
+        return run_load_all(_login(config), config)
+    if args.command == "testing":
+        return run_testing(_login(config), config)
 
     # no command given so show the help
     parser.print_help()
@@ -169,11 +190,13 @@ def main():
         epilog='(c) 2024 by ACME VC, Charlie Sloan <cs@example.com>')
     parser.add_argument('-c', '--config', required=True,
                         help="use the named config file")
-    parser.add_argument('command', choices=['version', 'info', 'dump'],
+    parser.add_argument('command', choices=['version', 'info', 'dump', 'load', 'testing'],
                         help='The command to run')
     args = parser.parse_args()
     config = load_config(args)
     output = run(args, parser, config)
+    if isinstance(output, Iterator):
+        output = list(output)
     if output is not None:
         print(serialize_output(output))
 
