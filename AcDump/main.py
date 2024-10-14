@@ -164,6 +164,10 @@ def run_load_all(ac: ActiveCollab, config: configparser.ConfigParser):
         company = ac_storage.data_objects["companies"].load(company_id)
         ac.create_company(company)
 
+    for user_id in ac_storage.data_objects["users"].list():
+        user = ac_storage.data_objects["users"].load(user_id)
+
+
 def run(args, parser, config: configparser.ConfigParser):
     # run the commands
     if args.command == 'version':

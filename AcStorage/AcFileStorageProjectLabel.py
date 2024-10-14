@@ -7,6 +7,6 @@ class AcFileStorageProjectLabel(AcFileStorageBaseClass):
     filename_prefix = "project-label"
     dir_name = "project-labels"
 
-    def save(self, project_label: AcProjectLabel, generate_id=None) -> str:
+    def save(self, project_label: AcProjectLabel) -> str:
         assert project_label.class_ == AC_CLASS_PROJECT_LABEL, AC_ERROR_WRONG_CLASS
-        return super().save(project_label)
+        return super().save_with_id(project_label, project_label.id)

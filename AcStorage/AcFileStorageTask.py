@@ -7,6 +7,6 @@ class AcFileStorageTask(AcFileStorageBaseClass):
     filename_prefix = "task"
     dir_name = "tasks"
 
-    def save(self, task: AcTask, generate_id=None) -> str:
+    def save(self, task: AcTask) -> str:
         assert task.class_ == AC_CLASS_TASK, AC_ERROR_WRONG_CLASS
-        return super().save(task)
+        return super().save_with_id(task, task.id)

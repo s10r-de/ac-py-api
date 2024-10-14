@@ -5,18 +5,16 @@ import os
 import shutil
 import time
 
-from AcStorage import DEFAULT_MODE_DIRS, AC_ERROR_ID_MUST_BE_INT, ID_WITH_TIMESTAMP
+from AcStorage import DEFAULT_MODE_DIRS, AC_ERROR_ID_MUST_BE_INT
 
 
 class AcFileStorageBaseClass:
     filename_prefix = None
     dir_name = None
 
-    def __init__(self, root_path: str, account_id: int, filename_prefix: str = "", dir_name: str = ""):
+    def __init__(self, root_path: str, account_id: int):
         self.root_path = root_path
         self.account_id = account_id
-        self.filename_prefix = filename_prefix
-        self.dir_name = dir_name
 
     def reset(self):
         if os.path.exists(self.get_path()):
@@ -34,22 +32,15 @@ class AcFileStorageBaseClass:
     def get_path(self) -> str:
         return os.path.join(self.get_account_path(), self.dir_name)
 
-    def get_filename(self, obj, id: int | None = None) -> str:
-        if id is None:
-            id = obj.id
-        return self.filename_with_id(id)
-
     def filename_with_id(self, id: int) -> str:
         assert isinstance(id, int), AC_ERROR_ID_MUST_BE_INT
-        if id > ID_WITH_TIMESTAMP:
-            return "%s-%16d.json" % (self.filename_prefix, id)
-        return "%s-%08d.json" % (self.filename_prefix, id)
+        return "%s-%018d.json" % (self.filename_prefix, id)
 
     def get_full_filename(self, task_filename: str) -> str:
         return os.path.join(self.get_path(), task_filename)
 
-    def save(self, obj, id: int | None = None) -> str:
-        filename = self.get_filename(obj, id)
+    def save_with_id(self, obj, id) -> str:
+        filename = self.filename_with_id(id)
         full_filename = self.get_full_filename(filename)
         with open(full_filename, "w") as f:
             json.dump(obj.to_dict(), f, sort_keys=True, indent=2)

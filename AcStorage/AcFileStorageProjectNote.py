@@ -7,6 +7,6 @@ class AcFileStorageProjectNote(AcFileStorageBaseClass):
     filename_prefix = "project-note"
     dir_name = "project-notes"
 
-    def save(self, project_note: AcProjectNote, generate_id=None) -> str:
+    def save(self, project_note: AcProjectNote) -> str:
         assert project_note.class_ == AC_CLASS_PROJECT_NOTE, AC_ERROR_WRONG_CLASS
-        return super().save(project_note)
+        return super().save_with_id(project_note, project_note.id)

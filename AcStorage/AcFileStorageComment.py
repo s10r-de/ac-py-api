@@ -7,6 +7,6 @@ class AcFileStorageComment(AcFileStorageBaseClass):
     filename_prefix = "comment"
     dir_name = "comments"
 
-    def save(self, comment: AcComment, id: int | None = None) -> str:
+    def save(self, comment: AcComment) -> str:
         assert comment.class_ == AC_CLASS_COMMENT, AC_ERROR_WRONG_CLASS
-        return super().save(comment, id)
+        return super().save_with_id(comment, comment.id)
