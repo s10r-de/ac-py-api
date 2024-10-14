@@ -5,7 +5,7 @@ import time
 
 from AcAttachment import AcAttachment
 from AcStorage import DEFAULT_MODE_DIRS
-from ActiveCollabAPI import AC_ERROR_WRONG_CLASS, AC_CLASS_ATTACHMENT_WAREHOUSE
+from ActiveCollabAPI import AC_ERROR_WRONG_CLASS, AC_CLASS_ATTACHMENT_WAREHOUSE, AC_CLASS_ATTACHMENT_LOCAL
 
 
 class AcFileStorageAttachment:
@@ -37,7 +37,7 @@ class AcFileStorageAttachment:
         return os.path.join(self.get_path(), task_filename)
 
     def save(self, attachment: AcAttachment, tmp_download: str) -> str:
-        assert attachment.class_ == AC_CLASS_ATTACHMENT_WAREHOUSE, AC_ERROR_WRONG_CLASS
+        assert attachment.class_ == AC_CLASS_ATTACHMENT_WAREHOUSE or attachment.class_ == AC_CLASS_ATTACHMENT_LOCAL, AC_ERROR_WRONG_CLASS
         attachment_filename = self.get_filename(attachment)
         attachment_full_filename = self.get_full_filename(attachment_filename)
         with open(attachment_full_filename, "w") as f:
