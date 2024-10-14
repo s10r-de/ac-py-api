@@ -4,13 +4,19 @@ from ActiveCollabAPI import AC_CLASS_USER_MEMBER, AC_CLASS_USER_OWNER, AC_ERROR_
 
 
 class AcFileStorageUser(AcFileStorageBaseClass):
-    filename_prefix = "user"
-    dir_name = "users"
+
+    def __init__(self, root_path: str, account_id: int):
+        super().__init__(root_path, account_id)
+        self.filename_prefix = "user"
+        self.dir_name = "users"
+
+    def setup(self):
+        pass
 
     def save(self, user: AcUser) -> str:
         assert user.class_ == AC_CLASS_USER_MEMBER or user.class_ == AC_CLASS_USER_OWNER, AC_ERROR_WRONG_CLASS
         return super().save_with_id(user, user.id)
 
     def load(self, user_id: int) -> AcUser:
-        data = super().load(user_id)
+        data = super().load_by_id(user_id)
         return user_from_json(data)

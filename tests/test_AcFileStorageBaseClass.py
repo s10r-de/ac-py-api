@@ -117,7 +117,7 @@ class TestAcFileStorageBaseClass(TestCase):
         company88 = copy.copy(company)
         company88.id = 88
         storage.save_with_id(company88, company88.id)
-        items = storage.list()
+        items = storage.list_ids()
         self.assertIn(77, items)
         self.assertIn(88, items)
         self.assertEqual(2, len(items))
@@ -134,7 +134,7 @@ class TestAcFileStorageBaseClass(TestCase):
             company = company_from_json(company_json)
         company.id = 44
         storage.save_with_id(company, company.id)
-        loaded_comp = storage.load(44)
+        loaded_comp = storage.load_by_id(44)
         self.assertEqual(company.class_, loaded_comp["class"])
         self.assertEqual(company.id, loaded_comp["id"])
         self.assertEqual(company.name, loaded_comp["name"])

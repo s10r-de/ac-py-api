@@ -11,6 +11,7 @@
       <excludeFolder url="file://$MODULE_DIR$/tests/data" />
       <excludeFolder url="file://$MODULE_DIR$/active-collab-server" />
       <excludeFolder url="file://$MODULE_DIR$/data-self-hosted" />
+      <excludeFolder url="file://$MODULE_DIR$/tests/data-test" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

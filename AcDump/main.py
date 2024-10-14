@@ -160,12 +160,13 @@ def run_load_all(ac: ActiveCollab, config: configparser.ConfigParser):
     storage_path = config.get('STORAGE', 'path')
     ac_storage = AcFileStorage(storage_path, account_id)
 
-    for company_id in ac_storage.data_objects["companies"].list():
+    for company_id in ac_storage.data_objects["companies"].list_ids():
         company = ac_storage.data_objects["companies"].load(company_id)
         ac.create_company(company)
 
-    for user_id in ac_storage.data_objects["users"].list():
+    for user_id in ac_storage.data_objects["users"].list_ids():
         user = ac_storage.data_objects["users"].load(user_id)
+        # ac.create_user(user)
 
 
 def run(args, parser, config: configparser.ConfigParser):

@@ -9,10 +9,10 @@ from AcStorage import DEFAULT_MODE_DIRS, AC_ERROR_ID_MUST_BE_INT
 
 
 class AcFileStorageBaseClass:
-    filename_prefix = None
-    dir_name = None
 
     def __init__(self, root_path: str, account_id: int):
+        self.dir_name = None
+        self.filename_prefix = None
         self.root_path = root_path
         self.account_id = account_id
 
@@ -46,7 +46,7 @@ class AcFileStorageBaseClass:
             json.dump(obj.to_dict(), f, sort_keys=True, indent=2)
         return full_filename
 
-    def list(self) -> list[int]:
+    def list_ids(self) -> list[int]:
         # strip path and "${filename_prefix}-" and ".json" to get the ID for the object
         n = len(self.filename_prefix)
 
@@ -56,7 +56,7 @@ class AcFileStorageBaseClass:
         return list(map(extract_id,
                         glob.iglob(os.path.join(self.get_path(), self.filename_prefix + "-*.json"))))
 
-    def load(self, id: int) -> dict:
+    def load_by_id(self, id: int) -> dict:
         filename = self.filename_with_id(id)
         full_filename = self.get_full_filename(filename)
         with open(full_filename, "r") as f:

@@ -3,8 +3,14 @@ from AcTaskHistory import AcTaskHistory
 
 
 class AcFileStorageTaskHistory(AcFileStorageBaseClass):
-    filename_prefix = "task-history"
-    dir_name = "task-history"
+
+    def __init__(self, root_path: str, account_id: int):
+        super().__init__(root_path, account_id)
+        self.filename_prefix = "task-history"
+        self.dir_name = "task-history"
+
+    def setup(self):
+        pass
 
     @staticmethod
     def make_id(task_id, timestamp) -> int:

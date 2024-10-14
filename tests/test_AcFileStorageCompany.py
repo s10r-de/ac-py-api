@@ -39,3 +39,22 @@ class TestAcFileStorageCompany(TestCase):
         with self.assertRaises(AssertionError) as cm:
             storage.save(company)
         self.assertEqual(AC_ERROR_WRONG_CLASS, cm.exception.args[0])
+
+    def test_list_ids(self):
+        m_name = inspect.stack()[0][3]
+        storage = AcFileStorageCompany(DATA_DIR + m_name, ACCOUNT_ID)
+        storage.reset()
+        storage.ensure_dirs()
+        ids = storage.list_ids()
+        self.assertEqual(0, len(ids))
+        company = company_from_json(self._generate_test_company(5))
+        storage.save(company)
+        ids = storage.list_ids()
+        self.assertEqual(1, len(ids))
+        company = company_from_json(self._generate_test_company(6))
+        storage.save(company)
+        ids = storage.list_ids()
+        self.assertEqual(2, len(ids))
+        storage.save(company)  # overwrite!
+        ids = storage.list_ids()
+        self.assertEqual(2, len(ids))
