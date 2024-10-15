@@ -130,7 +130,7 @@ class AcClient:
         return self._get('companies/all')
 
     def post_company(self, data: dict) -> Response:
-        return self._post('companies', data)
+        return self._post('companies', json.dumps(data))
 
     def get_task_lists(self, project_id: int) -> Response:
         return self._get('projects/%d/task-lists' % project_id)

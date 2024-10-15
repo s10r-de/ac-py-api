@@ -5,7 +5,7 @@ import os
 import shutil
 import time
 
-from AcStorage import DEFAULT_MODE_DIRS, AC_ERROR_ID_MUST_BE_INT
+from AcFileStorage import DEFAULT_MODE_DIRS, AC_ERROR_ID_MUST_BE_INT
 
 
 class AcFileStorageBaseClass:

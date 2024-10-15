@@ -237,9 +237,9 @@ class ActiveCollab:
         return companies
 
     def create_company(self, company: AcCompany):
-        assert company.is_owner is False, AC_ERROR_CAN_NOT_CREATE_OWNER_COMPANY
+        assert company.is_owner is False, AC_ERROR_CAN_NOT_CREATE_OWNER_COMPANY  # TODO: implement test!
         client = AcClient(self.session.cur_account, self.session.token)
-        res = client.post_company(company.to_json())
+        res = client.post_company(company.to_dict())
         if res.status_code != 200:
             raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
         res_data = res.json()
