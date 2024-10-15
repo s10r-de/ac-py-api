@@ -1,43 +1,21 @@
-import json
-import os
-import shutil
-import time
-
-from AcStorage import DEFAULT_MODE_DIRS
+from AcFileStorageBaseClass import AcFileStorageBaseClass
 from AcTaskHistory import AcTaskHistory
 
 
-class AcFileStorageTaskHistory:
+class AcFileStorageTaskHistory(AcFileStorageBaseClass):
+
     def __init__(self, root_path: str, account_id: int):
-        self.root_path = root_path
-        self.account_id = account_id
+        super().__init__(root_path, account_id)
+        self.filename_prefix = "task-history"
+        self.dir_name = "task-history"
 
-    def reset(self):
-        if os.path.exists(self.get_path()):
-            tmp_path = '%s_%d' % (self.get_path(), time.time())
-            os.rename(self.get_path(), tmp_path)
-            shutil.rmtree(tmp_path)
-
-    def ensure_dirs(self):
-        if not os.path.exists(self.get_path()):
-            os.makedirs(self.get_path(), DEFAULT_MODE_DIRS)
-
-    def get_account_path(self) -> str:
-        return os.path.join(self.root_path, "account-%08d" % self.account_id)
-
-    def get_path(self) -> str:
-        return os.path.join(self.get_account_path(), "task-history")
+    def setup(self):
+        pass
 
     @staticmethod
-    def get_filename(task_history: AcTaskHistory) -> str:
-        return "task-history-%08d-%010d.json" % (task_history.task_id, task_history.timestamp)
-
-    def get_full_filename(self, task_history_filename: str) -> str:
-        return os.path.join(self.get_path(), task_history_filename)
+    def make_id(task_id, timestamp) -> int:
+        return task_id * 10000000000 + timestamp
 
     def save(self, task_history: AcTaskHistory) -> str:
-        task_history_filename = self.get_filename(task_history)
-        task_history_full_filename = self.get_full_filename(task_history_filename)
-        with open(task_history_full_filename, "w") as f:
-            json.dump(task_history.to_dict(), f, sort_keys=True, indent=2)
-        return task_history_full_filename
+        obj_id = self.make_id(task_history.task_id, task_history.timestamp)
+        return super().save_with_id(task_history, obj_id)

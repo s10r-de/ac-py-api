@@ -97,7 +97,7 @@ class TestAcTaskHistory(TestCase):
         self.assertEqual(timestamp, json.loads(task_history_json)["timestamp"])
 
     def test_from_json(self):
-        with open("../example-data/example-task-history-1727425588.json", "r") as f:
+        with open("example-data/example-task-history-1727425588.json", "r") as f:
             task_history_json = json.load(f)
         task_history = task_history_from_json(task_history_json, 8731)
         self.assertEqual(1727425588, task_history.timestamp)

@@ -5,7 +5,7 @@
       <entry url="file://$PROJECT_DIR$">
         <entryData>
           <resourceRoots>
-            <path value="file://$PROJECT_DIR$/example-data" />
+            <path value="file://$PROJECT_DIR$/tests/example-data" />
             <path value="file://$PROJECT_DIR$/ActiveCollabServer" />
           </resourceRoots>
         </entryData>

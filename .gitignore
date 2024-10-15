@@ -3,7 +3,7 @@
 /config-selfhosted.ini
 /data/
 /data-self-hosted/
-/tests/data/
+/tests/data-test/
 __pycache__
 ActiveCollabServer/env
 *.zip

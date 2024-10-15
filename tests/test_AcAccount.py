@@ -61,5 +61,5 @@ class TestAcAccount(TestCase):
             "status": "active"
         }
         with self.assertRaises(AssertionError) as cm:
-            account = account_from_json(account_json)
+            account_from_json(account_json)
         self.assertEqual(AC_ERROR_WRONG_CLASS, cm.exception.args[0])
