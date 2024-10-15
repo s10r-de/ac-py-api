@@ -9,7 +9,7 @@ class TestAcUser(TestCase):
 
     @staticmethod
     def _generate_test_user(user_id: int) -> dict:
-        with open('../example-data/example-user-00000240.json', 'r') as fh:
+        with open('example-data/example-user-00000240.json', 'r') as fh:
             user_json = json.load(fh)
         user_json["id"] = user_id
         return user_json

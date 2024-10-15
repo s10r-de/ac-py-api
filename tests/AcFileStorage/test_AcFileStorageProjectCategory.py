@@ -15,7 +15,7 @@ class TestAcFileStorageProjectCategory(TestCase):
 
     @staticmethod
     def _generate_test_project_category(project_id: int) -> dict:
-        with open('../example-data/example-project-category-2.json', 'r') as fh:
+        with open('example-data/example-project-category-2.json', 'r') as fh:
             project_category_json = json.load(fh)
         project_category_json["id"] = project_id
         return project_category_json

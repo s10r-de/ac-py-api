@@ -10,14 +10,14 @@ class TestAcComment(TestCase):
 
     @staticmethod
     def _generate_test_comment(comment_id: int) -> AcComment:
-        with open('../example-data/example-comment-95993.json', 'r') as fh:
+        with open('example-data/example-comment-95993.json', 'r') as fh:
             comment = comment_from_json(json.load(fh))
         comment.id = comment_id
         return comment
 
     @staticmethod
     def _generate_test_attachment(attachment_id: int) -> AcAttachment:
-        with open('../example-data/example-attachment-29703.json', 'r') as fh:
+        with open('example-data/example-attachment-29703.json', 'r') as fh:
             attachment = attachment_from_json(json.load(fh))
         attachment.id = attachment_id
         return attachment
@@ -93,7 +93,7 @@ class TestAcComment(TestCase):
 
     @staticmethod
     def _generate_test_comment_with_attachments(comment_id: int) -> dict:
-        with open('../example-data/example-comment-95993b.json', 'r') as fh:
+        with open('example-data/example-comment-95993b.json', 'r') as fh:
             comment = json.load(fh)
         comment["id"] = comment_id
         return comment

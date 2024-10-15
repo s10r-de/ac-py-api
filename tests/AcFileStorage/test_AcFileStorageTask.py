@@ -3,40 +3,40 @@ import json
 import os.path
 from unittest import TestCase
 
-from AcFileStorageSubtask import AcFileStorageSubtask
-from AcSubtask import subtask_from_json
+from AcFileStorageTask import AcFileStorageTask
+from AcTask import task_from_json
 from ActiveCollabAPI import AC_ERROR_WRONG_CLASS
 
 DATA_DIR = './data-test/%s/' % __name__
 ACCOUNT_ID = 12345
 
 
-class TestAcFileStorageSubtask(TestCase):
+class TestAcFileStorageTask(TestCase):
 
     @staticmethod
-    def _generate_test_subtask(task_id: int, subtask_id: int) -> dict:
-        with open('../example-data/example-subtask-00041071.json', 'r') as fh:
-            subtask = json.load(fh)
-        subtask["task_id"] = task_id
-        subtask["id"] = subtask_id
-        return subtask
+    def _generate_test_task(task_id: int) -> dict:
+        with open('example-data/example-task-17614.json', 'r') as fh:
+            task_json = json.load(fh)
+        task_json["id"] = task_id
+        return task_json
+
 
     def test_save(self):
         m_name = inspect.stack()[0][3]
-        storage = AcFileStorageSubtask(DATA_DIR + m_name, ACCOUNT_ID)
+        storage = AcFileStorageTask(DATA_DIR + m_name, ACCOUNT_ID)
         storage.reset()
         storage.ensure_dirs()
-        task = subtask_from_json(self._generate_test_subtask(36, 6))
+        task = task_from_json(self._generate_test_task(36))
         full_filename = storage.save(task)
         self.assertGreater(len(full_filename), 0)
         self.assertTrue(os.path.isfile(full_filename))
 
     def test_save_wrong_class(self):
         m_name = inspect.stack()[0][3]
-        storage = AcFileStorageSubtask(DATA_DIR + m_name, ACCOUNT_ID)
+        storage = AcFileStorageTask(DATA_DIR + m_name, ACCOUNT_ID)
         storage.reset()
         storage.ensure_dirs()
-        task2 = subtask_from_json(self._generate_test_subtask(360, 7))
+        task2 = task_from_json(self._generate_test_task(360))
         task2.class_ = "dummy"
         with self.assertRaises(AssertionError) as cm:
             storage.save(task2)

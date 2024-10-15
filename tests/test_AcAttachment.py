@@ -9,7 +9,7 @@ class TestAcAttachment(TestCase):
 
     @staticmethod
     def _generate_test_attachment(attachment_id: int) -> dict:
-        with open('../example-data/example-attachment-29703.json', 'r') as fh:
+        with open('example-data/example-attachment-29703.json', 'r') as fh:
             attachment_json = json.load(fh)
         attachment_json["id"] = attachment_id
         return attachment_json

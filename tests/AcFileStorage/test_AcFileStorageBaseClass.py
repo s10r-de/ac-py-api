@@ -9,7 +9,7 @@ from unittest import TestCase
 from AcCompany import company_from_json
 from AcFileStorageBaseClass import AcFileStorageBaseClass
 
-DATA_DIR = './data-test/TestAcFileStorageBaseClass/'
+DATA_DIR = '../data-test/TestAcFileStorageBaseClass/'
 ACCOUNT_ID = 98765
 
 TEST_FILENAME_PREFIX = "test-file-prefix"
@@ -92,7 +92,7 @@ class TestAcFileStorageBaseClass(TestCase):
         storage.dir_name = TEST_DIR_NAME
         storage.reset()
         storage.ensure_dirs()
-        with open('../example-data/example-company-5.json', 'r') as fh:
+        with open('example-data/example-company-5.json', 'r') as fh:
             company_json = json.load(fh)
             company = company_from_json(company_json)
         filename = storage.save_with_id(company, company.id)
@@ -108,7 +108,7 @@ class TestAcFileStorageBaseClass(TestCase):
         storage.dir_name = TEST_DIR_NAME
         storage.reset()
         storage.ensure_dirs()
-        with open('../example-data/example-company-5.json', 'r') as fh:
+        with open('example-data/example-company-5.json', 'r') as fh:
             company_json = json.load(fh)
             company = company_from_json(company_json)
         company77 = copy.copy(company)
@@ -129,7 +129,7 @@ class TestAcFileStorageBaseClass(TestCase):
         storage.dir_name = TEST_DIR_NAME
         storage.reset()
         storage.ensure_dirs()
-        with open('../example-data/example-company-5.json', 'r') as fh:
+        with open('example-data/example-company-5.json', 'r') as fh:
             company_json = json.load(fh)
             company = company_from_json(company_json)
         company.id = 44

@@ -15,7 +15,7 @@ class TestAcFileStorageProject(TestCase):
 
     @staticmethod
     def _generate_test_project(project_id: int) -> dict:
-        with open('../example-data/example-project-611.json', 'r') as fh:
+        with open('example-data/example-project-611.json', 'r') as fh:
             project_son = json.load(fh)
         project_son["id"] = project_id
         return project_son
