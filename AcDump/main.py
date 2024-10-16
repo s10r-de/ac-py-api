@@ -160,19 +160,26 @@ def run_load_all(ac: ActiveCollab, config: configparser.ConfigParser):
     storage_path = config.get('STORAGE', 'path')
     ac_storage = AcFileStorage(storage_path, account_id)
 
-    cnt = 0
-    for company_id in ac_storage.data_objects["companies"].list_ids():
-        company = ac_storage.data_objects["companies"].load(company_id)
-        if ac.create_company(company):
-            cnt += 1
-    print("Imported %d companies" % cnt)
+    # cnt = 0
+    # for company_id in ac_storage.data_objects["companies"].list_ids():
+    #     company = ac_storage.data_objects["companies"].load(company_id)
+    #     if ac.create_company(company):
+    #         cnt += 1
+    # print("Imported %d companies" % cnt)
+    #
+    # cnt = 0
+    # for user_id in ac_storage.data_objects["users"].list_ids():
+    #     user = ac_storage.data_objects["users"].load(user_id)
+    #     if ac.create_user(user):
+    #         cnt += 1
+    # print("Imported %d users" % cnt)
 
     cnt = 0
-    for user_id in ac_storage.data_objects["users"].list_ids():
-        user = ac_storage.data_objects["users"].load(user_id)
-        if ac.create_user(user):
+    for project_category_id in ac_storage.data_objects["project-categories"].list_ids():
+        project_category = ac_storage.data_objects["project-categories"].load(project_category_id)
+        if ac.create_project_category(project_category):
             cnt += 1
-    print("Imported %d users" % cnt)
+    print("Imported %d project-category" % cnt)
 
 
 def run(args, parser, config: configparser.ConfigParser):

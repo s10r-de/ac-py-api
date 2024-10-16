@@ -1,5 +1,5 @@
 from AcFileStorageBaseClass import AcFileStorageBaseClass
-from AcProjectCategory import AcProjectCategory
+from AcProjectCategory import AcProjectCategory, project_category_from_json
 from ActiveCollabAPI import AC_CLASS_PROJECT_CATEGORY, AC_ERROR_WRONG_CLASS
 
 
@@ -16,3 +16,7 @@ class AcFileStorageProjectCategory(AcFileStorageBaseClass):
     def save(self, project_category: AcProjectCategory) -> str:
         assert project_category.class_ == AC_CLASS_PROJECT_CATEGORY, AC_ERROR_WRONG_CLASS
         return super().save_with_id(project_category, project_category.id)
+
+    def load(self, project_category_id) -> AcProjectCategory:
+        data = super().load_by_id(project_category_id)
+        return project_category_from_json(data)

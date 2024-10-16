@@ -54,21 +54,21 @@ class AcClient:
             'User-Agent': AC_USER_AGENT
         }
 
-    def _get(self, url):
+    def _get(self, url: str) -> Response:
         return requests.get(self.base_url + '/' + url,
                             headers=self.headers())
 
-    def _delete(self, url):
+    def _delete(self, url: str) -> Response:
         return requests.delete(self.base_url + '/' + url,
                                headers=self.headers())
 
-    def _post(self, url, data):
+    def _post(self, url: str, data: str) -> Response:
         return requests.post(
             self.base_url + '/' + url,
             headers=self.headers(),
             data=data)
 
-    def _put(self, url, data):
+    def _put(self, url: str, data: str) -> Response:
         return requests.put(
             self.base_url + '/' + url,
             headers=self.headers(),
@@ -143,3 +143,6 @@ class AcClient:
 
     def get_project_categories(self) -> Response:
         return self._get('projects/categories')
+
+    def post_project_category(self, data: dict) -> Response:
+        return self._post('categories', json.dumps(data))

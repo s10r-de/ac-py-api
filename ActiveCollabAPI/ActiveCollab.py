@@ -293,6 +293,16 @@ class ActiveCollab:
         project_categories = list(map(lambda l: project_category_from_json(l), res_data))
         return project_categories
 
+    def create_project_category(self, project_category: AcProjectCategory) -> dict | None:
+        client = AcClient(self.session.cur_account, self.session.token)
+        project_category = project_category.to_dict()
+        project_category["type"] = project_category["class"]  # FIXME
+        res = client.post_project_category(project_category)
+        if res.status_code != 200:
+            raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
+        res_data = res.json()
+        return res_data
+
     def get_project_notes(self, project: AcProject) -> list[AcProjectNote]:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_project_notes(project.id)
