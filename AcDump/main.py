@@ -174,6 +174,13 @@ def run_load_all(ac: ActiveCollab, config: configparser.ConfigParser):
             cnt += 1
     print("Imported %d users" % cnt)
 
+    cnt = 0
+    for project_category_id in ac_storage.data_objects["project-categories"].list_ids():
+        project_category = ac_storage.data_objects["project-categories"].load(project_category_id)
+        if ac.create_project_category(project_category):
+            cnt += 1
+    print("Imported %d project-category" % cnt)
+
 
 def run(args, parser, config: configparser.ConfigParser):
     # run the commands
