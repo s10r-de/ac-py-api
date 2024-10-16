@@ -24,8 +24,13 @@ AC_CLASS_TASK = "Task"
 AC_CLASS_TASK_LABEL = "TaskLabel"
 AC_CLASS_TASK_LIST = "TaskList"
 AC_CLASS_USER_MEMBER = "Member"
+AC_USER_TYPE__MEMBER = "Member"
 AC_CLASS_USER_OWNER = "Owner"
+AC_USER_TYPE__OWNER = "Owner"
+AC_USER_TYPE__CLIENT = "Client"
+
 AC_CLASS_ACCOUNT = 'ActiveCollab\\Shepherd\\Model\\Account\\ActiveCollab\\FeatherAccount'
 
 AC_ERROR_WRONG_CLASS = "Wrong Object Class!"
 AC_ERROR_CAN_NOT_CREATE_OWNER_COMPANY = "Can not create company when is_owner is true!"
+AC_ERROR_CAN_NOT_CREATE_OWNER_USER = "Can not create company owner!"

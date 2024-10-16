@@ -166,7 +166,7 @@ def run_load_all(ac: ActiveCollab, config: configparser.ConfigParser):
 
     for user_id in ac_storage.data_objects["users"].list_ids():
         user = ac_storage.data_objects["users"].load(user_id)
-        # ac.create_user(user)
+        ac.create_user(user)
 
 
 def run(args, parser, config: configparser.ConfigParser):
