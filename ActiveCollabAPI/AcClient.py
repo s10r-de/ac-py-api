@@ -95,6 +95,9 @@ class AcClient:
     def get_all_users(self):
         return self._get('users/all')
 
+    def post_user(self, data: dict) -> Response:
+        return self._post('users', json.dumps(data))
+
     def get_subtasks(self, project_id: int, task_id: int):
         return self._get('projects/%d/tasks/%d/subtasks' % (project_id, task_id))
 
