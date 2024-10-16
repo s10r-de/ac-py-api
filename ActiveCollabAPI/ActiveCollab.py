@@ -11,8 +11,7 @@ from AcProjectNote import AcProjectNote, project_note_from_json
 from AcTaskHistory import AcTaskHistory, task_history_from_json
 from AcTaskLabel import task_label_from_json, AcTaskLabel
 from AcTaskList import AcTaskList, task_list_from_json
-from ActiveCollabAPI import AC_API_VERSION, AcTask, AC_ERROR_CAN_NOT_CREATE_OWNER_COMPANY, \
-    AC_ERROR_CAN_NOT_CREATE_OWNER_USER, AC_CLASS_USER_MEMBER
+from ActiveCollabAPI import AC_API_VERSION, AcTask, AC_CLASS_USER_OWNER
 from ActiveCollabAPI.AcAccount import AcAccount, account_from_json
 from ActiveCollabAPI.AcAuthenticator import AcAuthenticator
 from ActiveCollabAPI.AcClient import AcClient
@@ -177,12 +176,16 @@ class ActiveCollab:
         users = list(map(lambda u: user_from_json(u), res_data))
         return users
 
-    def create_user(self, user: AcUser):
-        assert user.class_ == AC_CLASS_USER_MEMBER, AC_ERROR_CAN_NOT_CREATE_OWNER_USER
+    def create_user(self, user: AcUser) -> dict | None:
+        if user.class_ == AC_CLASS_USER_OWNER:
+            print("can not create owner user %d" % user.id)
+            return
         client = AcClient(self.session.cur_account, self.session.token)
         user = user.to_dict()
         user["type"] = user["class"]  # FIXME ???
-        user["password"] = ''.join(random.choices(string.ascii_uppercase + string.digits, k=16))  # FIXME ??
+        user["password"] = ''.join(
+            random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=16))  # FIXME ??
+        print("QQQ password for user %s is '%s'" % (user["email"], user["password"]))  # FIXME: only for debugging!!
         res = client.post_user(user)
         if res.status_code != 200:
             raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
@@ -252,8 +255,10 @@ class ActiveCollab:
         companies = list(map(lambda u: company_from_json(u), res_data))
         return companies
 
-    def create_company(self, company: AcCompany):
-        assert company.is_owner is False, AC_ERROR_CAN_NOT_CREATE_OWNER_COMPANY  # TODO: implement test!
+    def create_company(self, company: AcCompany) -> dict | None:
+        if company.is_owner is True:
+            print("skip owner company %d" % company.id)
+            return
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.post_company(company.to_dict())
         if res.status_code != 200:
