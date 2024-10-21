@@ -89,6 +89,9 @@ class AcClient:
     def get_archived_projects(self):
         return self._get('projects/archive')
 
+    def post_project(self, data: dict) -> Response:
+        return self._post('projects', json.dumps(data))
+
     def get_project_notes(self, project_id: int):
         return self._get('projects/%d/notes' % project_id)
 

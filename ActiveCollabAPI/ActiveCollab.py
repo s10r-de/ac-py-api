@@ -167,6 +167,16 @@ class ActiveCollab:
         projects = list(map(lambda p: project_from_json(p), res_data))
         return projects
 
+    def create_project(self, project: AcProject) -> dict | None:
+        client = AcClient(self.session.cur_account, self.session.token)
+        project = project.to_dict()
+        project["type"] = project["class"]  # FIXME
+        res = client.post_project(project)
+        if res.status_code != 200:
+            raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
+        res_data = res.json()
+        return res_data
+
     def get_all_users(self) -> list[AcUser]:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_all_users()

@@ -160,17 +160,28 @@ def run_load_all(ac: ActiveCollab, config: configparser.ConfigParser):
     storage_path = config.get('STORAGE', 'path')
     ac_storage = AcFileStorage(storage_path, account_id)
 
-    cnt = _load_companies(ac, ac_storage)
-    print("Imported %d companies" % cnt)
-    cnt = _load_users(ac, ac_storage)
-    print("Imported %d users" % cnt)
-    cnt = _load_project_categories(ac, ac_storage)
-    print("Imported %d project-category" % cnt)
-    cnt = _load_project_labels(ac, ac_storage)
-    print("Imported %d project-labels" % cnt)
+    # cnt = _load_companies(ac, ac_storage)
+    # print("Imported %d companies" % cnt)
+    # cnt = _load_users(ac, ac_storage)
+    # print("Imported %d users" % cnt)
+    # cnt = _load_project_categories(ac, ac_storage)
+    # print("Imported %d project-category" % cnt)
+    # cnt = _load_project_labels(ac, ac_storage)
+    # print("Imported %d project-labels" % cnt)
+    cnt = _load_projects(ac, ac_storage)
+    print("Imported %d projects" % cnt)
 
 
-def _load_project_labels(ac, ac_storage: AcFileStorage) -> int:
+def _load_projects(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
+    cnt = 0
+    for project_id in ac_storage.data_objects["projects"].list_ids():
+        project = ac_storage.data_objects["projects"].load(project_id)
+        if ac.create_project(project):
+            cnt += 1
+    return cnt
+
+
+def _load_project_labels(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
     cnt = 0
     for project_label_id in ac_storage.data_objects["project-labels"].list_ids():
         project_label = ac_storage.data_objects["project-labels"].load(project_label_id)
@@ -179,7 +190,7 @@ def _load_project_labels(ac, ac_storage: AcFileStorage) -> int:
     return cnt
 
 
-def _load_project_categories(ac, ac_storage: AcFileStorage) -> int:
+def _load_project_categories(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
     cnt = 0
     for project_category_id in ac_storage.data_objects["project-categories"].list_ids():
         project_category = ac_storage.data_objects["project-categories"].load(project_category_id)
@@ -188,7 +199,7 @@ def _load_project_categories(ac, ac_storage: AcFileStorage) -> int:
     return cnt
 
 
-def _load_users(ac, ac_storage: AcFileStorage) -> int:
+def _load_users(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
     cnt = 0
     for user_id in ac_storage.data_objects["users"].list_ids():
         user = ac_storage.data_objects["users"].load(user_id)
@@ -197,7 +208,7 @@ def _load_users(ac, ac_storage: AcFileStorage) -> int:
     return cnt
 
 
-def _load_companies(ac, ac_storage: AcFileStorage) -> int:
+def _load_companies(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
     cnt = 0
     for company_id in ac_storage.data_objects["companies"].list_ids():
         company = ac_storage.data_objects["companies"].load(company_id)
