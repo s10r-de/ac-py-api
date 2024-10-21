@@ -295,6 +295,16 @@ class ActiveCollab:
         task_lists = list(map(lambda t: task_list_from_json(t), res_data))
         return task_lists
 
+    def create_task_list(self, task_list: AcTaskList) -> dict | None:
+        client = AcClient(self.session.cur_account, self.session.token)
+        task_list = task_list.to_dict()
+        task_list["type"] = task_list["class"]  # FIXME
+        res = client.post_task_list(task_list)
+        if res.status_code != 200:
+            raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
+        res_data = res.json()
+        return res_data
+
     def get_task_history(self, task: AcTask) -> list[AcTaskHistory]:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_task_history(task.id)
