@@ -148,6 +148,10 @@ class AcClient:
     def get_task_lists(self, project_id: int) -> Response:
         return self._get('projects/%d/task-lists' % project_id)
 
+    def post_task_list(self, data: dict) -> Response:
+        project_id = data["project_id"]
+        return self._post('projects/%d/task-lists' % project_id, json.dumps(data))
+
     def get_task_history(self, task_id: int):
         return self._get('history/task/%d?verbose=1' % task_id)
 
