@@ -126,6 +126,9 @@ class AcClient:
     def get_project_labels(self) -> Response:
         return self._get('labels/project-labels')
 
+    def post_project_label(self, data: dict) -> Response:
+        return self._post('labels', json.dumps(data))
+
     def get_task_labels(self) -> Response:
         return self._get('labels/task-labels')
 

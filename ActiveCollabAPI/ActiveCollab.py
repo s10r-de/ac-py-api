@@ -237,6 +237,16 @@ class ActiveCollab:
         project_labels = list(map(lambda l: project_label_from_json(l), res_data))
         return project_labels
 
+    def create_project_label(self, project_label: AcProjectLabel) -> dict | None:
+        client = AcClient(self.session.cur_account, self.session.token)
+        project_label = project_label.to_dict()
+        project_label["type"] = project_label["class"]  # FIXME
+        res = client.post_project_label(project_label)
+        if res.status_code != 200:
+            raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
+        res_data = res.json()
+        return res_data
+
     def get_task_labels(self) -> list[AcTaskLabel]:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_task_labels()

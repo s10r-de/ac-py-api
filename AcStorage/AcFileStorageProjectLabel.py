@@ -1,5 +1,5 @@
 from AcFileStorageBaseClass import AcFileStorageBaseClass
-from AcProjectLabel import AcProjectLabel
+from AcProjectLabel import AcProjectLabel, project_label_from_json
 from ActiveCollabAPI import AC_CLASS_PROJECT_LABEL, AC_ERROR_WRONG_CLASS
 
 
@@ -16,3 +16,7 @@ class AcFileStorageProjectLabel(AcFileStorageBaseClass):
     def save(self, project_label: AcProjectLabel) -> str:
         assert project_label.class_ == AC_CLASS_PROJECT_LABEL, AC_ERROR_WRONG_CLASS
         return super().save_with_id(project_label, project_label.id)
+
+    def load(self, project_label_id: int) -> AcProjectLabel:
+        data = super().load_by_id(project_label_id)
+        return project_label_from_json(data)
