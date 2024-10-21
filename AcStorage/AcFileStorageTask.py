@@ -1,5 +1,5 @@
 from AcFileStorageBaseClass import AcFileStorageBaseClass
-from AcTask import AcTask
+from AcTask import AcTask, task_from_json
 from ActiveCollabAPI import AC_CLASS_TASK, AC_ERROR_WRONG_CLASS
 
 
@@ -16,3 +16,7 @@ class AcFileStorageTask(AcFileStorageBaseClass):
     def save(self, task: AcTask) -> str:
         assert task.class_ == AC_CLASS_TASK, AC_ERROR_WRONG_CLASS
         return super().save_with_id(task, task.id)
+
+    def load(self, task_id: int) -> AcTask:
+        task = self.load_by_id(task_id)
+        return task_from_json(task)

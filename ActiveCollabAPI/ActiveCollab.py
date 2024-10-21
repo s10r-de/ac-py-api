@@ -145,6 +145,16 @@ class ActiveCollab:
         tasks = list(map(lambda p: task_from_json(p), res_data))
         return tasks
 
+    def create_task(self, task: AcTask) -> dict | None:
+        client = AcClient(self.session.cur_account, self.session.token)
+        task = task.to_dict()
+        task["type"] = task["class"]  # FIXME
+        res = client.post_task(task)
+        if res.status_code != 200:
+            raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
+        res_data = res.json()
+        return res_data
+
     @staticmethod
     def filter_tasks(tasks: list[AcTask], compare_func: callable) -> list[AcTask]:
         return list(filter(compare_func, tasks))

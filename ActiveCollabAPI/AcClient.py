@@ -80,6 +80,10 @@ class AcClient:
     def get_project_active_tasks(self, project_id: int):
         return self._get('projects/%d/tasks' % project_id)
 
+    def post_task(self, data: dict) -> Response:
+        project_id = data["project_id"]
+        return self._post('projects/%d/tasks' % project_id, json.dumps(data))
+
     def get_project_completed_tasks(self, project_id: int):
         return self._get('projects/%d/tasks/archive' % project_id)
 
