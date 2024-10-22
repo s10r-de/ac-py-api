@@ -73,8 +73,7 @@ def run_dump_all(ac: ActiveCollab, config: configparser.ConfigParser):
 
 
 def dump_all_projects_with_all_data(ac, ac_storage):
-    projects = ac.get_active_projects()
-    projects.extend(ac.get_archived_projects())
+    projects = ac.get_all_projects()
     for project in projects:
         ac_storage.data_objects["projects"].save(project)
         dump_all_project_notes(ac, ac_storage, project)
@@ -90,13 +89,12 @@ def dump_all_project_notes(ac, ac_storage, project):
 
 
 def dump_all_task_lists_of_project(ac, ac_storage, project):
-    for task_list in ac.get_project_task_lists(project):
+    for task_list in ac.get_project_task_lists(project.id):
         ac_storage.data_objects["task-lists"].save(task_list)
 
 
 def dump_all_tasks_of_project(ac, ac_storage, project):
-    tasks = ac.get_active_tasks(project.id)
-    tasks.extend(ac.get_completed_tasks(project.id))
+    tasks = ac.get_all_tasks(project.id)
     for task in tasks:
         ac_storage.data_objects["tasks"].save(task)
         for attachment in task.get_attachments():
