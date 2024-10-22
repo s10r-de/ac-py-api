@@ -87,6 +87,8 @@ class AcClient:
     def get_project_completed_tasks(self, project_id: int):
         return self._get('projects/%d/tasks/archive' % project_id)
 
+    # projects
+
     def get_active_projects(self):
         return self._get('projects')
 
@@ -96,8 +98,13 @@ class AcClient:
     def post_project(self, data: dict) -> Response:
         return self._post('projects', json.dumps(data))
 
+
+    # notes
+
     def get_project_notes(self, project_id: int):
         return self._get('projects/%d/notes' % project_id)
+
+    # users
 
     def get_all_users(self):
         return self._get('users/all')
@@ -105,11 +112,17 @@ class AcClient:
     def post_user(self, data: dict) -> Response:
         return self._post('users', json.dumps(data))
 
+    # subtasks
+
     def get_subtasks(self, project_id: int, task_id: int):
         return self._get('projects/%d/tasks/%d/subtasks' % (project_id, task_id))
 
+    # comments
+
     def get_comments(self, task_id: int):
         return self._get('comments/task/%d' % task_id)
+
+    # attachments
 
     def get_attachment(self, attachment_id: int):
         return self._get('attachments/%d' % attachment_id)
@@ -130,6 +143,8 @@ class AcClient:
                     f.write(chunk)
         return tmp_filename
 
+    # project labels
+
     def get_project_labels(self) -> Response:
         return self._get('labels/project-labels')
 
@@ -139,11 +154,15 @@ class AcClient:
     def get_task_labels(self) -> Response:
         return self._get('labels/task-labels')
 
+    # companies
+
     def get_all_companies(self) -> Response:
         return self._get('companies/all')
 
     def post_company(self, data: dict) -> Response:
         return self._post('companies', json.dumps(data))
+
+    # task list
 
     def get_task_lists(self, project_id: int) -> Response:
         return self._get('projects/%d/task-lists' % project_id)
@@ -152,8 +171,13 @@ class AcClient:
         project_id = data["project_id"]
         return self._post('projects/%d/task-lists' % project_id, json.dumps(data))
 
+
+    # task history
+
     def get_task_history(self, task_id: int):
         return self._get('history/task/%d?verbose=1' % task_id)
+
+    # category
 
     def get_project_categories(self) -> Response:
         return self._get('projects/categories')

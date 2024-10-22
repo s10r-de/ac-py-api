@@ -127,6 +127,11 @@ class ActiveCollab:
         res = client.get_info()
         return res.json()
 
+    def get_all_tasks(self, project_id: int) -> list[AcTask]:
+        tasks = self.get_active_tasks(project_id)
+        tasks.extend(self.get_completed_tasks(project_id))
+        return tasks
+
     def get_active_tasks(self, project_id: int) -> list[AcTask]:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_project_active_tasks(project_id)
@@ -147,9 +152,10 @@ class ActiveCollab:
 
     def create_task(self, task: AcTask) -> dict | None:
         client = AcClient(self.session.cur_account, self.session.token)
-        task = task.to_dict()
-        task["type"] = task["class"]  # FIXME
-        res = client.post_task(task)
+        task_dict = task.to_dict()
+        task_dict["type"] = task_dict["class"]  # FIXME
+        del (task_dict["class"])
+        res = client.post_task(task_dict)
         if res.status_code != 200:
             raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
         res_data = res.json()
@@ -158,6 +164,11 @@ class ActiveCollab:
     @staticmethod
     def filter_tasks(tasks: list[AcTask], compare_func: callable) -> list[AcTask]:
         return list(filter(compare_func, tasks))
+
+    def get_all_projects(self) -> list[AcProject]:
+        projects = self.get_active_projects()
+        projects.extend(self.get_archived_projects())
+        return projects
 
     def get_active_projects(self) -> list[AcProject]:
         client = AcClient(self.session.cur_account, self.session.token)
@@ -297,8 +308,9 @@ class ActiveCollab:
         return res_data
 
     def get_project_task_lists(self, project: AcProject) -> list[AcTaskList]:
+    def get_project_task_lists(self, project_id: int) -> list[AcTaskList]:
         client = AcClient(self.session.cur_account, self.session.token)
-        res = client.get_task_lists(project.id)
+        res = client.get_task_lists(project_id)
         if res.status_code != 200:
             raise Exception("Error %d" % res.status_code)
         res_data = res.json()
@@ -310,6 +322,8 @@ class ActiveCollab:
         task_list = task_list.to_dict()
         task_list["type"] = task_list["class"]  # FIXME
         res = client.post_task_list(task_list)
+        if res.status_code == 404:
+            raise Exception("Project %d not found!" % task_list["project_id"])
         if res.status_code != 200:
             raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
         res_data = res.json()
