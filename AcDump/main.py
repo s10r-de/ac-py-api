@@ -184,21 +184,112 @@ def run_empty_trash(ac: ActiveCollab, config: configparser.ConfigParser):
         raise Exception("Do not empty trash from cloud!")
     return ac.empty_trash()  # FIXME loop until empty
 
+
+def run_verify_all(ac: ActiveCollab, config: configparser.ConfigParser) -> int:
+    account_id = config.getint('LOGIN', 'account')
+    storage_path = config.get('STORAGE', 'path')
+    ac_storage = AcFileStorage(storage_path, account_id)
+
+    logging.info("Be sure to empty cache in filesystem before testing!")
+    logging.info("  rm -fr var/www/html/cache/*")
+    _verify_companies(ac, ac_storage)
+    _verify_users(ac, ac_storage)
+    _verify_projects(ac, ac_storage)
+    _verify_task_lists(ac, ac_storage)
+
+
+def _verify_task_lists(ac: ActiveCollab, ac_storage):
+    result = True
+    for task_list_id in ac_storage.data_objects["task-lists"].list_ids():
+        task_list = ac_storage.data_objects["task-lists"].load(task_list_id)
+        project_id = task_list.project_id
+        server_all_project_task_lists = []
+        try:
+            server_all_project_task_lists = ac.get_project_task_lists(project_id)
+        except Exception as e:
+            pass  # ignore exception here
+        if len(server_all_project_task_lists) == 0:
+            logging.error("No task lists for project %d found!" % project_id)
+            result = False
+            continue
+        server_task_list = list(filter(lambda o: o.id == task_list.id, server_all_project_task_lists))
+        if len(server_task_list) == 0:
+            logging.error("Task list %d for project %d not found!" % (task_list.id, project_id))
+            result = False
+            continue
+        if task_list != server_task_list[0]:
+            logging.error("Task list %d for project %d does not match!" % (task_list.id, project_id))
+            result = False
+    return result
+
+
+def _verify_projects(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
+    result = True
+    server_projects = ac.get_all_projects()
+    for project_id in ac_storage.data_objects["projects"].list_ids():
+        company = ac_storage.data_objects["projects"].load(project_id)
+        server_project = list(filter(lambda c: c.id == project_id, server_projects))
+        if len(server_project) == 0:
+            logging.error("Project %d not found!" % project_id)
+            result = False
+            continue
+        if company != server_project[0]:
+            logging.error("Project %d does not match!" % project_id)
+            result = False
+    return result
+
+
+def _verify_companies(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
+    result = True
+    server_companies = ac.get_all_companies()
+    for company_id in ac_storage.data_objects["companies"].list_ids():
+        company = ac_storage.data_objects["companies"].load(company_id)
+        server_company = list(filter(lambda c: c.id == company_id, server_companies))
+        if len(server_company) == 0:
+            logging.error("Company %d not found!" % company_id)
+            result = False
+            continue
+        if company != server_company[0]:
+            logging.error("Company %d does not match!" % company_id)
+            result = False
+        logging.info("Company %d ok!" % company_id)
+    return result
+
+
+def _verify_users(ac: ActiveCollab, ac_storage: AcFileStorage):
+    result = True
+    server_users = ac.get_all_users()
+    for user_id in ac_storage.data_objects["users"].list_ids():
+        company = ac_storage.data_objects["users"].load(user_id)
+        server_user = list(filter(lambda c: c.id == user_id, server_users))
+        if len(server_user) == 0:
+            logging.error("User %d not found!" % user_id)
+            result = False
+            continue
+        if company != server_user[0]:
+            logging.error("User %d does not match!" % user_id)
+            result = False
+        logging.info("User %d ok!" % user_id)
+    return result
+
+
 def run_load_all(ac: ActiveCollab, config: configparser.ConfigParser):
     account_id = config.getint('LOGIN', 'account')
     storage_path = config.get('STORAGE', 'path')
     ac_storage = AcFileStorage(storage_path, account_id)
 
-    # cnt = _load_companies(ac, ac_storage)
-    # print("Imported %d companies" % cnt)
-    # cnt = _load_users(ac, ac_storage)
-    # print("Imported %d users" % cnt)
-    # cnt = _load_project_categories(ac, ac_storage)
-    # print("Imported %d project-category" % cnt)
-    # cnt = _load_project_labels(ac, ac_storage)
-    # print("Imported %d project-labels" % cnt)
-    # cnt = _load_projects(ac, ac_storage)
-    # print("Imported %d projects" % cnt)
+    cnt = _load_companies(ac, ac_storage)
+    print("Imported %d companies" % cnt)
+    cnt = _load_users(ac, ac_storage)
+    print("Imported %d users" % cnt)
+
+    cnt = _load_project_categories(ac, ac_storage)
+    print("Imported %d project-category" % cnt)
+    cnt = _load_project_labels(ac, ac_storage)
+    print("Imported %d project-labels" % cnt)
+
+    cnt = _load_projects(ac, ac_storage)
+    print("Imported %d projects" % cnt)
     cnt = _load_task_lists(ac, ac_storage)
     print("Imported %d task-lists" % cnt)
     cnt = _load_tasks(ac, ac_storage)
@@ -278,6 +369,8 @@ def run(args, parser, config: configparser.ConfigParser):
         return run_dump_all(_login(config), config)
     if args.command == 'empty':
         return run_empty_trash(_login(config), config)
+    if args.command == 'verify':
+        return run_verify_all(_login(config), config)
     if args.command == 'load':
         return run_load_all(_login(config), config)
     if args.command == "testing":

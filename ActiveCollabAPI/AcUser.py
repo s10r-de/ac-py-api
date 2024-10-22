@@ -1,5 +1,6 @@
 import dataclasses
 import json
+import logging
 from dataclasses import dataclass
 
 from AcDataObject import AcDataObject
@@ -42,6 +43,23 @@ class AcUser(AcDataObject):
     workspace_count: int
     avatar_version: str = dataclasses.field(default="")
     has_custom_avatar: bool = dataclasses.field(default=False)
+
+    def __eq__(self, other) -> bool:
+        ignored_fields = ["avatar_url", "avatar_version", "has_custom_avatar"]
+        result = True
+        this_data = self.to_dict()
+        other_data = other.to_dict()
+        for key in this_data.keys():
+            if key in ignored_fields:
+                continue
+            this_value = this_data[key]
+            other_value = other_data[key]
+            if this_value != other_value:
+                logging.error("AcUser: %s '%s'!='%s' - does not match -> FAIL" % (key, this_value, other_value))
+                result = False
+            else:
+                logging.debug("AcUser: %s ='%s' - matches -> OK" % (key, this_value))
+        return result
 
     def to_dict(self) -> dict:
         d = dataclasses.asdict(self)
