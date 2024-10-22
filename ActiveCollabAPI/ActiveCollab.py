@@ -1,3 +1,4 @@
+import logging
 import random
 import string
 
@@ -151,6 +152,7 @@ class ActiveCollab:
         return tasks
 
     def create_task(self, task: AcTask) -> dict | None:
+        logging.debug('Create task: ' + task.to_json())
         client = AcClient(self.session.cur_account, self.session.token)
         task_dict = task.to_dict()
         task_dict["type"] = task_dict["class"]  # FIXME
@@ -189,6 +191,7 @@ class ActiveCollab:
         return projects
 
     def create_project(self, project: AcProject) -> dict | None:
+        logging.debug('Creating project: ' + project.to_json())
         client = AcClient(self.session.cur_account, self.session.token)
         project = project.to_dict()
         project["type"] = project["class"]  # FIXME
@@ -208,6 +211,7 @@ class ActiveCollab:
         return users
 
     def create_user(self, user: AcUser) -> dict | None:
+        logging.debug("create user: " + user.to_json())
         if user.class_ == AC_CLASS_USER_OWNER:
             print("can not create owner user %d" % user.id)
             return
@@ -216,7 +220,8 @@ class ActiveCollab:
         user["type"] = user["class"]  # FIXME ???
         user["password"] = ''.join(
             random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=16))  # FIXME ??
-        print("QQQ password for user %s is '%s'" % (user["email"], user["password"]))  # FIXME: only for debugging!!
+        logging.debug(
+            "password for user '%s' is '%s'" % (user["email"], user["password"]))  # FIXME: only for debugging!!
         res = client.post_user(user)
         if res.status_code != 200:
             raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
@@ -269,6 +274,7 @@ class ActiveCollab:
         return project_labels
 
     def create_project_label(self, project_label: AcProjectLabel) -> dict | None:
+        logging.debug("create project label: " + project_label.to_json())
         client = AcClient(self.session.cur_account, self.session.token)
         project_label = project_label.to_dict()
         project_label["type"] = project_label["class"]  # FIXME
@@ -297,6 +303,7 @@ class ActiveCollab:
         return companies
 
     def create_company(self, company: AcCompany) -> dict | None:
+        logging.debug("create company: " + company.to_json())
         if company.is_owner is True:
             print("skip owner company %d" % company.id)
             return
@@ -324,6 +331,7 @@ class ActiveCollab:
         return task_lists
 
     def create_task_list(self, task_list: AcTaskList) -> dict | None:
+        logging.debug("create task list: " + task_list.to_json())
         client = AcClient(self.session.cur_account, self.session.token)
         task_list = task_list.to_dict()
         task_list["type"] = task_list["class"]  # FIXME
@@ -354,6 +362,7 @@ class ActiveCollab:
         return project_categories
 
     def create_project_category(self, project_category: AcProjectCategory) -> dict | None:
+        logging.debug("create project category: " + project_category.to_json())
         client = AcClient(self.session.cur_account, self.session.token)
         project_category = project_category.to_dict()
         project_category["type"] = project_category["class"]  # FIXME

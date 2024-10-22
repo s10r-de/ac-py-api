@@ -1,13 +1,28 @@
 import argparse
 import configparser
 import json
+import logging
+import os
+import sys
 from collections.abc import Iterator
 
 from AcStorage.AcFileStorage import AcFileStorage
 from ActiveCollabAPI.ActiveCollab import ActiveCollab
 
 
+def setup_logging():
+    root = logging.getLogger()
+    root.setLevel(logging.DEBUG)
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+    root.addHandler(handler)
+
+
 def load_config(args):
+    if not os.path.exists(args.config):
+        raise FileNotFoundError("Configfile '%s' not found!" % args.config)
     config = configparser.ConfigParser()
     config.read(args.config)
     return config
@@ -274,6 +289,8 @@ def run(args, parser, config: configparser.ConfigParser):
 
 
 def main():
+    setup_logging()
+    logging.info('Started')
     # parse arguments
     parser = argparse.ArgumentParser(
         prog='acdump',
@@ -290,6 +307,7 @@ def main():
         output = list(output)
     if output is not None:
         print(serialize_output(output))
+    logging.info('Finished')
 
 
 if __name__ == "__main__":
