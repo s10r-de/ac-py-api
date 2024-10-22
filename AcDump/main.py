@@ -172,6 +172,17 @@ def run_load_all(ac: ActiveCollab, config: configparser.ConfigParser):
     # print("Imported %d projects" % cnt)
     cnt = _load_task_lists(ac, ac_storage)
     print("Imported %d task-lists" % cnt)
+    cnt = _load_tasks(ac, ac_storage)
+    print("Imported %d tasks" % cnt)
+
+
+def _load_tasks(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
+    cnt = 0
+    for task_id in ac_storage.data_objects["tasks"].list_ids():
+        task = ac_storage.data_objects["tasks"].load(task_id)
+        if ac.create_task(task):
+            cnt += 1
+    return cnt
 
 
 def _load_task_lists(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
