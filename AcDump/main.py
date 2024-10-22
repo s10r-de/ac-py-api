@@ -155,6 +155,20 @@ def _login(config: configparser.ConfigParser) -> ActiveCollab:
     return ac
 
 
+def is_cloud(config: configparser.ConfigParser) -> bool:
+    is_cloud = config.getboolean("DEFAULT", "is_cloud", fallback=False)
+    if is_cloud is False:
+        base_url = config.get("DEFAULT", "base_url")
+        if base_url.startswith('https://activecollab.com'):
+            is_cloud = True
+    return is_cloud
+
+
+def run_empty_trash(ac: ActiveCollab, config: configparser.ConfigParser):
+    if is_cloud(config):
+        raise Exception("Do not empty trash from cloud!")
+    return ac.empty_trash()  # FIXME loop until empty
+
 def run_load_all(ac: ActiveCollab, config: configparser.ConfigParser):
     account_id = config.getint('LOGIN', 'account')
     storage_path = config.get('STORAGE', 'path')
@@ -247,6 +261,8 @@ def run(args, parser, config: configparser.ConfigParser):
         return run_info(_login(config))
     if args.command == 'dump':
         return run_dump_all(_login(config), config)
+    if args.command == 'empty':
+        return run_empty_trash(_login(config), config)
     if args.command == 'load':
         return run_load_all(_login(config), config)
     if args.command == "testing":
@@ -265,7 +281,7 @@ def main():
         epilog='(c) 2024 by ACME VC, Charlie Sloan <cs@example.com>')
     parser.add_argument('-c', '--config', required=True,
                         help="use the named config file")
-    parser.add_argument('command', choices=['version', 'info', 'dump', 'load', 'testing'],
+    parser.add_argument('command', choices=['version', 'info', 'dump', 'delete', 'empty', 'verify', 'load', 'testing'],
                         help='The command to run')
     args = parser.parse_args()
     config = load_config(args)
