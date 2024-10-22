@@ -161,6 +161,19 @@ class ActiveCollab:
         res_data = res.json()
         return res_data
 
+    def delete_all_tasks(self, project_id: int) -> list[AcTask]:
+        client = AcClient(self.session.cur_account, self.session.token)
+        tasks = []
+        for task in self.get_all_tasks(project_id):
+            tasks.append(task.to_dict())
+            client.delete_task(project_id, task.id)
+        return tasks
+
+    def delete_all_task_lists(self, project: AcProject) -> list[AcTask]:
+        client = AcClient(self.session.cur_account, self.session.token)
+        for task in self.get_project_task_lists(project.id):
+            client.delete_task_list(project.id, task.id)
+
     @staticmethod
     def filter_tasks(tasks: list[AcTask], compare_func: callable) -> list[AcTask]:
         return list(filter(compare_func, tasks))
@@ -197,6 +210,21 @@ class ActiveCollab:
             raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
         res_data = res.json()
         return res_data
+
+    def delete_all_projects(self):
+        client = AcClient(self.session.cur_account, self.session.token)
+        for project in self.get_all_projects():
+            client.delete_project(project.id)
+
+    def delete_all_project_categories(self):
+        client = AcClient(self.session.cur_account, self.session.token)
+        for project_category in self.get_project_categories():
+            client.delete_project_category(project_category.id)
+
+    def delete_all_project_labels(self):
+        client = AcClient(self.session.cur_account, self.session.token)
+        for project_label in self.get_project_labels():
+            client.delete_project_label(project_label.id)
 
     def get_all_users(self) -> list[AcUser]:
         client = AcClient(self.session.cur_account, self.session.token)
@@ -314,6 +342,19 @@ class ActiveCollab:
         trash = client.get_trash()
         res = client.delete_trash()
         return trash.json()
+
+    def delete_all_users(self):
+        client = AcClient(self.session.cur_account, self.session.token)
+        for user in self.get_all_users():
+            if user.class_ != AC_CLASS_USER_OWNER:
+                client.delete_user(user.id)
+
+    def delete_all_companies(self):
+        client = AcClient(self.session.cur_account, self.session.token)
+        for company in self.get_all_companies():
+            if company.is_owner is False:
+                client.delete_company(company.id)
+
     def get_project_task_lists(self, project_id: int) -> list[AcTaskList]:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_task_lists(project_id)

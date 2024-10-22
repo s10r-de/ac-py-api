@@ -164,6 +164,19 @@ def is_cloud(config: configparser.ConfigParser) -> bool:
     return is_cloud
 
 
+def run_delete_all(ac: ActiveCollab, config: configparser.ConfigParser):
+    if is_cloud(config):
+        raise Exception("Do not delete data from cloud!")
+    # _delete_all_attachments(ac)
+    _delete_all_task_lists(ac)
+    _delete_all_tasks(ac)
+    _delete_all_projects(ac)
+    _delete_all_project_categories(ac)
+    _delete_all_project_labels(ac)
+    _delete_all_users(ac)
+    _delete_all_companies(ac)
+
+
 def run_empty_trash(ac: ActiveCollab, config: configparser.ConfigParser):
     if is_cloud(config):
         raise Exception("Do not empty trash from cloud!")
@@ -188,6 +201,36 @@ def run_load_all(ac: ActiveCollab, config: configparser.ConfigParser):
     print("Imported %d task-lists" % cnt)
     cnt = _load_tasks(ac, ac_storage)
     print("Imported %d tasks" % cnt)
+
+
+def _delete_all_tasks(ac: ActiveCollab):
+    for project in ac.get_all_projects():
+        ac.delete_all_tasks(project.id)
+
+
+def _delete_all_task_lists(ac: ActiveCollab):
+    for project in ac.get_all_projects():
+        ac.delete_all_task_lists(project)
+
+
+def _delete_all_projects(ac: ActiveCollab):
+    return ac.delete_all_projects()
+
+
+def _delete_all_project_categories(ac: ActiveCollab):
+    return ac.delete_all_project_categories()
+
+
+def _delete_all_project_labels(ac: ActiveCollab):
+    return ac.delete_all_project_labels()
+
+
+def _delete_all_users(ac: ActiveCollab):
+    return ac.delete_all_users()
+
+
+def _delete_all_companies(ac: ActiveCollab):
+    return ac.delete_all_companies()
 
 
 def _load_tasks(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
@@ -261,6 +304,8 @@ def run(args, parser, config: configparser.ConfigParser):
         return run_info(_login(config))
     if args.command == 'dump':
         return run_dump_all(_login(config), config)
+    if args.command == 'delete':
+        return run_delete_all(_login(config), config)
     if args.command == 'empty':
         return run_empty_trash(_login(config), config)
     if args.command == 'load':
