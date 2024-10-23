@@ -43,10 +43,11 @@ class AcCompany(AcDataObject):
             this_value = this_data[key]
             other_value = other_data[key]
             if this_value != other_value:
-                logging.error("AcCompany: %s '%s'!='%s' - does not match -> FAIL" % (key, this_value, other_value))
+                logging.error(
+                    "AcCompany[%d]: %s '%s'!='%s' - does not match -> FAIL" % (self.id, key, this_value, other_value))
                 result = False
             else:
-                logging.debug("AcCompany: %s '%s' - matches -> OK" % (key, this_value))
+                logging.debug("AcCompany[%d]: %s '%s' - matches -> OK" % (self.id, key, this_value))
         return result
 
     def to_dict(self) -> dict:

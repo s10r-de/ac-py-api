@@ -55,10 +55,11 @@ class AcUser(AcDataObject):
             this_value = this_data[key]
             other_value = other_data[key]
             if this_value != other_value:
-                logging.error("AcUser: %s '%s'!='%s' - does not match -> FAIL" % (key, this_value, other_value))
+                logging.error(
+                    "AcUser[%d]: %s '%s'!='%s' - does not match -> FAIL" % (self.id, key, this_value, other_value))
                 result = False
             else:
-                logging.debug("AcUser: %s ='%s' - matches -> OK" % (key, this_value))
+                logging.debug("AcUser[%d]: %s ='%s' - matches -> OK" % (self.id, key, this_value))
         return result
 
     def to_dict(self) -> dict:
