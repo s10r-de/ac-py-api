@@ -66,11 +66,6 @@ def run_dump_all(ac: ActiveCollab, config: configparser.ConfigParser):
 
     return {'message': "data of account %d dumped to %s" % (account_id, storage_path)}
 
-    # get tasks modified after 1723452690  12.08.2024 10:51 CEST
-    # tasks = ac.filter_tasks(tasks, lambda t: t.updated_on > 1723452690)
-    # tasks = ac.filter_tasks(tasks, lambda t: t.id == 18440)
-    # return list(map(lambda task: task.to_dict(), projects))
-
 
 def dump_all_projects_with_all_data(ac, ac_storage):
     projects = ac.get_active_projects()
