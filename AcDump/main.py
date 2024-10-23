@@ -196,9 +196,35 @@ def run_verify_all(ac: ActiveCollab, config: configparser.ConfigParser) -> int:
     _verify_users(ac, ac_storage)
     _verify_projects(ac, ac_storage)
     _verify_task_lists(ac, ac_storage)
+    _verify_tasks(ac, ac_storage)
 
 
-def _verify_task_lists(ac: ActiveCollab, ac_storage):
+def _verify_tasks(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
+    result = True
+
+    # for each project
+    all_server_tasks = []
+    for server_project in ac.get_all_projects():
+        all_server_tasks.extend(ac.get_all_tasks(server_project.id))
+
+    # for all dumped tasks
+    for task_id in ac_storage.data_objects["tasks"].list_ids():
+        task = ac_storage.data_objects["tasks"].load(task_id)
+
+        server_tasks = list(filter(lambda t: task.id == t.id, all_server_tasks))
+        if len(server_tasks) == 0:
+            logging.error("Task %d not found!" % task_id)
+            result = False
+            continue
+        if task != server_tasks[0]:
+            logging.error("Task %d does not match!" % task_id)
+            result = False
+            continue
+
+    return result
+
+
+def _verify_task_lists(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
     result = True
     for task_list_id in ac_storage.data_objects["task-lists"].list_ids():
         task_list = ac_storage.data_objects["task-lists"].load(task_list_id)
