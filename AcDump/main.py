@@ -190,10 +190,28 @@ def run_verify_all(ac: ActiveCollab, config: configparser.ConfigParser) -> int:
     _verify_companies(ac, ac_storage)
     _verify_users(ac, ac_storage)
     _verify_project_categories(ac, ac_storage)
+    _verify_project_labels(ac, ac_storage)
     _verify_projects(ac, ac_storage)
     _verify_task_lists(ac, ac_storage)
     _verify_tasks(ac, ac_storage)
 
+
+def _verify_project_labels(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
+    result = True
+    server_project_labels = ac.get_project_labels()
+    for label_id in ac_storage.data_objects["project-labels"].list_ids():
+        category = ac_storage.data_objects["project-labels"].load(label_id)
+        server_labels = list(filter(lambda c: c.id == label_id, server_project_labels))
+        if len(server_labels) == 0:
+            logging.error("Project Label %d not found!" % label_id)
+            result = False
+            continue
+        if category != server_labels[0]:
+            logging.error("Project Label %d does not match!" % label_id)
+            result = False
+            continue
+        logging.info("Project Label %d ok!" % label_id)
+    return result
 
 def _verify_project_categories(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
     result = True
