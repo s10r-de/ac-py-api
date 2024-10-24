@@ -276,6 +276,7 @@ def _verify_projects(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
         if company != server_project[0]:
             logging.error("Project %d does not match!" % project_id)
             result = False
+            continue
     return result
 
 
@@ -292,6 +293,7 @@ def _verify_companies(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
         if company != server_company[0]:
             logging.error("Company %d does not match!" % company_id)
             result = False
+            continue
         logging.info("Company %d ok!" % company_id)
     return result
 
@@ -309,6 +311,7 @@ def _verify_users(ac: ActiveCollab, ac_storage: AcFileStorage):
         if company != server_user[0]:
             logging.error("User %d does not match!" % user_id)
             result = False
+            continue
         logging.info("User %d ok!" % user_id)
     return result
 
