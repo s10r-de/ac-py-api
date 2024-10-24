@@ -6,4 +6,6 @@
 /tests/data-test/
 __pycache__
 ActiveCollabServer/env
+.venv/**
+ActiveCollabServer/www/**
 *.zip
