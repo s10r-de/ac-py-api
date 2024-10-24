@@ -189,9 +189,28 @@ def run_verify_all(ac: ActiveCollab, config: configparser.ConfigParser) -> int:
     logging.info("  rm -fr var/www/html/cache/*")
     _verify_companies(ac, ac_storage)
     _verify_users(ac, ac_storage)
+    _verify_project_categories(ac, ac_storage)
     _verify_projects(ac, ac_storage)
     _verify_task_lists(ac, ac_storage)
     _verify_tasks(ac, ac_storage)
+
+
+def _verify_project_categories(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
+    result = True
+    server_project_categories = ac.get_project_categories()
+    for category_id in ac_storage.data_objects["project-categories"].list_ids():
+        category = ac_storage.data_objects["project-categories"].load(category_id)
+        server_category = list(filter(lambda c: c.id == category_id, server_project_categories))
+        if len(server_category) == 0:
+            logging.error("Project Category %d not found!" % category_id)
+            result = False
+            continue
+        if category != server_category[0]:
+            logging.error("Project Category %d does not match!" % category_id)
+            result = False
+            continue
+        logging.info("Project Category %d ok!" % category_id)
+    return result
 
 
 def _verify_tasks(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
