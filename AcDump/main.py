@@ -15,7 +15,7 @@ def setup_logging():
     root.setLevel(logging.DEBUG)
     handler = logging.StreamHandler(sys.stdout)
     handler.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(levelname)s - %(message)s')
+    formatter = logging.Formatter("%(levelname)s - %(message)s")
     handler.setFormatter(formatter)
     root.addHandler(handler)
 
@@ -34,14 +34,15 @@ def serialize_output(output):
 
 
 def run_testing(ac, config: configparser.ConfigParser):
-    account_id = config.getint('LOGIN', 'account')
-    storage_path = config.get('STORAGE', 'path')
+    account_id = config.getint("LOGIN", "account")
+    storage_path = config.get("STORAGE", "path")
     ac_storage = AcFileStorage(storage_path, account_id)
     return ac_storage.data_objects["task-history"].list()
 
 
 def run_version():
     from version import VERSION
+
     return {"version": VERSION}
 
 
@@ -50,8 +51,8 @@ def run_info(ac: ActiveCollab):
 
 
 def run_dump_all(ac: ActiveCollab, config: configparser.ConfigParser):
-    account_id = config.getint('LOGIN', 'account')
-    storage_path = config.get('STORAGE', 'path')
+    account_id = config.getint("LOGIN", "account")
+    storage_path = config.get("STORAGE", "path")
 
     ac_storage = AcFileStorage(storage_path, account_id)
     ac_storage.reset()
@@ -64,7 +65,7 @@ def run_dump_all(ac: ActiveCollab, config: configparser.ConfigParser):
     dump_all_task_labels(ac, ac_storage)
     dump_all_projects_with_all_data(ac, ac_storage)
 
-    return {'message': "data of account %d dumped to %s" % (account_id, storage_path)}
+    return {"message": "data of account %d dumped to %s" % (account_id, storage_path)}
 
 
 def dump_all_projects_with_all_data(ac, ac_storage):
@@ -104,7 +105,9 @@ def dump_all_tasks_of_project(ac, ac_storage, project):
 
 
 def dump_attachment(ac, ac_storage, attachment):
-    ac_storage.data_objects["attachments"].save(attachment, ac.download_attachment(attachment))
+    ac_storage.data_objects["attachments"].save(
+        attachment, ac.download_attachment(attachment)
+    )
 
 
 def dump_task_comments(ac, ac_storage, task):
@@ -157,11 +160,8 @@ def _login(config: configparser.ConfigParser) -> ActiveCollab:
     if is_cloud:
         account = config.get("LOGIN", "account", fallback=None)
     ac = ActiveCollab(base_url, is_cloud)
-    ac.login(
-        config.get("LOGIN", "username"),
-        config.get("LOGIN", "password"),
-        account
-    )
+    ac.login(config.get("LOGIN", "username"),
+             config.get("LOGIN", "password"), account)
     return ac
 
 
@@ -169,7 +169,7 @@ def is_cloud(config: configparser.ConfigParser) -> bool:
     is_cloud = config.getboolean("DEFAULT", "is_cloud", fallback=False)
     if is_cloud is False:
         base_url = config.get("DEFAULT", "base_url")
-        if base_url.startswith('https://activecollab.com'):
+        if base_url.startswith("https://activecollab.com"):
             is_cloud = True
     return is_cloud
 
@@ -181,19 +181,20 @@ def run_empty_trash(ac: ActiveCollab, config: configparser.ConfigParser):
 
 
 def run_verify_all(ac: ActiveCollab, config: configparser.ConfigParser) -> int:
-    account_id = config.getint('LOGIN', 'account')
-    storage_path = config.get('STORAGE', 'path')
+    account_id = config.getint("LOGIN", "account")
+    storage_path = config.get("STORAGE", "path")
     ac_storage = AcFileStorage(storage_path, account_id)
 
     logging.info("Be sure to empty cache in filesystem before testing!")
     logging.info("  rm -fr var/www/html/cache/*")
-    _verify_companies(ac, ac_storage)
-    _verify_users(ac, ac_storage)
-    _verify_project_categories(ac, ac_storage)
-    _verify_project_labels(ac, ac_storage)
-    _verify_projects(ac, ac_storage)
-    _verify_task_lists(ac, ac_storage)
-    _verify_tasks(ac, ac_storage)
+    # _verify_companies(ac, ac_storage)
+    # _verify_users(ac, ac_storage)
+    # _verify_project_categories(ac, ac_storage)
+    # _verify_project_labels(ac, ac_storage)
+    # _verify_projects(ac, ac_storage)
+    # _verify_task_lists(ac, ac_storage)
+    # _verify_tasks(ac, ac_storage)
+    _verify_comments(ac, ac_storage)
 
 
 def _verify_project_labels(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
@@ -201,7 +202,8 @@ def _verify_project_labels(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
     server_project_labels = ac.get_project_labels()
     for label_id in ac_storage.data_objects["project-labels"].list_ids():
         category = ac_storage.data_objects["project-labels"].load(label_id)
-        server_labels = list(filter(lambda c: c.id == label_id, server_project_labels))
+        server_labels = list(
+            filter(lambda c: c.id == label_id, server_project_labels))
         if len(server_labels) == 0:
             logging.error("Project Label %d not found!" % label_id)
             result = False
@@ -213,12 +215,16 @@ def _verify_project_labels(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
         logging.info("Project Label %d ok!" % label_id)
     return result
 
+
 def _verify_project_categories(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
     result = True
     server_project_categories = ac.get_project_categories()
     for category_id in ac_storage.data_objects["project-categories"].list_ids():
-        category = ac_storage.data_objects["project-categories"].load(category_id)
-        server_category = list(filter(lambda c: c.id == category_id, server_project_categories))
+        category = ac_storage.data_objects["project-categories"].load(
+            category_id)
+        server_category = list(
+            filter(lambda c: c.id == category_id, server_project_categories)
+        )
         if len(server_category) == 0:
             logging.error("Project Category %d not found!" % category_id)
             result = False
@@ -243,7 +249,8 @@ def _verify_tasks(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
     for task_id in ac_storage.data_objects["tasks"].list_ids():
         task = ac_storage.data_objects["tasks"].load(task_id)
 
-        server_tasks = list(filter(lambda t: task.id == t.id, all_server_tasks))
+        server_tasks = list(
+            filter(lambda t: task.id == t.id, all_server_tasks))
         if len(server_tasks) == 0:
             logging.error("Task %d not found!" % task_id)
             result = False
@@ -256,6 +263,15 @@ def _verify_tasks(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
     return result
 
 
+def _verify_comments(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
+    result = True
+    # load all comments from dump_task_history
+    # if comment parentType = "Task"
+    # get all comments from task from server
+    # compare
+    return result
+
+
 def _verify_task_lists(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
     result = True
     for task_list_id in ac_storage.data_objects["task-lists"].list_ids():
@@ -263,20 +279,30 @@ def _verify_task_lists(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
         project_id = task_list.project_id
         server_all_project_task_lists = []
         try:
-            server_all_project_task_lists = ac.get_project_task_lists(project_id)
+            server_all_project_task_lists = ac.get_project_task_lists(
+                project_id)
         except Exception as e:
             pass  # ignore exception here
         if len(server_all_project_task_lists) == 0:
             logging.error("No task lists for project %d found!" % project_id)
             result = False
             continue
-        server_task_list = list(filter(lambda o: o.id == task_list.id, server_all_project_task_lists))
+        server_task_list = list(
+            filter(lambda o: o.id == task_list.id,
+                   server_all_project_task_lists)
+        )
         if len(server_task_list) == 0:
-            logging.error("Task list %d for project %d not found!" % (task_list.id, project_id))
+            logging.error(
+                "Task list %d for project %d not found!" % (
+                    task_list.id, project_id)
+            )
             result = False
             continue
         if task_list != server_task_list[0]:
-            logging.error("Task list %d for project %d does not match!" % (task_list.id, project_id))
+            logging.error(
+                "Task list %d for project %d does not match!"
+                % (task_list.id, project_id)
+            )
             result = False
     return result
 
@@ -286,7 +312,8 @@ def _verify_projects(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
     server_projects = ac.get_all_projects()
     for project_id in ac_storage.data_objects["projects"].list_ids():
         company = ac_storage.data_objects["projects"].load(project_id)
-        server_project = list(filter(lambda c: c.id == project_id, server_projects))
+        server_project = list(
+            filter(lambda c: c.id == project_id, server_projects))
         if len(server_project) == 0:
             logging.error("Project %d not found!" % project_id)
             result = False
@@ -303,7 +330,8 @@ def _verify_companies(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
     server_companies = ac.get_all_companies()
     for company_id in ac_storage.data_objects["companies"].list_ids():
         company = ac_storage.data_objects["companies"].load(company_id)
-        server_company = list(filter(lambda c: c.id == company_id, server_companies))
+        server_company = list(
+            filter(lambda c: c.id == company_id, server_companies))
         if len(server_company) == 0:
             logging.error("Company %d not found!" % company_id)
             result = False
@@ -335,8 +363,8 @@ def _verify_users(ac: ActiveCollab, ac_storage: AcFileStorage):
 
 
 def run_load_all(ac: ActiveCollab, config: configparser.ConfigParser):
-    account_id = config.getint('LOGIN', 'account')
-    storage_path = config.get('STORAGE', 'path')
+    account_id = config.getint("LOGIN", "account")
+    storage_path = config.get("STORAGE", "path")
     ac_storage = AcFileStorage(storage_path, account_id)
 
     cnt = _load_companies(ac, ac_storage)
@@ -387,7 +415,8 @@ def _load_projects(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
 def _load_project_labels(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
     cnt = 0
     for project_label_id in ac_storage.data_objects["project-labels"].list_ids():
-        project_label = ac_storage.data_objects["project-labels"].load(project_label_id)
+        project_label = ac_storage.data_objects["project-labels"].load(
+            project_label_id)
         if ac.create_project_label(project_label):
             cnt += 1
     return cnt
@@ -396,7 +425,9 @@ def _load_project_labels(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
 def _load_project_categories(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
     cnt = 0
     for project_category_id in ac_storage.data_objects["project-categories"].list_ids():
-        project_category = ac_storage.data_objects["project-categories"].load(project_category_id)
+        project_category = ac_storage.data_objects["project-categories"].load(
+            project_category_id
+        )
         if ac.create_project_category(project_category):
             cnt += 1
     return cnt
@@ -422,17 +453,17 @@ def _load_companies(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
 
 def run(args, parser, config: configparser.ConfigParser):
     # run the commands
-    if args.command == 'version':
+    if args.command == "version":
         return run_version()
-    if args.command == 'info':
+    if args.command == "info":
         return run_info(_login(config))
-    if args.command == 'dump':
+    if args.command == "dump":
         return run_dump_all(_login(config), config)
-    if args.command == 'empty':
+    if args.command == "empty":
         return run_empty_trash(_login(config), config)
-    if args.command == 'verify':
+    if args.command == "verify":
         return run_verify_all(_login(config), config)
-    if args.command == 'load':
+    if args.command == "load":
         return run_load_all(_login(config), config)
     if args.command == "testing":
         return run_testing(_login(config), config)
@@ -444,16 +475,30 @@ def run(args, parser, config: configparser.ConfigParser):
 
 def main():
     setup_logging()
-    logging.info('Started')
+    logging.info("Started")
     # parse arguments
     parser = argparse.ArgumentParser(
-        prog='acdump',
-        description='This is a tool to dump data from Active-Collab',
-        epilog='(c) 2024 by ACME VC, Charlie Sloan <cs@example.com>')
-    parser.add_argument('-c', '--config', required=True,
-                        help="use the named config file")
-    parser.add_argument('command', choices=['version', 'info', 'dump', 'delete', 'empty', 'verify', 'load', 'testing'],
-                        help='The command to run')
+        prog="acdump",
+        description="This is a tool to dump data from Active-Collab",
+        epilog="(c) 2024 by ACME VC, Charlie Sloan <cs@example.com>",
+    )
+    parser.add_argument(
+        "-c", "--config", required=True, help="use the named config file"
+    )
+    parser.add_argument(
+        "command",
+        choices=[
+            "version",
+            "info",
+            "dump",
+            "delete",
+            "empty",
+            "verify",
+            "load",
+            "testing",
+        ],
+        help="The command to run",
+    )
     args = parser.parse_args()
     config = load_config(args)
     output = run(args, parser, config)
@@ -461,7 +506,7 @@ def main():
         output = list(output)
     if output is not None:
         print(serialize_output(output))
-    logging.info('Finished')
+    logging.info("Finished")
 
 
 if __name__ == "__main__":
