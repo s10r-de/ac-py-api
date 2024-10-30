@@ -70,7 +70,7 @@ def run_dump_all(ac: ActiveCollab, config: configparser.ConfigParser):
 
 def dump_all_projects_with_all_data(ac, ac_storage):
     projects = ac.get_active_projects()
-    projects.extend(ac.get_archived_projects())
+    # projects.extend(ac.get_archived_projects()) # Task#64 ignore completed projects because not all related data is accessible over the API
     for project in projects:
         ac_storage.data_objects["projects"].save(project)
         dump_all_project_notes(ac, ac_storage, project)
