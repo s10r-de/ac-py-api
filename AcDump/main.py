@@ -187,13 +187,13 @@ def run_verify_all(ac: ActiveCollab, config: configparser.ConfigParser) -> int:
 
     logging.info("Be sure to empty cache in filesystem before testing!")
     logging.info("  rm -fr var/www/html/cache/*")
-    # _verify_companies(ac, ac_storage)
-    # _verify_users(ac, ac_storage)
-    # _verify_project_categories(ac, ac_storage)
-    # _verify_project_labels(ac, ac_storage)
-    # _verify_projects(ac, ac_storage)
-    # _verify_task_lists(ac, ac_storage)
-    # _verify_tasks(ac, ac_storage)
+    _verify_companies(ac, ac_storage)
+    _verify_users(ac, ac_storage)
+    _verify_project_categories(ac, ac_storage)
+    _verify_project_labels(ac, ac_storage)
+    _verify_projects(ac, ac_storage)
+    _verify_task_lists(ac, ac_storage)
+    _verify_tasks(ac, ac_storage)
     _verify_comments(ac, ac_storage)
 
 
