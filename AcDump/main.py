@@ -23,7 +23,7 @@ def setup_logging():
 def load_config(args):
     if not os.path.exists(args.config):
         raise FileNotFoundError("Configfile '%s' not found!" % args.config)
-    config = configparser.ConfigParser()
+    config = configparser.ConfigParser(interpolation=None)
     config.read(args.config)
     return config
 
