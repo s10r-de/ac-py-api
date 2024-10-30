@@ -321,9 +321,9 @@ class ActiveCollab:
         res = client.delete_trash()
         return trash.json()
 
-    def get_project_task_lists(self, project_id: int) -> list[AcTaskList]:
+    def get_project_task_lists(self, project: AcProject) -> list[AcTaskList]:
         client = AcClient(self.session.cur_account, self.session.token)
-        res = client.get_task_lists(project_id)
+        res = client.get_task_lists(project.id)
         if res.status_code != 200:
             raise Exception("Error %d" % res.status_code)
         res_data = res.json()
