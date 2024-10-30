@@ -342,7 +342,6 @@ class ActiveCollab:
         res_data = res.json()
         return res_data
 
-    def get_project_task_lists(self, project: AcProject) -> list[AcTaskList]:
     def empty_trash(self):
         client = AcClient(self.session.cur_account, self.session.token)
         # FIXME loop until empty
