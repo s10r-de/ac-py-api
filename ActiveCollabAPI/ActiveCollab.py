@@ -348,7 +348,6 @@ class ActiveCollab:
         trash = client.get_trash()
         res = client.delete_trash()
         return trash.json()
-
     def delete_all_users(self):
         client = AcClient(self.session.cur_account, self.session.token)
         for user in self.get_all_users():
@@ -362,8 +361,8 @@ class ActiveCollab:
                 client.delete_company(company.id)
 
     def get_project_task_lists(self, project_id: int) -> list[AcTaskList]:
-        client = AcClient(self.session.cur_account, self.session.token)
-        res = client.get_task_lists(project_id)
+          client = AcClient(self.session.cur_account, self.session.token)
+        res = client.get_task_lists(project.id)
         if res.status_code != 200:
             raise Exception("Error %d" % res.status_code)
         res_data = res.json()

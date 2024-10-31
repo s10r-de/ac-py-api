@@ -1,5 +1,6 @@
 import dataclasses
 import json
+import logging
 from dataclasses import dataclass
 
 from ActiveCollabAPI import AC_CLASS_PROJECT, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
@@ -52,6 +53,21 @@ class AcProject:
     updated_by_id: int | None
     updated_on: int | None
     url_path: str
+
+    def __eq__(self, other) -> bool:
+        result = True
+        this_data = self.to_dict()
+        other_data = other.to_dict()
+        for key in this_data.keys():
+            this_value = this_data[key]
+            other_value = other_data[key]
+            if this_value != other_value:
+                logging.error(
+                    "AcProject[%d]: %s '%s'!='%s' - does not match -> FAIL" % (self.id, key, this_value, other_value))
+                result = False
+            else:
+                logging.debug("AcProject[%d]: %s ='%s' - matches -> OK" % (self.id, key, this_value))
+        return result
 
     def to_dict(self) -> dict:
         d = dataclasses.asdict(self)

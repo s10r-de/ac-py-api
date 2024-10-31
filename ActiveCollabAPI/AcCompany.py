@@ -1,5 +1,6 @@
 import dataclasses
 import json
+import logging
 from dataclasses import dataclass
 
 from AcDataObject import AcDataObject
@@ -30,6 +31,24 @@ class AcCompany(AcDataObject):
     updated_by_id: int
     updated_on: int
     url_path: str
+
+    def __eq__(self, other) -> bool:
+        ignored_fields = ["members"]
+        result = True
+        this_data = self.to_dict()
+        other_data = other.to_dict()
+        for key in this_data.keys():
+            if key in ignored_fields:
+                continue
+            this_value = this_data[key]
+            other_value = other_data[key]
+            if this_value != other_value:
+                logging.error(
+                    "AcCompany[%d]: %s '%s'!='%s' - does not match -> FAIL" % (self.id, key, this_value, other_value))
+                result = False
+            else:
+                logging.debug("AcCompany[%d]: %s '%s' - matches -> OK" % (self.id, key, this_value))
+        return result
 
     def to_dict(self) -> dict:
         d = dataclasses.asdict(self)
