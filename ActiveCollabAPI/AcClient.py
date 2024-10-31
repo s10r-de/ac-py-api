@@ -92,6 +92,9 @@ class AcClient:
         project_id = data["project_id"]
         return self._post('projects/%d/tasks' % project_id, json.dumps(data))
 
+    def delete_task(self, project_id: int, task_id: int) -> Response:
+        return self._delete('projects/%d/tasks/%d' % (project_id, task_id))
+
     def get_project_completed_tasks(self, project_id: int):
         return self._get('projects/%d/tasks/archive' % project_id)
 
@@ -106,6 +109,8 @@ class AcClient:
     def post_project(self, data: dict) -> Response:
         return self._post('projects', json.dumps(data))
 
+    def delete_project(self, project_id: int) -> Response:
+        return self._delete('projects/%d' % project_id)
 
     # notes
 
@@ -116,6 +121,9 @@ class AcClient:
 
     def get_all_users(self):
         return self._get('users/all')
+
+    def delete_user(self, user_id: int) -> Response:
+        return self._delete('users/%d' % user_id)
 
     def post_user(self, data: dict) -> Response:
         return self._post('users', json.dumps(data))
@@ -159,6 +167,11 @@ class AcClient:
     def post_project_label(self, data: dict) -> Response:
         return self._post('labels', json.dumps(data))
 
+    def delete_project_label(self, project_label_id: int) -> Response:
+        return self._delete('labels/%d' % project_label_id)
+
+    # task labels
+
     def get_task_labels(self) -> Response:
         return self._get('labels/task-labels')
 
@@ -166,6 +179,9 @@ class AcClient:
 
     def get_all_companies(self) -> Response:
         return self._get('companies/all')
+
+    def delete_company(self, company_id: int) -> Response:
+        return self._delete('companies/%d' % company_id)
 
     def post_company(self, data: dict) -> Response:
         return self._post('companies', json.dumps(data))
@@ -179,6 +195,8 @@ class AcClient:
         project_id = data["project_id"]
         return self._post('projects/%d/task-lists' % project_id, json.dumps(data))
 
+    def delete_task_list(self, project_id: int, task_list_id: int) -> Response:
+        return self._delete('projects/%d/task-lists/%d' % (project_id, task_list_id))
 
     # task history
 
@@ -189,6 +207,9 @@ class AcClient:
 
     def get_project_categories(self) -> Response:
         return self._get('projects/categories')
+
+    def delete_project_category(self, project_category_id: int) -> Response:
+        return self._delete('categories/%d' % project_category_id)
 
     def post_project_category(self, data: dict) -> Response:
         return self._post('categories', json.dumps(data))
