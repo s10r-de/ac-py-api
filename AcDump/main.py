@@ -91,7 +91,8 @@ def dump_all_task_lists_of_project(ac, ac_storage, project):
 
 
 def dump_all_tasks_of_project(ac, ac_storage, project):
-    tasks = ac.get_all_tasks(project.id)
+    # tasks = ac.get_all_tasks(project.id)
+    tasks = ac.get_active_tasks(project.id)
     for task in tasks:
         ac_storage.data_objects["tasks"].save(task)
         for attachment in task.get_attachments():
