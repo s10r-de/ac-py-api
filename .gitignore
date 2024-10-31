@@ -7,3 +7,4 @@
 __pycache__
 ActiveCollabServer/env
 *.zip
+.venv/
