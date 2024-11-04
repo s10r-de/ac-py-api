@@ -46,8 +46,10 @@ def run_version():
     return {"version": VERSION}
 
 
-def run_info(ac: ActiveCollab):
-    return ac.get_info()
+def run_info(ac: ActiveCollab, config: configparser.ConfigParser):
+    info = ac.get_info()
+    info["is_cloud"] = is_cloud(config)
+    return info
 
 
 def run_dump_all(ac: ActiveCollab, config: configparser.ConfigParser):
@@ -499,10 +501,12 @@ def run(args, parser, config: configparser.ConfigParser):
     if args.command == "version":
         return run_version()
     if args.command == "info":
-        return run_info(_login(config))
+        return run_info(_login(config), config)
     if args.command == "dump":
         return run_dump_all(_login(config), config)
-
+    if args.command == "delete":
+        return run_delete_all(_login(config), config)
+    if args.command == "empty":
         return run_empty_trash(_login(config), config)
     if args.command == "verify":
         return run_verify_all(_login(config), config)
