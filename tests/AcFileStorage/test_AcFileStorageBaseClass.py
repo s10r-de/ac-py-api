@@ -9,7 +9,7 @@ from unittest import TestCase
 from AcCompany import company_from_json
 from AcFileStorageBaseClass import AcFileStorageBaseClass
 
-DATA_DIR = '../data-test/TestAcFileStorageBaseClass/'
+DATA_DIR = './data-test/TestAcFileStorageBaseClass/'
 ACCOUNT_ID = 98765
 
 TEST_FILENAME_PREFIX = "test-file-prefix"
