@@ -13,5 +13,5 @@ gtar cvzf "../$PACKAGE.tar.gz" --transform "s+^+$PACKAGE/+"  \
 	--exclude "__pycache__" \
 	--exclude "data*" \
 	--exclude "*.ini" \
-	*
+	-- *
 
