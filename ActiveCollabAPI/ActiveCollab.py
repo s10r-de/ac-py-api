@@ -25,7 +25,35 @@ from ActiveCollabAPI.AcSubtask import AcSubtask, subtask_from_json
 from ActiveCollabAPI.AcTask import task_from_json
 from ActiveCollabAPI.AcToken import AcToken
 from ActiveCollabAPI.AcTokenAuthenticator import AcTokenAuthenticator
-from ActiveCollabAPI.AcUser import AcUser, user_from_json
+from ActiveCollabAPI.AcUser import AcUser, user_from_json, map_cloud_user_language_id
+
+
+def _workaround_user_fix_type_from_class(user: AcUser) -> AcUser:
+    user.type = user.class_
+    return user
+
+
+def _workaround_project_fix_type_from_class(project: AcProject) -> AcProject:
+    project.type = project.class_
+    return project
+
+
+def _generate_random_password(user: AcUser) -> AcUser:
+    """
+    Generates a random password for the user.
+
+    Because we don't know the password for the user we will generate a new random password. The User then needs to
+    use the "forget password" function to reset his or her password.  For this process the "Send Email" must be
+    configured and the CRON jobs need to run.
+
+    :param user: original AcUser Object
+    :return: modified AcUser Object
+    """
+    user.password = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=16))
+    logging.debug("password for user '%s' is '%s'" % (user.email, user.password))  # logging only for debugging!!
+    return user
+
+
 
 
 class ActiveCollab:
@@ -52,25 +80,6 @@ class ActiveCollab:
             self.login_to_self_hosted(email, password)
         return self.session
 
-    def login_to_self_hosted(self, email, password):
-        login_res = self.auth_self_hosted(email, password)
-        token = AcToken(login_res.token)
-        user = AcLoginUser(avatar_url="",
-                           first_name="",
-                           last_name="",
-                           intent="")
-        accounts = []
-        cur_account = AcAccount(
-            name=0,
-            url=self.base_url,
-            display_name="self-hosted account",
-            user_display_name="self-hosted account",
-            position=0,
-            class_="",
-            status=""
-        )
-        self.session = AcSession(user, accounts, cur_account, token)
-
     def login_to_cloud(self, account, email, password):
         login_res = self.auth_cloud(email, password)
         cur_account = self.select_first_account(login_res.accounts)
@@ -90,6 +99,25 @@ class ActiveCollab:
         accounts = list(map(lambda a: account_from_json(a), res_data['accounts']))
         user = AcLoginUser(**res_data['user'])
         return AcCloudLoginResponse(user, accounts)
+
+    def login_to_self_hosted(self, email, password):
+        login_res = self.auth_self_hosted(email, password)
+        token = AcToken(login_res.token)
+        user = AcLoginUser(avatar_url="",
+                           first_name="",
+                           last_name="",
+                           intent="")
+        accounts = []
+        cur_account = AcAccount(
+            name=0,
+            url=self.base_url,
+            display_name="self-hosted account",
+            user_display_name="self-hosted account",
+            position=0,
+            class_="",
+            status=""
+        )
+        self.session = AcSession(user, accounts, cur_account, token)
 
     def auth_self_hosted(self, email: str, password: str) -> AcLoginResponse:
         auth = AcAuthenticator(self.base_url)
@@ -206,9 +234,8 @@ class ActiveCollab:
     def create_project(self, project: AcProject) -> dict | None:
         logging.debug('Creating project: ' + project.to_json())
         client = AcClient(self.session.cur_account, self.session.token)
-        project = project.to_dict()
-        project["type"] = project["class"]  # FIXME
-        res = client.post_project(project)
+        project = _workaround_project_fix_type_from_class(project)
+        res = client.post_project(project.to_dict())
         if res.status_code != 200:
             raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
         res_data = res.json()
@@ -243,14 +270,11 @@ class ActiveCollab:
         if user.class_ == AC_CLASS_USER_OWNER:
             print("can not create owner user %d" % user.id)
             return
+        user = _workaround_user_fix_type_from_class(user)
+        user = map_cloud_user_language_id(user)
+        user = _generate_random_password(user)
         client = AcClient(self.session.cur_account, self.session.token)
-        user = user.to_dict()
-        user["type"] = user["class"]  # FIXME ???
-        user["password"] = ''.join(
-            random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=16))  # FIXME ??
-        logging.debug(
-            "password for user '%s' is '%s'" % (user["email"], user["password"]))  # FIXME: only for debugging!!
-        res = client.post_user(user)
+        res = client.post_user(user.to_dict())
         if res.status_code != 200:
             raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
         res_data = res.json()

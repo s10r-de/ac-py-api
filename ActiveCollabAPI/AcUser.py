@@ -6,6 +6,12 @@ from dataclasses import dataclass
 from AcDataObject import AcDataObject
 from ActiveCollabAPI import AC_CLASS_USER_MEMBER, AC_CLASS_USER_OWNER, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 
+AC_CLOUD_LANG_ID_GERMAN = 5
+AC_CLOUD_LANG_ID_ENGLISH = 26
+
+AC_SELFHOSTED_LANG_ID_ENGLISH = 1
+AC_SELFHOSTED_LANG_ID_GERMAN = 4
+
 
 @dataclass
 class AcUser(AcDataObject):
@@ -77,3 +83,25 @@ def user_from_json(json_obj: dict) -> AcUser:
     json_obj[AC_PROPERTY_CLASS_] = json_obj[AC_PROPERTY_CLASS]
     del json_obj[AC_PROPERTY_CLASS]
     return AcUser(**json_obj)
+
+
+def map_cloud_user_language_id(user: AcUser) -> AcUser:
+    """
+    Workaround for language lookup tables are not in sync between cloud and self-hosted.
+
+    If language is set to german, then adapt the ID, for any other language
+    fallback to english.
+
+    Note: you need to call this funktion only if the data is dumped from cloud
+    and not from self-hosted!
+
+    Tasks#65 https://app.activecollab.com/416910/projects/604?modal=Task-24391-604
+
+    :param user: Original AcUser Object
+    :return: the modified AcUser Object
+    """
+    if user.language_id == AC_CLOUD_LANG_ID_GERMAN:
+        user.language_id = AC_SELFHOSTED_LANG_ID_GERMAN
+    else:
+        user.language_id = AC_SELFHOSTED_LANG_ID_ENGLISH
+    return user

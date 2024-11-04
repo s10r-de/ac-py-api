@@ -1,6 +1,8 @@
 import json
 from unittest import TestCase
 
+from AcUser import map_cloud_user_language_id, AC_CLOUD_LANG_ID_ENGLISH, AC_CLOUD_LANG_ID_GERMAN, \
+    AC_SELFHOSTED_LANG_ID_GERMAN, AC_SELFHOSTED_LANG_ID_ENGLISH
 from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 from ActiveCollabAPI.AcUser import user_from_json
 
@@ -31,3 +33,27 @@ class TestAcUser(TestCase):
         self.assertEqual(user_id, json.loads(user_json)["id"])
         self.assertIn(AC_PROPERTY_CLASS, json.loads(user_json).keys())
         self.assertNotIn(AC_PROPERTY_CLASS_, json.loads(user_json).keys())
+
+    def test_map_cloud_user_language_id_de(self):
+        user_id = 103
+        cloud_user_de_json = self._generate_test_user(user_id)
+        cloud_user_de = user_from_json(cloud_user_de_json)
+        cloud_user_de.language_id = AC_CLOUD_LANG_ID_GERMAN
+        selfhosted_user_de = map_cloud_user_language_id(cloud_user_de)
+        self.assertEqual(selfhosted_user_de.language_id, AC_SELFHOSTED_LANG_ID_GERMAN)
+
+    def test_map_cloud_user_language_id_en(self):
+        user_id = 103
+        cloud_user_de_json = self._generate_test_user(user_id)
+        cloud_user_de = user_from_json(cloud_user_de_json)
+        cloud_user_de.language_id = AC_CLOUD_LANG_ID_ENGLISH
+        selfhosted_user_de = map_cloud_user_language_id(cloud_user_de)
+        self.assertEqual(selfhosted_user_de.language_id, AC_SELFHOSTED_LANG_ID_ENGLISH)
+
+    def test_map_cloud_user_language_id_other(self):
+        user_id = 103
+        cloud_user_de_json = self._generate_test_user(user_id)
+        cloud_user_de = user_from_json(cloud_user_de_json)
+        cloud_user_de.language_id = 18  # some random value not DE not EN
+        selfhosted_user_de = map_cloud_user_language_id(cloud_user_de)
+        self.assertEqual(selfhosted_user_de.language_id, AC_SELFHOSTED_LANG_ID_ENGLISH)
