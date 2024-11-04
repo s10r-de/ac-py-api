@@ -1,6 +1,8 @@
 import dataclasses
 import json
 import logging
+import random
+import string
 from dataclasses import dataclass
 
 from AcDataObject import AcDataObject
@@ -49,6 +51,7 @@ class AcUser(AcDataObject):
     workspace_count: int
     avatar_version: str = dataclasses.field(default="")
     has_custom_avatar: bool = dataclasses.field(default=False)
+    password: str = dataclasses.field(default="")
 
     def __eq__(self, other) -> bool:
         ignored_fields = ["avatar_url", "avatar_version", "has_custom_avatar"]
@@ -104,4 +107,20 @@ def map_cloud_user_language_id(user: AcUser) -> AcUser:
         user.language_id = AC_SELFHOSTED_LANG_ID_GERMAN
     else:
         user.language_id = AC_SELFHOSTED_LANG_ID_ENGLISH
+    return user
+
+
+def generate_random_password(user: AcUser) -> AcUser:
+    """
+    Generates a random password for the user.
+
+    Because we don't know the password for the user we will generate a new random password. The User then needs to
+    use the "forget password" function to reset his or her password.  For this process the "Send Email" must be
+    configured and the CRON jobs need to run.
+
+    :param user: original AcUser Object
+    :return: modified AcUser Object
+    """
+    user.password = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=16))
+    logging.debug("password for user '%s' is '%s'" % (user.email, user.password))  # logging only for debugging!!
     return user

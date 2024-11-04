@@ -48,7 +48,7 @@ def run_version():
 
 def run_info(ac: ActiveCollab, config: configparser.ConfigParser):
     info = ac.get_info()
-    info["is_cloud"] = is_cloud(config)
+    info["is_cloud"] = check_is_cloud(config)
     return info
 
 
@@ -167,7 +167,7 @@ def _login(config: configparser.ConfigParser) -> ActiveCollab:
     return ac
 
 
-def is_cloud(config: configparser.ConfigParser) -> bool:
+def check_is_cloud(config: configparser.ConfigParser) -> bool:
     is_cloud = config.getboolean("DEFAULT", "is_cloud", fallback=False)
     if is_cloud is False:
         base_url = config.get("DEFAULT", "base_url")
@@ -177,7 +177,7 @@ def is_cloud(config: configparser.ConfigParser) -> bool:
 
 
 def run_delete_all(ac: ActiveCollab, config: configparser.ConfigParser):
-    if is_cloud(config):
+    if check_is_cloud(config):
         raise Exception("Do not delete data from cloud!")
     # _delete_all_attachments(ac)
     _delete_all_task_lists(ac)
@@ -190,7 +190,7 @@ def run_delete_all(ac: ActiveCollab, config: configparser.ConfigParser):
 
 
 def run_empty_trash(ac: ActiveCollab, config: configparser.ConfigParser):
-    if is_cloud(config):
+    if check_is_cloud(config):
         raise Exception("Do not empty trash from cloud!")
     return ac.empty_trash()  # FIXME loop until empty
 

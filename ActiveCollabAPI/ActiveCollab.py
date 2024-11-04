@@ -1,6 +1,4 @@
 import logging
-import random
-import string
 
 from AcAttachment import AcAttachment
 from AcCompany import AcCompany, company_from_json
@@ -25,7 +23,7 @@ from ActiveCollabAPI.AcSubtask import AcSubtask, subtask_from_json
 from ActiveCollabAPI.AcTask import task_from_json
 from ActiveCollabAPI.AcToken import AcToken
 from ActiveCollabAPI.AcTokenAuthenticator import AcTokenAuthenticator
-from ActiveCollabAPI.AcUser import AcUser, user_from_json, map_cloud_user_language_id
+from ActiveCollabAPI.AcUser import AcUser, user_from_json, map_cloud_user_language_id, generate_random_password
 
 
 def _workaround_user_fix_type_from_class(user: AcUser) -> AcUser:
@@ -36,23 +34,6 @@ def _workaround_user_fix_type_from_class(user: AcUser) -> AcUser:
 def _workaround_project_fix_type_from_class(project: AcProject) -> AcProject:
     project.type = project.class_
     return project
-
-
-def _generate_random_password(user: AcUser) -> AcUser:
-    """
-    Generates a random password for the user.
-
-    Because we don't know the password for the user we will generate a new random password. The User then needs to
-    use the "forget password" function to reset his or her password.  For this process the "Send Email" must be
-    configured and the CRON jobs need to run.
-
-    :param user: original AcUser Object
-    :return: modified AcUser Object
-    """
-    user.password = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=16))
-    logging.debug("password for user '%s' is '%s'" % (user.email, user.password))  # logging only for debugging!!
-    return user
-
 
 
 
@@ -272,7 +253,7 @@ class ActiveCollab:
             return
         user = _workaround_user_fix_type_from_class(user)
         user = map_cloud_user_language_id(user)
-        user = _generate_random_password(user)
+        user = generate_random_password(user)
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.post_user(user.to_dict())
         if res.status_code != 200:
