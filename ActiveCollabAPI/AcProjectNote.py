@@ -50,5 +50,6 @@ def project_note_from_json(json_obj: dict) -> AcProjectNote:
     assert json_obj[AC_PROPERTY_CLASS] == AC_CLASS_PROJECT_NOTE, AC_ERROR_WRONG_CLASS
     json_obj[AC_PROPERTY_CLASS_] = json_obj[AC_PROPERTY_CLASS]
     del json_obj[AC_PROPERTY_CLASS]
-    json_obj["attachments"] = list(map(lambda a: attachment_from_json(a), json_obj["attachments"]))
+    json_obj["attachments"] = list(
+        map(lambda a: attachment_from_json(a), json_obj["attachments"]))
     return AcProjectNote(**json_obj)

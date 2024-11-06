@@ -47,7 +47,8 @@ class AcTaskList:
                     "AcTaskList[%d]: %s '%s'!='%s' - does not match -> FAIL" % (self.id, key, this_value, other_value))
                 result = False
             else:
-                logging.debug("AcTaskList[%d]: %s ='%s' - matches -> OK" % (self.id, key, this_value))
+                logging.debug(
+                    "AcTaskList[%d]: %s ='%s' - matches -> OK" % (self.id, key, this_value))
         return result
 
     def to_dict(self) -> dict:

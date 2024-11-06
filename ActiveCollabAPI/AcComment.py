@@ -39,7 +39,8 @@ class AcComment:
         d[AC_PROPERTY_CLASS] = d[AC_PROPERTY_CLASS_]
         del d[AC_PROPERTY_CLASS_]
         if d["attachments"] is not None:
-            d["attachments"] = list(map(lambda a: a.to_dict(), self.get_attachments()))
+            d["attachments"] = list(
+                map(lambda a: a.to_dict(), self.get_attachments()))
         return d
 
     def to_json(self) -> str:
@@ -54,5 +55,6 @@ def comment_from_json(json_obj: dict) -> AcComment:
     json_obj[AC_PROPERTY_CLASS_] = json_obj[AC_PROPERTY_CLASS]
     del json_obj[AC_PROPERTY_CLASS]
     if json_obj["attachments"] is not None:
-        json_obj["attachments"] = list(map(attachment_from_json, json_obj["attachments"]))
+        json_obj["attachments"] = list(
+            map(attachment_from_json, json_obj["attachments"]))
     return AcComment(**json_obj)

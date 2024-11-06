@@ -37,7 +37,8 @@ class AcProjectLabel:
                         self.id, key, this_value, other_value))
                 result = False
             else:
-                logging.debug("AcProjectLabel[%d]: %s '%s' - matches -> OK" % (self.id, key, this_value))
+                logging.debug(
+                    "AcProjectLabel[%d]: %s '%s' - matches -> OK" % (self.id, key, this_value))
         return result
 
     def to_dict(self) -> dict:
