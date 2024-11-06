@@ -168,8 +168,13 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         task.type = task.class_  # FIXME
         res = client.post_task(task.to_dict())
+        if res.status_code == 404:
+            logging.error(
+                "Project %d not found! Can not create task list!" % task.project_id)
+            return None
         if res.status_code != 200:
-            raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
+            logging.error("Error %d - %s" % (res.status_code, str(res.text)))
+            return None
         res_data = res.json()
         return res_data
 
@@ -219,7 +224,9 @@ class ActiveCollab:
         project = _workaround_project_fix_type_from_class(project)
         res = client.post_project(project.to_dict())
         if res.status_code != 200:
-            raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
+            logging.error("cant creeate project! (%d - %s)" %
+                          (res.status_code, res.text))
+            return None
         res_data = res.json()
         return res_data
 
@@ -258,7 +265,8 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.post_user(user.to_dict())
         if res.status_code != 200:
-            raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
+            logging.error("Error %d - %s" % (res.status_code, str(res.text)))
+            return None
         res_data = res.json()
         return res_data
 
@@ -381,9 +389,13 @@ class ActiveCollab:
         task_list.type = task_list.class_  # FIXME
         res = client.post_task_list(task_list.to_dict())
         if res.status_code == 404:
-            raise Exception("Project %d not found!" % task_list["project_id"])
+            logging.error(
+                "Project %d not found! Can not create task list!" % task_list.project_id)
+            return None
+            # raise Exception("Project %d not found!" % task_list.project_id)
         if res.status_code != 200:
-            raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
+            logging.error("Error %d - %s" % (res.status_code, str(res.text)))
+            return None
         res_data = res.json()
         return res_data
 
