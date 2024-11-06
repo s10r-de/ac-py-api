@@ -21,7 +21,7 @@ class AcAccount:
         del d[AC_PROPERTY_CLASS_]
         return d
 
-    def to_json(self) -> json:
+    def to_json(self) -> str:
         return json.dumps(self.to_dict())
 
 
