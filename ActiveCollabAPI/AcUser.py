@@ -70,7 +70,8 @@ class AcUser(AcDataObject):
                     "AcUser[%d]: %s '%s'!='%s' - does not match -> FAIL" % (self.id, key, this_value, other_value))
                 result = False
             else:
-                logging.debug("AcUser[%d]: %s ='%s' - matches -> OK" % (self.id, key, this_value))
+                logging.debug(
+                    "AcUser[%d]: %s ='%s' - matches -> OK" % (self.id, key, this_value))
         return result
 
     def to_dict(self) -> dict:
@@ -123,6 +124,8 @@ def generate_random_password(user: AcUser) -> AcUser:
     :param user: original AcUser Object
     :return: modified AcUser Object
     """
-    user.password = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=16))
-    logging.debug("password for user '%s' is '%s'" % (user.email, user.password))  # logging only for debugging!!
+    user.password = ''.join(random.choices(
+        string.ascii_uppercase + string.ascii_lowercase + string.digits, k=16))
+    logging.debug("password for user '%s' is '%s'" %
+                  (user.email, user.password))  # logging only for debugging!!
     return user
