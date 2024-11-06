@@ -160,7 +160,7 @@ def _login(config: configparser.ConfigParser) -> ActiveCollab:
     is_cloud = config.getboolean("DEFAULT", "is_cloud", fallback=False)
     account = ""
     if is_cloud:
-        account = config.get("LOGIN", "account", fallback=None)
+        account = config.get("LOGIN", "account", fallback="")
     ac = ActiveCollab(base_url, is_cloud)
     ac.login(config.get("LOGIN", "username"),
              config.get("LOGIN", "password"), account)
@@ -195,7 +195,7 @@ def run_empty_trash(ac: ActiveCollab, config: configparser.ConfigParser):
     return ac.empty_trash()  # FIXME loop until empty
 
 
-def run_verify_all(ac: ActiveCollab, config: configparser.ConfigParser) -> int:
+def run_verify_all(ac: ActiveCollab, config: configparser.ConfigParser):
     account_id = config.getint("LOGIN", "account")
     storage_path = config.get("STORAGE", "path")
     ac_storage = AcFileStorage(storage_path, account_id)
