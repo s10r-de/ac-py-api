@@ -417,7 +417,7 @@ def _delete_all_task_lists(ac: ActiveCollab, config: configparser.ConfigParser):
 def _delete_all_projects(ac: ActiveCollab, config: configparser.ConfigParser):
     if check_is_cloud(config):
         raise Exception("Do not delete data from cloud!")
-    return ac.delete_all_projects()aP
+    return ac.delete_all_projects()
 
 
 def _delete_all_project_categories(ac: ActiveCollab, config: configparser.ConfigParser):
