@@ -19,6 +19,7 @@ class AcProjectCategory:
     parent_type: str | None
     updated_on: int
     url_path: str
+    type: str | None = dataclasses.field(default=None)
 
     def __eq__(self, other) -> bool:
         ignored_fields = []

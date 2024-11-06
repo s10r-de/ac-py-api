@@ -30,6 +30,7 @@ class AcTaskList:
     updated_by_id: int
     updated_on: int
     url_path: str
+    type: str | None = dataclasses.field(default=None)
 
     def __eq__(self, other) -> bool:
         ignored_fields = []

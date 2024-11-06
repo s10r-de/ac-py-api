@@ -53,6 +53,7 @@ class AcProject:
     updated_by_id: int | None
     updated_on: int | None
     url_path: str
+    type: str | None = dataclasses.field(default=None)
 
     def __eq__(self, other) -> bool:
         result = True

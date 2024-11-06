@@ -19,6 +19,7 @@ class AcProjectLabel:
     is_default: bool
     position: int
     project_id: int | None
+    type: str | None = dataclasses.field(default=None)
 
     def __eq__(self, other) -> bool:
         ignored_fields = []
