@@ -30,6 +30,7 @@ class AcTaskList:
     updated_by_id: int
     updated_on: int
     url_path: str
+    type: str | None = dataclasses.field(default=None)
 
     def __eq__(self, other) -> bool:
         ignored_fields = []
@@ -46,7 +47,8 @@ class AcTaskList:
                     "AcTaskList[%d]: %s '%s'!='%s' - does not match -> FAIL" % (self.id, key, this_value, other_value))
                 result = False
             else:
-                logging.debug("AcTaskList[%d]: %s ='%s' - matches -> OK" % (self.id, key, this_value))
+                logging.debug(
+                    "AcTaskList[%d]: %s ='%s' - matches -> OK" % (self.id, key, this_value))
         return result
 
     def to_dict(self) -> dict:

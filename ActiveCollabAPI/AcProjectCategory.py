@@ -19,6 +19,7 @@ class AcProjectCategory:
     parent_type: str | None
     updated_on: int
     url_path: str
+    type: str | None = dataclasses.field(default=None)
 
     def __eq__(self, other) -> bool:
         ignored_fields = []
@@ -33,10 +34,11 @@ class AcProjectCategory:
             if this_value != other_value:
                 logging.error(
                     "AcProjectCategory[%d]: %s '%s'!='%s' - does not match -> FAIL" % (
-                    self.id, key, this_value, other_value))
+                        self.id, key, this_value, other_value))
                 result = False
             else:
-                logging.debug("AcProjectCategory[%d]: %s '%s' - matches -> OK" % (self.id, key, this_value))
+                logging.debug(
+                    "AcProjectCategory[%d]: %s '%s' - matches -> OK" % (self.id, key, this_value))
         return result
 
     def to_dict(self) -> dict:

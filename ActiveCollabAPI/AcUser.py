@@ -52,6 +52,8 @@ class AcUser(AcDataObject):
     avatar_version: str = dataclasses.field(default="")
     has_custom_avatar: bool = dataclasses.field(default=False)
     password: str = dataclasses.field(default="")
+    archived_on: int | None = dataclasses.field(default=None)
+    type: str = dataclasses.field(default="")  # equal value to "class"
 
     def __eq__(self, other) -> bool:
         ignored_fields = ["avatar_url", "avatar_version", "has_custom_avatar"]
@@ -68,7 +70,8 @@ class AcUser(AcDataObject):
                     "AcUser[%d]: %s '%s'!='%s' - does not match -> FAIL" % (self.id, key, this_value, other_value))
                 result = False
             else:
-                logging.debug("AcUser[%d]: %s ='%s' - matches -> OK" % (self.id, key, this_value))
+                logging.debug(
+                    "AcUser[%d]: %s ='%s' - matches -> OK" % (self.id, key, this_value))
         return result
 
     def to_dict(self) -> dict:
@@ -121,6 +124,8 @@ def generate_random_password(user: AcUser) -> AcUser:
     :param user: original AcUser Object
     :return: modified AcUser Object
     """
-    user.password = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=16))
-    logging.debug("password for user '%s' is '%s'" % (user.email, user.password))  # logging only for debugging!!
+    user.password = ''.join(random.choices(
+        string.ascii_uppercase + string.ascii_lowercase + string.digits, k=16))
+    logging.debug("password for user '%s' is '%s'" %
+                  (user.email, user.password))  # logging only for debugging!!
     return user

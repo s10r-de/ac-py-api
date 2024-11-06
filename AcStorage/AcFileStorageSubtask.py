@@ -1,5 +1,5 @@
 from AcFileStorageBaseClass import AcFileStorageBaseClass
-from AcSubtask import AcSubtask
+from ActiveCollabAPI.AcSubtask import AcSubtask
 from ActiveCollabAPI import AC_ERROR_WRONG_CLASS, AC_CLASS_SUBTASK
 
 

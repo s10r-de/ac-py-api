@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from AcAttachment import AcAttachment
+from ActiveCollabAPI.AcAttachment import AcAttachment
 from AcFileStorageBaseClass import AcFileStorageBaseClass
 from ActiveCollabAPI import AC_ERROR_WRONG_CLASS, AC_CLASS_ATTACHMENT_WAREHOUSE, AC_CLASS_ATTACHMENT_LOCAL
 
@@ -20,5 +20,6 @@ class AcFileStorageAttachment(AcFileStorageBaseClass):
         assert attachment.class_ == AC_CLASS_ATTACHMENT_WAREHOUSE or attachment.class_ == AC_CLASS_ATTACHMENT_LOCAL, AC_ERROR_WRONG_CLASS
         assert os.path.exists(tmp_download)
         attachment_full_filename = super().save_with_id(attachment, attachment.id)
-        shutil.move(tmp_download, attachment_full_filename + '.' + attachment.extension)
+        shutil.move(tmp_download, attachment_full_filename +
+                    '.' + attachment.extension)
         return attachment_full_filename

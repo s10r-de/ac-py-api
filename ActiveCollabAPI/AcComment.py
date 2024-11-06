@@ -8,7 +8,7 @@ from ActiveCollabAPI import AC_CLASS_COMMENT, AC_PROPERTY_CLASS, AC_PROPERTY_CLA
 
 @dataclass
 class AcComment:
-    attachments: [AcAttachment | None]
+    attachments: list[AcAttachment]
     body: str
     body_formatted: str
     body_mode: str
@@ -27,7 +27,7 @@ class AcComment:
     parent_id: int
     parent_type: str
     project_id: int
-    reactions: []
+    reactions: list  # FIXME
     trashed_by_id: int
     trashed_on: int | None
     updated_by_id: int
@@ -39,7 +39,8 @@ class AcComment:
         d[AC_PROPERTY_CLASS] = d[AC_PROPERTY_CLASS_]
         del d[AC_PROPERTY_CLASS_]
         if d["attachments"] is not None:
-            d["attachments"] = list(map(lambda a: a.to_dict(), self.get_attachments()))
+            d["attachments"] = list(
+                map(lambda a: a.to_dict(), self.get_attachments()))
         return d
 
     def to_json(self) -> str:
@@ -54,5 +55,6 @@ def comment_from_json(json_obj: dict) -> AcComment:
     json_obj[AC_PROPERTY_CLASS_] = json_obj[AC_PROPERTY_CLASS]
     del json_obj[AC_PROPERTY_CLASS]
     if json_obj["attachments"] is not None:
-        json_obj["attachments"] = list(map(attachment_from_json, json_obj["attachments"]))
+        json_obj["attachments"] = list(
+            map(attachment_from_json, json_obj["attachments"]))
     return AcComment(**json_obj)

@@ -22,7 +22,7 @@ class AcCompany(AcDataObject):
     is_archived: bool
     is_owner: bool
     is_trashed: bool
-    members: [int]
+    members: list[int]
     name: str
     phone: str | None
     tax_id: str | None
@@ -47,7 +47,8 @@ class AcCompany(AcDataObject):
                     "AcCompany[%d]: %s '%s'!='%s' - does not match -> FAIL" % (self.id, key, this_value, other_value))
                 result = False
             else:
-                logging.debug("AcCompany[%d]: %s '%s' - matches -> OK" % (self.id, key, this_value))
+                logging.debug(
+                    "AcCompany[%d]: %s '%s' - matches -> OK" % (self.id, key, this_value))
         return result
 
     def to_dict(self) -> dict:
@@ -61,7 +62,8 @@ class AcCompany(AcDataObject):
 
 
 def company_from_json(json_obj: dict) -> AcCompany:
-    assert json_obj[AC_PROPERTY_CLASS] == AC_CLASS_COMPANY, AC_ERROR_WRONG_CLASS + " " + json_obj[AC_PROPERTY_CLASS]
+    assert json_obj[AC_PROPERTY_CLASS] == AC_CLASS_COMPANY, AC_ERROR_WRONG_CLASS + \
+        " " + json_obj[AC_PROPERTY_CLASS]
     json_obj[AC_PROPERTY_CLASS_] = json_obj[AC_PROPERTY_CLASS]
     del json_obj[AC_PROPERTY_CLASS]
     return AcCompany(**json_obj)

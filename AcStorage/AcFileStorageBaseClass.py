@@ -11,8 +11,8 @@ from AcStorage import DEFAULT_MODE_DIRS, AC_ERROR_ID_MUST_BE_INT
 class AcFileStorageBaseClass:
 
     def __init__(self, root_path: str, account_id: int):
-        self.dir_name = None
-        self.filename_prefix = None
+        self.dir_name = ""
+        self.filename_prefix = ""
         self.root_path = root_path
         self.account_id = account_id
 
@@ -53,8 +53,11 @@ class AcFileStorageBaseClass:
         def extract_id(f: str) -> int:
             return locale.atoi(os.path.basename(f)[n + 1:-5])
 
-        return list(map(extract_id,
-                        glob.iglob(os.path.join(self.get_path(), self.filename_prefix + "-*.json"))))
+        ids = list(map(extract_id,
+                       glob.iglob(os.path.join(self.get_path(),
+                                               self.filename_prefix + "-*.json"))))
+        ids.sort()
+        return ids
 
     def load_by_id(self, id: int) -> dict:
         filename = self.filename_with_id(id)

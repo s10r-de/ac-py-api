@@ -19,6 +19,7 @@ class AcProjectLabel:
     is_default: bool
     position: int
     project_id: int | None
+    type: str | None = dataclasses.field(default=None)
 
     def __eq__(self, other) -> bool:
         ignored_fields = []
@@ -36,7 +37,8 @@ class AcProjectLabel:
                         self.id, key, this_value, other_value))
                 result = False
             else:
-                logging.debug("AcProjectLabel[%d]: %s '%s' - matches -> OK" % (self.id, key, this_value))
+                logging.debug(
+                    "AcProjectLabel[%d]: %s '%s' - matches -> OK" % (self.id, key, this_value))
         return result
 
     def to_dict(self) -> dict:

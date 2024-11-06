@@ -4,15 +4,15 @@ import logging
 from dataclasses import dataclass
 
 from AcAttachment import AcAttachment, attachment_from_json
-from AcTaskDependencies import taskdependency_from_json
-from ActiveCollabAPI import AcTaskDependencies, AC_CLASS_TASK, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_, \
+from AcTaskDependencies import AcTaskDependencies, taskdependency_from_json
+from ActiveCollabAPI import AC_CLASS_TASK, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_, \
     AC_ERROR_WRONG_CLASS
 
 
 @dataclass
 class AcTask:
     assignee_id: int
-    attachments: [AcAttachment | None]
+    attachments: list[AcAttachment]
     body: str
     body_formatted: str
     body_mode: str
@@ -38,7 +38,7 @@ class AcTask:
     is_important: bool
     is_trashed: bool
     job_type_id: int
-    labels: []
+    labels: list  # FIXME
     name: str
     open_dependencies: AcTaskDependencies
     open_subtasks: int
@@ -53,6 +53,7 @@ class AcTask:
     updated_by_id: int
     updated_on: int
     url_path: str
+    type: str | None = dataclasses.field(default=None)
 
     def __eq__(self, other) -> bool:
         ignored_fields = []
@@ -69,7 +70,8 @@ class AcTask:
                     "acTask[%d]: %s '%s'!='%s' - does not match -> FAIL" % (self.id, key, this_value, other_value))
                 result = False
             else:
-                logging.debug("acTask[%d]: %s '%s' - matches -> OK" % (self.id, key, this_value))
+                logging.debug(
+                    "acTask[%d]: %s '%s' - matches -> OK" % (self.id, key, this_value))
         return result
 
     def to_dict(self) -> dict:
@@ -79,7 +81,8 @@ class AcTask:
         if d["open_dependencies"] is not None:
             d["open_dependencies"] = self.open_dependencies.to_dict()
         if d["attachments"] is not None:
-            d["attachments"] = list(map(lambda a: a.to_dict(), self.get_attachments()))
+            d["attachments"] = list(
+                map(lambda a: a.to_dict(), self.get_attachments()))
         return d
 
     def to_json(self) -> str:
@@ -94,7 +97,9 @@ def task_from_json(json_obj: dict) -> AcTask:
     json_obj[AC_PROPERTY_CLASS_] = json_obj[AC_PROPERTY_CLASS]
     del json_obj[AC_PROPERTY_CLASS]
     if json_obj["open_dependencies"] is not None:
-        json_obj["open_dependencies"] = taskdependency_from_json(json_obj["open_dependencies"])
+        json_obj["open_dependencies"] = taskdependency_from_json(
+            json_obj["open_dependencies"])
     if json_obj["attachments"] is not None:
-        json_obj["attachments"] = list(map(attachment_from_json, json_obj["attachments"]))
+        json_obj["attachments"] = list(
+            map(attachment_from_json, json_obj["attachments"]))
     return AcTask(**json_obj)
