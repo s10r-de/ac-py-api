@@ -179,14 +179,14 @@ def check_is_cloud(config: configparser.ConfigParser) -> bool:
 def run_delete_all(ac: ActiveCollab, config: configparser.ConfigParser):
     if check_is_cloud(config):
         raise Exception("Do not delete data from cloud!")
-    # _delete_all_attachments(ac)
-    _delete_all_task_lists(ac)
-    _delete_all_tasks(ac)
-    _delete_all_projects(ac)
-    _delete_all_project_categories(ac)
-    _delete_all_project_labels(ac)
-    _delete_all_users(ac)
-    _delete_all_companies(ac)
+    # _delete_all_attachments(ac, config)
+    _delete_all_task_lists(ac, config)
+    _delete_all_tasks(ac, config)
+    _delete_all_projects(ac, config)
+    _delete_all_project_categories(ac, config)
+    _delete_all_project_labels(ac, config)
+    _delete_all_users(ac, config)
+    _delete_all_companies(ac, config)
 
 
 def run_empty_trash(ac: ActiveCollab, config: configparser.ConfigParser):
@@ -400,33 +400,47 @@ def run_load_all(ac: ActiveCollab, config: configparser.ConfigParser):
     print("Imported %d tasks" % cnt)
 
 
-def _delete_all_tasks(ac: ActiveCollab):
+def _delete_all_tasks(ac: ActiveCollab, config: configparser.ConfigParser):
+    if check_is_cloud(config):
+        raise Exception("Do not delete data from cloud!")
     for project in ac.get_all_projects():
         ac.delete_all_tasks(project.id)
 
 
-def _delete_all_task_lists(ac: ActiveCollab):
+def _delete_all_task_lists(ac: ActiveCollab, config: configparser.ConfigParser):
+    if check_is_cloud(config):
+        raise Exception("Do not delete data from cloud!")
     for project in ac.get_all_projects():
         ac.delete_all_task_lists(project)
 
 
-def _delete_all_projects(ac: ActiveCollab):
-    return ac.delete_all_projects()
+def _delete_all_projects(ac: ActiveCollab, config: configparser.ConfigParser):
+    if check_is_cloud(config):
+        raise Exception("Do not delete data from cloud!")
+    return ac.delete_all_projects()aP
 
 
-def _delete_all_project_categories(ac: ActiveCollab):
+def _delete_all_project_categories(ac: ActiveCollab, config: configparser.ConfigParser):
+    if check_is_cloud(config):
+        raise Exception("Do not delete data from cloud!")
     return ac.delete_all_project_categories()
 
 
-def _delete_all_project_labels(ac: ActiveCollab):
+def _delete_all_project_labels(ac: ActiveCollab, config: configparser.ConfigParser):
+    if check_is_cloud(config):
+        raise Exception("Do not delete data from cloud!")
     return ac.delete_all_project_labels()
 
 
-def _delete_all_users(ac: ActiveCollab):
+def _delete_all_users(ac: ActiveCollab, config: configparser.ConfigParser):
+    if check_is_cloud(config):
+        raise Exception("Do not delete data from cloud!")
     return ac.delete_all_users()
 
 
-def _delete_all_companies(ac: ActiveCollab):
+def _delete_all_companies(ac: ActiveCollab, config: configparser.ConfigParser):
+    if check_is_cloud(config):
+        raise Exception("Do not delete data from cloud!")
     return ac.delete_all_companies()
 
 
