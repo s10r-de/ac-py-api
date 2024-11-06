@@ -12,7 +12,7 @@ from ActiveCollabAPI import AcTaskDependencies, AC_CLASS_TASK, AC_PROPERTY_CLASS
 @dataclass
 class AcTask:
     assignee_id: int
-    attachments: [AcAttachment | None]
+    attachments: list[AcAttachment]
     body: str
     body_formatted: str
     body_mode: str
@@ -38,7 +38,7 @@ class AcTask:
     is_important: bool
     is_trashed: bool
     job_type_id: int
-    labels: []
+    labels: list  # FIXME
     name: str
     open_dependencies: AcTaskDependencies
     open_subtasks: int

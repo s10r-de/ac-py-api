@@ -20,7 +20,7 @@ class AcAttachment:
     thumbnail_url: str
     preview_url: str
     download_url: str
-    file_meta: []  # FIXME
+    file_meta: list  # FIXME
     created_on: int
     created_by_id: int
     created_by_name: str

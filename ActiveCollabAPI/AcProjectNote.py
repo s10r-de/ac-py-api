@@ -13,7 +13,7 @@ class AcProjectNote:
     url_path: str
     name: str
     comments_count: int
-    attachments: [AcAttachment]
+    attachments: list[AcAttachment]
     is_trashed: bool
     trashed_on: int | None
     trashed_by_id: int
@@ -34,7 +34,7 @@ class AcProjectNote:
     in_notebook: bool
     is_pinned: bool
     position: int
-    contributor_ids: [int]
+    contributor_ids: list[int]
 
     def to_dict(self) -> dict:
         d = dataclasses.asdict(self)

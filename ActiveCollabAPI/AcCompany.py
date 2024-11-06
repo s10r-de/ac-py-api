@@ -22,7 +22,7 @@ class AcCompany(AcDataObject):
     is_archived: bool
     is_owner: bool
     is_trashed: bool
-    members: [int]
+    members: list[int]
     name: str
     phone: str | None
     tax_id: str | None

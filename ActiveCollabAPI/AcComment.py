@@ -8,7 +8,7 @@ from ActiveCollabAPI import AC_CLASS_COMMENT, AC_PROPERTY_CLASS, AC_PROPERTY_CLA
 
 @dataclass
 class AcComment:
-    attachments: [AcAttachment | None]
+    attachments: list[AcAttachment]
     body: str
     body_formatted: str
     body_mode: str
@@ -27,7 +27,7 @@ class AcComment:
     parent_id: int
     parent_type: str
     project_id: int
-    reactions: []
+    reactions: list  # FIXME
     trashed_by_id: int
     trashed_on: int | None
     updated_by_id: int

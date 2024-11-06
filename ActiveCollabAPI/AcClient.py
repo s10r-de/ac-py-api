@@ -37,7 +37,7 @@ class AcClient:
     the business logic.  For the business logic look into class "ActiveCollab".
 
     """
-    base_url = None
+    base_url = ""
     account = None
     token = None
 

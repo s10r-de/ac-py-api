@@ -10,7 +10,7 @@ from ActiveCollabAPI.AcLoginUser import AcLoginUser
 @dataclass
 class AcSession:
     user: AcLoginUser
-    accounts: [AcAccount]
+    accounts: list[AcAccount]
     cur_account: AcAccount
     token: AcToken
 

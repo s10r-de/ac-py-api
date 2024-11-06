@@ -9,7 +9,7 @@ class AcTaskHistory:
     created_by_id: int
     created_by_name: str
     created_by_email: str
-    modifications: []
+    modifications: list
     task_id: int = dataclasses.field(default=0)
 
     def to_dict(self) -> dict:
