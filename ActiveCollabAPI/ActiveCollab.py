@@ -166,10 +166,8 @@ class ActiveCollab:
     def create_task(self, task: AcTask) -> dict | None:
         logging.debug('Create task: ' + task.to_json())
         client = AcClient(self.session.cur_account, self.session.token)
-        task_dict = task.to_dict()
-        task_dict["type"] = task_dict["class"]  # FIXME
-        del (task_dict["class"])
-        res = client.post_task(task_dict)
+        task.type = task.class_  # FIXME
+        res = client.post_task(task.to_dict())
         if res.status_code != 200:
             raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
         res_data = res.json()
@@ -312,9 +310,8 @@ class ActiveCollab:
     def create_project_label(self, project_label: AcProjectLabel) -> dict | None:
         logging.debug("create project label: " + project_label.to_json())
         client = AcClient(self.session.cur_account, self.session.token)
-        project_label = project_label.to_dict()
-        project_label["type"] = project_label["class"]  # FIXME
-        res = client.post_project_label(project_label)
+        project_label.type = project_label.class_  # FIXME
+        res = client.post_project_label(project_label.to_dict())
         if res.status_code != 200:
             raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
         res_data = res.json()
@@ -381,9 +378,8 @@ class ActiveCollab:
     def create_task_list(self, task_list: AcTaskList) -> dict | None:
         logging.debug("create task list: " + task_list.to_json())
         client = AcClient(self.session.cur_account, self.session.token)
-        task_list = task_list.to_dict()
-        task_list["type"] = task_list["class"]  # FIXME
-        res = client.post_task_list(task_list)
+        task_list.type = task_list.class_  # FIXME
+        res = client.post_task_list(task_list.to_dict())
         if res.status_code == 404:
             raise Exception("Project %d not found!" % task_list["project_id"])
         if res.status_code != 200:
@@ -414,9 +410,8 @@ class ActiveCollab:
     def create_project_category(self, project_category: AcProjectCategory) -> dict | None:
         logging.debug("create project category: " + project_category.to_json())
         client = AcClient(self.session.cur_account, self.session.token)
-        project_category = project_category.to_dict()
-        project_category["type"] = project_category["class"]  # FIXME
-        res = client.post_project_category(project_category)
+        project_category.type = project_category.class_  # FIXME
+        res = client.post_project_category(project_category.to_dict())
         if res.status_code != 200:
             raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
         res_data = res.json()
