@@ -1,5 +1,6 @@
 import json
 import logging
+import hashlib
 import os
 from tempfile import gettempdir
 
@@ -149,15 +150,19 @@ class AcClient:
 
     def download_attachment(self, download_url: str, file_access_token: str, filename: str) -> str:
         # replace &intent=--DOWNLOAD-TOKEN--  with download token
-        download_url = download_url.replace('intent=--DOWNLOAD-TOKEN--', 'intent=%s' % file_access_token)
-        download_url = download_url.replace('i=--DOWNLOAD-TOKEN--', 'i=%s' % file_access_token)
+        download_url = download_url.replace(
+            'intent=--DOWNLOAD-TOKEN--', 'intent=%s' % file_access_token)
+        download_url = download_url.replace(
+            'i=--DOWNLOAD-TOKEN--', 'i=%s' % file_access_token)
         with requests.get(download_url, headers=self.headers(), stream=True) as r:
             r.raise_for_status()
             tmp_filename = os.path.join(gettempdir(), filename)
-            with open(tmp_filename, "w+b") as f:
+            tmp_filename_safe = hashlib.sha256(
+                tmp_filename.encode("utf-8")).hexdigest()
+            with open(tmp_filename_safe, "w+b") as f:
                 for chunk in r.iter_content(chunk_size=8192):
                     f.write(chunk)
-        return tmp_filename
+        return tmp_filename_safe
 
     # project labels
 
