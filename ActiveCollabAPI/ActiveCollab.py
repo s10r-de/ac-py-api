@@ -187,9 +187,11 @@ class ActiveCollab:
         return tasks
 
     def delete_all_task_lists(self, project: AcProject) -> list[AcTask]:
+        result = []
         client = AcClient(self.session.cur_account, self.session.token)
         for task in self.get_project_task_lists(project.id):
-            client.delete_task_list(project.id, task.id)
+            result.extend(client.delete_task_list(project.id, task.id))
+        return result
 
     @staticmethod
     def filter_tasks(tasks: list[AcTask], compare_func: callable) -> list[AcTask]:
