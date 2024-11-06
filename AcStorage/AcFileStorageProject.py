@@ -1,5 +1,5 @@
 from AcFileStorageBaseClass import AcFileStorageBaseClass
-from AcProject import AcProject, project_from_json
+from ActiveCollabAPI.AcProject import AcProject, project_from_json
 from ActiveCollabAPI import AC_CLASS_PROJECT, AC_ERROR_WRONG_CLASS
 
 

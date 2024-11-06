@@ -1,5 +1,5 @@
 from AcFileStorageBaseClass import AcFileStorageBaseClass
-from AcTaskHistory import AcTaskHistory
+from ActiveCollabAPI.AcTaskHistory import AcTaskHistory
 
 
 class AcFileStorageTaskHistory(AcFileStorageBaseClass):

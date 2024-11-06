@@ -1,5 +1,5 @@
 from AcFileStorageBaseClass import AcFileStorageBaseClass
-from AcTaskLabel import AcTaskLabel
+from ActiveCollabAPI.AcTaskLabel import AcTaskLabel
 from ActiveCollabAPI import AC_ERROR_WRONG_CLASS, AC_CLASS_TASK_LABEL
 
 

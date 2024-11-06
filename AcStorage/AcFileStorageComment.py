@@ -1,4 +1,4 @@
-from AcComment import AcComment
+from ActiveCollabAPI.AcComment import AcComment
 from AcFileStorageBaseClass import AcFileStorageBaseClass
 from ActiveCollabAPI import AC_ERROR_WRONG_CLASS, AC_CLASS_COMMENT
 

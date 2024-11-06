@@ -1,5 +1,5 @@
 from AcFileStorageBaseClass import AcFileStorageBaseClass
-from AcProjectLabel import AcProjectLabel, project_label_from_json
+from ActiveCollabAPI.AcProjectLabel import AcProjectLabel, project_label_from_json
 from ActiveCollabAPI import AC_CLASS_PROJECT_LABEL, AC_ERROR_WRONG_CLASS
 
 
