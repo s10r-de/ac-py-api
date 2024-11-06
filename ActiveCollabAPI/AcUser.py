@@ -52,6 +52,7 @@ class AcUser(AcDataObject):
     avatar_version: str = dataclasses.field(default="")
     has_custom_avatar: bool = dataclasses.field(default=False)
     password: str = dataclasses.field(default="")
+    archived_on: int | None = dataclasses.field(default=None)
 
     def __eq__(self, other) -> bool:
         ignored_fields = ["avatar_url", "avatar_version", "has_custom_avatar"]
