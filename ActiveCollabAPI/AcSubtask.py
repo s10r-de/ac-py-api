@@ -30,6 +30,8 @@ class AcSubtask:
     trashed_on: int | None
     updated_on: int
     url_path: str
+    type: str | None = dataclasses.field(default=None)
+    body: str = dataclasses.field(default="")
 
     def to_dict(self) -> dict:
         d = dataclasses.asdict(self)
@@ -46,3 +48,8 @@ def subtask_from_json(json_obj: dict) -> AcSubtask:
     json_obj[AC_PROPERTY_CLASS_] = json_obj[AC_PROPERTY_CLASS]
     del json_obj[AC_PROPERTY_CLASS]
     return AcSubtask(**json_obj)
+
+
+def subtask_map_name_to_text(subtask: AcSubtask) -> AcSubtask:
+    subtask.body = subtask.name
+    return subtask
