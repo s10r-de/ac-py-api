@@ -1,4 +1,4 @@
-from ActiveCollabAPI.AcComment import AcComment
+from ActiveCollabAPI.AcComment import AcComment, comment_from_json
 from AcFileStorageBaseClass import AcFileStorageBaseClass
 from ActiveCollabAPI import AC_ERROR_WRONG_CLASS, AC_CLASS_COMMENT
 
@@ -16,3 +16,7 @@ class AcFileStorageComment(AcFileStorageBaseClass):
     def save(self, comment: AcComment) -> str:
         assert comment.class_ == AC_CLASS_COMMENT, AC_ERROR_WRONG_CLASS
         return super().save_with_id(comment, comment.id)
+
+    def load(self, comment_id: int) -> AcComment:
+        comment = self.load_by_id(comment_id)
+        return comment_from_json(comment)

@@ -37,7 +37,8 @@ def run_testing(ac, config: configparser.ConfigParser):
     account_id = config.getint("LOGIN", "account")
     storage_path = config.get("STORAGE", "path")
     ac_storage = AcFileStorage(storage_path, account_id)
-    return ac_storage.data_objects["task-history"].list()
+    result = _load_comments(ac, ac_storage)
+    return result
 
 
 def run_version():
@@ -399,6 +400,8 @@ def run_load_all(ac: ActiveCollab, config: configparser.ConfigParser):
     print("Imported %d tasks" % cnt)
     cnt = _load_subtasks(ac, ac_storage)
     print("Imported %d subtasks" % cnt)
+    cnt = _load_comments(ac, ac_storage)
+    print("Imported %d comments" % cnt)
 
 
 def _delete_all_tasks(ac: ActiveCollab, config: configparser.ConfigParser):
@@ -443,6 +446,15 @@ def _delete_all_companies(ac: ActiveCollab, config: configparser.ConfigParser):
     if check_is_cloud(config):
         raise Exception("Do not delete data from cloud!")
     return ac.delete_all_companies()
+
+
+def _load_comments(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
+    cnt = 0
+    for comment_id in ac_storage.data_objects["comments"].list_ids():
+        comment = ac_storage.data_objects["comments"].load(comment_id)
+        if ac.create_comment(comment):
+            cnt += 1
+    return cnt
 
 
 def _load_subtasks(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
