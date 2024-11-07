@@ -33,6 +33,7 @@ def serialize_output(output):
     return json.dumps(output, indent=4)
 
 
+def run_testing(ac, config: configparser.ConfigParser):
     account_id = config.getint("LOGIN", "account")
     storage_path = config.get("STORAGE", "path")
     ac_storage = AcFileStorage(storage_path, account_id)
