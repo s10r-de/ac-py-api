@@ -19,11 +19,20 @@ from ActiveCollabAPI.AcComment import AcComment, comment_from_json
 from ActiveCollabAPI.AcLoginUser import AcLoginUser
 from ActiveCollabAPI.AcProject import AcProject, project_from_json
 from ActiveCollabAPI.AcSession import AcSession
-from ActiveCollabAPI.AcSubtask import AcSubtask, subtask_from_json, subtask_map_name_to_text
+from ActiveCollabAPI.AcSubtask import (
+    AcSubtask,
+    subtask_from_json,
+    subtask_map_name_to_text,
+)
 from ActiveCollabAPI.AcTask import AcTask, task_from_json
 from ActiveCollabAPI.AcToken import AcToken
 from ActiveCollabAPI.AcTokenAuthenticator import AcTokenAuthenticator
-from ActiveCollabAPI.AcUser import AcUser, user_from_json, map_cloud_user_language_id, generate_random_password
+from ActiveCollabAPI.AcUser import (
+    AcUser,
+    user_from_json,
+    map_cloud_user_language_id,
+    generate_random_password,
+)
 
 
 def _workaround_user_fix_type_from_class(user: AcUser) -> AcUser:
@@ -45,12 +54,13 @@ class ActiveCollab:
 
     For local persistence we use the AcFileStorage* classes.
     """
+
     base_url: str = ""
 
     session: AcSession
 
     def __init__(self, base_url: str, is_cloud: bool = False):
-        self.base_url = base_url.rstrip('/')
+        self.base_url = base_url.rstrip("/")
         self.is_cloud = is_cloud
 
     def login(self, email: str, password: str, account: str) -> AcSession:
@@ -73,22 +83,20 @@ class ActiveCollab:
         auth = AcAuthenticator(self.base_url)
         res = auth.login_cloud(email, password)
         if res.status_code != 200:
-            raise Exception('Login to cloud failed!')
+            raise Exception("Login to cloud failed!")
         res_data = res.json()
-        if res_data['is_ok'] != 1:
-            raise Exception('Login failed! (2)')
+        if res_data["is_ok"] != 1:
+            raise Exception("Login failed! (2)")
         accounts = list(
-            map(lambda a: account_from_json(a), res_data['accounts']))
-        user = AcLoginUser(**res_data['user'])
+            map(lambda a: account_from_json(a), res_data["accounts"]))
+        user = AcLoginUser(**res_data["user"])
         return AcCloudLoginResponse(user, accounts)
 
     def login_to_self_hosted(self, email, password):
         login_res = self.auth_self_hosted(email, password)
         token = AcToken(login_res.token)
-        user = AcLoginUser(avatar_url="",
-                           first_name="",
-                           last_name="",
-                           intent="")
+        user = AcLoginUser(avatar_url="", first_name="",
+                           last_name="", intent="")
         accounts = []
         cur_account = AcAccount(
             name=0,
@@ -97,7 +105,7 @@ class ActiveCollab:
             user_display_name="self-hosted account",
             position=0,
             class_="",
-            status=""
+            status="",
         )
         self.session = AcSession(user, accounts, cur_account, token)
 
@@ -105,10 +113,10 @@ class ActiveCollab:
         auth = AcAuthenticator(self.base_url)
         res = auth.login_self_hosted(email, password)
         if res.status_code != 200:
-            raise Exception('Login failed!')
+            raise Exception("Login failed!")
         res_data = res.json()
-        if res_data['is_ok'] != 1:
-            raise Exception('Login failed! (2)')
+        if res_data["is_ok"] != 1:
+            raise Exception("Login failed! (2)")
         return AcLoginResponse(**res_data)
 
     @staticmethod
@@ -119,19 +127,19 @@ class ActiveCollab:
     def select_account(accounts: list[AcAccount], account: str) -> AcAccount:
         found = list(filter(lambda a: a.display_name == account, accounts))
         if len(found) == 0:
-            raise Exception('Account not found!')
+            raise Exception("Account not found!")
         return found[0]
 
     @staticmethod
     def create_token(account: AcAccount, user: AcLoginUser) -> AcToken:
         authenticator = AcTokenAuthenticator(
-            account.url + '/api/v%s' % AC_API_VERSION)
+            account.url + "/api/v%s" % AC_API_VERSION)
         res = authenticator.issue_token_intent(user.intent)
         if res.status_code != 200:
-            raise Exception('Request token failed!')
+            raise Exception("Request token failed!")
         res_data = res.json()
-        if res_data['is_ok'] != 1:
-            raise Exception('Request token failed! (2)')
+        if res_data["is_ok"] != 1:
+            raise Exception("Request token failed! (2)")
         return AcToken(res_data["token"])
 
     def get_info(self):
@@ -150,7 +158,7 @@ class ActiveCollab:
         if res.status_code != 200:
             raise Exception("Error %d" % res.status_code)
         res_data = res.json()
-        tasks = list(map(lambda p: task_from_json(p), res_data['tasks']))
+        tasks = list(map(lambda p: task_from_json(p), res_data["tasks"]))
         return tasks
 
     def get_completed_tasks(self, project_id: int) -> list[AcTask]:
@@ -163,13 +171,14 @@ class ActiveCollab:
         return tasks
 
     def create_task(self, task: AcTask) -> dict | None:
-        logging.debug('Create task: ' + task.to_json())
+        logging.debug("Create task: " + task.to_json())
         client = AcClient(self.session.cur_account, self.session.token)
         task.type = task.class_  # FIXME
         res = client.post_task(task.to_dict())
         if res.status_code == 404:
             logging.error(
-                "Project %d not found! Can not create task list!" % task.project_id)
+                "Project %d not found! Can not create task list!" % task.project_id
+            )
             return None
         if res.status_code != 200:
             logging.error("Error %d - %s" % (res.status_code, str(res.text)))
@@ -220,13 +229,14 @@ class ActiveCollab:
         return projects
 
     def create_project(self, project: AcProject) -> dict | None:
-        logging.debug('Creating project: ' + project.to_json())
+        logging.debug("Creating project: " + project.to_json())
         client = AcClient(self.session.cur_account, self.session.token)
         project = _workaround_project_fix_type_from_class(project)
         res = client.post_project(project.to_dict())
         if res.status_code != 200:
-            logging.error("cant creeate project! (%d - %s)" %
-                          (res.status_code, res.text))
+            logging.error(
+                "cant creeate project! (%d - %s)" % (res.status_code, res.text)
+            )
             return None
         res_data = res.json()
         return res_data
@@ -281,15 +291,18 @@ class ActiveCollab:
         return subtasks
 
     def create_subtask(self, subtask: AcSubtask) -> dict | None:
-        logging.debug('Create subtask: ' + subtask.to_json())
+        logging.debug("Create subtask: " + subtask.to_json())
         client = AcClient(self.session.cur_account, self.session.token)
         subtask.type = subtask.class_  # FIXME
         subtask = subtask_map_name_to_text(subtask)
         res = client.post_subtask(
-            subtask.project_id, subtask.task_id, subtask.to_dict())
+            subtask.project_id, subtask.task_id, subtask.to_dict()
+        )
         if res.status_code == 404:
-            logging.error("Project %d or Task %d not found! Can not create subtask! (%d, %s)" % (
-                subtask.project_id, subtask.task_id, res.status_code, res.text))
+            logging.error(
+                "Project %d or Task %d not found! Can not create subtask! (%d, %s)"
+                % (subtask.project_id, subtask.task_id, res.status_code, res.text)
+            )
             return None
         if res.status_code != 200:
             logging.error("Error %d - %s" % (res.status_code, str(res.text)))
@@ -307,15 +320,18 @@ class ActiveCollab:
         return comments
 
     def create_comment(self, comment: AcComment) -> dict | None:
-        logging.debug('Create comment: ' + comment.to_json())
+        logging.debug("Create comment: " + comment.to_json())
         client = AcClient(self.session.cur_account, self.session.token)
         comment.type = comment.class_  # FIXME
         comment.parent_type = comment.parent_type.lower()
         res = client.post_comment(
-            comment.parent_type, comment.parent_id, comment.to_dict())
+            comment.parent_type, comment.parent_id, comment.to_dict()
+        )
         if res.status_code == 404:
             logging.error(
-                "Parent %s/%d not found! Can not create comment!" % (comment.parent_type, comment.parent_id))
+                "Parent %s/%d not found! Can not create comment!"
+                % (comment.parent_type, comment.parent_id)
+            )
             return None
         if res.status_code != 200:
             logging.error("Error %d - %s" % (res.status_code, str(res.text)))
@@ -336,10 +352,38 @@ class ActiveCollab:
     def download_attachment(self, attachment: AcAttachment) -> str:
         client = AcClient(self.session.cur_account, self.session.token)
         file_access_token = self.get_file_access_token()
-        tmp_filename = client.download_attachment(attachment.download_url,
-                                                  file_access_token.download_token,
-                                                  'attachment_%d_%s' % (attachment.id, attachment.name))
+        tmp_filename = client.download_attachment(
+            attachment.download_url,
+            file_access_token.download_token,
+            "attachment_%d_%s" % (attachment.id, attachment.name),
+        )
         return tmp_filename
+
+    def upload_attachment(self, files):
+        client = AcClient(self.session.cur_account, self.session.token)
+        return client.upload_attachment(files)
+
+    def create_attachment(self, attachment: AcAttachment) -> dict | None:
+        logging.debug("Create attachment: " + attachment.to_json())
+        client = AcClient(self.session.cur_account, self.session.token)
+        attachment.type = attachment.class_  # FIXME
+        attachment.parent_type = attachment.parent_type.lower()
+        res = client.post_attachment(
+            attachment.parent_type,
+            attachment.parent_id,
+            attachment.to_dict(),
+        )
+        if res.status_code == 404:
+            logging.error(
+                "Parent %s/%d not found! Can not create attachment!"
+                % (attachment.parent_type, attachment.parent_id)
+            )
+            return None
+        if res.status_code != 200:
+            logging.error("Error %d - %s" % (res.status_code, str(res.text)))
+            return None
+        res_data = res.json()
+        return res_data
 
     def get_project_labels(self) -> list[AcProjectLabel]:
         client = AcClient(self.session.cur_account, self.session.token)
@@ -426,7 +470,8 @@ class ActiveCollab:
         res = client.post_task_list(task_list.to_dict())
         if res.status_code == 404:
             logging.error(
-                "Project %d not found! Can not create task list!" % task_list.project_id)
+                "Project %d not found! Can not create task list!" % task_list.project_id
+            )
             return None
             # raise Exception("Project %d not found!" % task_list.project_id)
         if res.status_code != 200:
@@ -442,7 +487,8 @@ class ActiveCollab:
             raise Exception("Error %d" % res.status_code)
         res_data = res.json()
         task_history = list(
-            map(lambda u: task_history_from_json(u, task_id=task.id), res_data))
+            map(lambda u: task_history_from_json(u, task_id=task.id), res_data)
+        )
         return task_history
 
     def get_project_categories(self) -> list[AcProjectCategory]:
@@ -452,10 +498,13 @@ class ActiveCollab:
             raise Exception("Error %d" % res.status_code)
         res_data = res.json()
         project_categories = list(
-            map(lambda l: project_category_from_json(l), res_data))
+            map(lambda l: project_category_from_json(l), res_data)
+        )
         return project_categories
 
-    def create_project_category(self, project_category: AcProjectCategory) -> dict | None:
+    def create_project_category(
+        self, project_category: AcProjectCategory
+    ) -> dict | None:
         logging.debug("create project category: " + project_category.to_json())
         client = AcClient(self.session.cur_account, self.session.token)
         project_category.type = project_category.class_  # FIXME
