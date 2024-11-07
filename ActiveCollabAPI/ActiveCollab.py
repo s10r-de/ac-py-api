@@ -306,6 +306,23 @@ class ActiveCollab:
         comments = list(map(lambda c: comment_from_json(c), res_data))
         return comments
 
+    def create_comment(self, comment: AcComment) -> dict | None:
+        logging.debug('Create comment: ' + comment.to_json())
+        client = AcClient(self.session.cur_account, self.session.token)
+        comment.type = comment.class_  # FIXME
+        comment.parent_type = comment.parent_type.lower()
+        res = client.post_comment(
+            comment.parent_type, comment.parent_id, comment.to_dict())
+        if res.status_code == 404:
+            logging.error(
+                "Parent %s/%d not found! Can not create comment!" % (comment.parent_type, comment.parent_id))
+            return None
+        if res.status_code != 200:
+            logging.error("Error %d - %s" % (res.status_code, str(res.text)))
+            return None
+        res_data = res.json()
+        return res_data
+
     def get_file_access_token(self) -> AcFileAccessToken:
         # Task#35: use TTL to limit amount of requests
         client = AcClient(self.session.cur_account, self.session.token)

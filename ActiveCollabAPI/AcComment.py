@@ -33,6 +33,7 @@ class AcComment:
     updated_by_id: int
     updated_on: int
     url_path: str
+    type: str | None = dataclasses.field(default=None)
 
     def to_dict(self) -> dict:
         d = dataclasses.asdict(self)

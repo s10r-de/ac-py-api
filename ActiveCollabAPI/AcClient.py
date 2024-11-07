@@ -142,6 +142,9 @@ class AcClient:
     def get_comments(self, task_id: int):
         return self._get('comments/task/%d' % task_id)
 
+    def post_comment(self, parent_type: str, parent_id: int, data: dict) -> Response:
+        return self._post('comments/%s/%d' % (parent_type, parent_id), json.dumps(data))
+
     # attachments
 
     def get_attachment(self, attachment_id: int):
