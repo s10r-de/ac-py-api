@@ -33,10 +33,21 @@ def serialize_output(output):
     return json.dumps(output, indent=4)
 
 
+def run_testing(ac: ActiveCollab, config: configparser.ConfigParser):
     account_id = config.getint("LOGIN", "account")
     storage_path = config.get("STORAGE", "path")
     ac_storage = AcFileStorage(storage_path, account_id)
-    result = _load_comments(ac, ac_storage)
+
+    base_path = "./data/account-00000000/attachments/"
+    filename = base_path + "attachment-000000000000039161.json.png"
+    files = {
+        "file": (
+            "Bildschirmfoto 2024-11-04 um 14.38.48.png",
+            open(filename, "rb"),
+            "image/png",
+        )
+    }
+    result = ac.upload_attachment(files)
     return result
 
 
@@ -402,6 +413,9 @@ def run_load_all(ac: ActiveCollab, config: configparser.ConfigParser):
     cnt = _load_comments(ac, ac_storage)
     print("Imported %d comments" % cnt)
 
+    cnt = _load_attachments(ac, ac_storage)
+    print("Imported %d attachments" % cnt)
+
 
 def _delete_all_tasks(ac: ActiveCollab, config: configparser.ConfigParser):
     if check_is_cloud(config):
@@ -445,6 +459,15 @@ def _delete_all_companies(ac: ActiveCollab, config: configparser.ConfigParser):
     if check_is_cloud(config):
         raise Exception("Do not delete data from cloud!")
     return ac.delete_all_companies()
+
+
+def _load_attachments(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
+    cnt = 0
+    for attachment_id in ac_storage.data_objects["attachments"].list_ids():
+        attachment = ac_storage.data_objects["attachments"].load(attachment_id)
+        if ac.create_attachment(attachment):
+            cnt += 1
+    return cnt
 
 
 def _load_comments(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
