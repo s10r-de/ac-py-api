@@ -1,4 +1,8 @@
 import os
+import argparse
+import logging
+import configparser
+import json
 import sys
 from collections.abc import Iterator
 
@@ -169,7 +173,8 @@ def _login(config: configparser.ConfigParser) -> ActiveCollab:
     if is_cloud:
         account = config.get("LOGIN", "account", fallback="")
     ac = ActiveCollab(base_url, is_cloud)
-    ac.login(config.get("LOGIN", "username"), config.get("LOGIN", "password"), account)
+    ac.login(config.get("LOGIN", "username"),
+             config.get("LOGIN", "password"), account)
     return ac
 
 
@@ -222,7 +227,8 @@ def _verify_project_labels(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
     server_project_labels = ac.get_project_labels()
     for label_id in ac_storage.data_objects["project-labels"].list_ids():
         category = ac_storage.data_objects["project-labels"].load(label_id)
-        server_labels = list(filter(lambda c: c.id == label_id, server_project_labels))
+        server_labels = list(
+            filter(lambda c: c.id == label_id, server_project_labels))
         if len(server_labels) == 0:
             logging.error("Project Label %d not found!" % label_id)
             result = False
@@ -239,7 +245,8 @@ def _verify_project_categories(ac: ActiveCollab, ac_storage: AcFileStorage) -> b
     result = True
     server_project_categories = ac.get_project_categories()
     for category_id in ac_storage.data_objects["project-categories"].list_ids():
-        category = ac_storage.data_objects["project-categories"].load(category_id)
+        category = ac_storage.data_objects["project-categories"].load(
+            category_id)
         server_category = list(
             filter(lambda c: c.id == category_id, server_project_categories)
         )
@@ -267,7 +274,8 @@ def _verify_tasks(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
     for task_id in ac_storage.data_objects["tasks"].list_ids():
         task = ac_storage.data_objects["tasks"].load(task_id)
 
-        server_tasks = list(filter(lambda t: task.id == t.id, all_server_tasks))
+        server_tasks = list(
+            filter(lambda t: task.id == t.id, all_server_tasks))
         if len(server_tasks) == 0:
             logging.error("Task %d not found!" % task_id)
             result = False
@@ -296,7 +304,8 @@ def _verify_task_lists(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
         project_id = task_list.project_id
         server_all_project_task_lists = []
         try:
-            server_all_project_task_lists = ac.get_project_task_lists(project_id)
+            server_all_project_task_lists = ac.get_project_task_lists(
+                project_id)
         except Exception as e:
             pass  # ignore exception here
         if len(server_all_project_task_lists) == 0:
@@ -304,11 +313,13 @@ def _verify_task_lists(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
             result = False
             continue
         server_task_list = list(
-            filter(lambda o: o.id == task_list.id, server_all_project_task_lists)
+            filter(lambda o: o.id == task_list.id,
+                   server_all_project_task_lists)
         )
         if len(server_task_list) == 0:
             logging.error(
-                "Task list %d for project %d not found!" % (task_list.id, project_id)
+                "Task list %d for project %d not found!" % (
+                    task_list.id, project_id)
             )
             result = False
             continue
@@ -326,7 +337,8 @@ def _verify_projects(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
     server_projects = ac.get_all_projects()
     for project_id in ac_storage.data_objects["projects"].list_ids():
         company = ac_storage.data_objects["projects"].load(project_id)
-        server_project = list(filter(lambda c: c.id == project_id, server_projects))
+        server_project = list(
+            filter(lambda c: c.id == project_id, server_projects))
         if len(server_project) == 0:
             logging.error("Project %d not found!" % project_id)
             result = False
@@ -343,7 +355,8 @@ def _verify_companies(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
     server_companies = ac.get_all_companies()
     for company_id in ac_storage.data_objects["companies"].list_ids():
         company = ac_storage.data_objects["companies"].load(company_id)
-        server_company = list(filter(lambda c: c.id == company_id, server_companies))
+        server_company = list(
+            filter(lambda c: c.id == company_id, server_companies))
         if len(server_company) == 0:
             logging.error("Company %d not found!" % company_id)
             result = False
@@ -505,7 +518,8 @@ def _load_projects(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
 def _load_project_labels(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
     cnt = 0
     for project_label_id in ac_storage.data_objects["project-labels"].list_ids():
-        project_label = ac_storage.data_objects["project-labels"].load(project_label_id)
+        project_label = ac_storage.data_objects["project-labels"].load(
+            project_label_id)
         if ac.create_project_label(project_label):
             cnt += 1
     return cnt
