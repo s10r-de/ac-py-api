@@ -19,7 +19,7 @@ from ActiveCollabAPI.AcComment import AcComment, comment_from_json
 from ActiveCollabAPI.AcLoginUser import AcLoginUser
 from ActiveCollabAPI.AcProject import AcProject, project_from_json
 from ActiveCollabAPI.AcSession import AcSession
-from ActiveCollabAPI.AcSubtask import AcSubtask, subtask_from_json
+from ActiveCollabAPI.AcSubtask import AcSubtask, subtask_from_json, subtask_map_name_to_text
 from ActiveCollabAPI.AcTask import AcTask, task_from_json
 from ActiveCollabAPI.AcToken import AcToken
 from ActiveCollabAPI.AcTokenAuthenticator import AcTokenAuthenticator
@@ -279,6 +279,23 @@ class ActiveCollab:
         res_data = res.json()
         subtasks = list(map(lambda u: subtask_from_json(u), res_data))
         return subtasks
+
+    def create_subtask(self, subtask: AcSubtask) -> dict | None:
+        logging.debug('Create subtask: ' + subtask.to_json())
+        client = AcClient(self.session.cur_account, self.session.token)
+        subtask.type = subtask.class_  # FIXME
+        subtask = subtask_map_name_to_text(subtask)
+        res = client.post_subtask(
+            subtask.project_id, subtask.task_id, subtask.to_dict())
+        if res.status_code == 404:
+            logging.error("Project %d or Task %d not found! Can not create subtask! (%d, %s)" % (
+                subtask.project_id, subtask.task_id, res.status_code, res.text))
+            return None
+        if res.status_code != 200:
+            logging.error("Error %d - %s" % (res.status_code, str(res.text)))
+            return None
+        res_data = res.json()
+        return res_data
 
     def get_comments(self, task: AcTask) -> list[AcComment]:
         client = AcClient(self.session.cur_account, self.session.token)

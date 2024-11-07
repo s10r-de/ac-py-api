@@ -199,7 +199,6 @@ def run_verify_all(ac: ActiveCollab, config: configparser.ConfigParser):
     account_id = config.getint("LOGIN", "account")
     storage_path = config.get("STORAGE", "path")
     ac_storage = AcFileStorage(storage_path, account_id)
-
     logging.info("Be sure to empty cache in filesystem before testing!")
     logging.info("  rm -fr var/www/html/cache/*")
     _verify_companies(ac, ac_storage)
@@ -398,6 +397,8 @@ def run_load_all(ac: ActiveCollab, config: configparser.ConfigParser):
     print("Imported %d task-lists" % cnt)
     cnt = _load_tasks(ac, ac_storage)
     print("Imported %d tasks" % cnt)
+    cnt = _load_subtasks(ac, ac_storage)
+    print("Imported %d subtasks" % cnt)
 
 
 def _delete_all_tasks(ac: ActiveCollab, config: configparser.ConfigParser):
@@ -442,6 +443,15 @@ def _delete_all_companies(ac: ActiveCollab, config: configparser.ConfigParser):
     if check_is_cloud(config):
         raise Exception("Do not delete data from cloud!")
     return ac.delete_all_companies()
+
+
+def _load_subtasks(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
+    cnt = 0
+    for subtask_id in ac_storage.data_objects["subtasks"].list_ids():
+        subtask = ac_storage.data_objects["subtasks"].load(subtask_id)
+        if ac.create_subtask(subtask):
+            cnt += 1
+    return cnt
 
 
 def _load_tasks(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:

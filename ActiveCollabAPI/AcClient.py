@@ -38,8 +38,8 @@ class AcClient:
 
     """
     base_url = ""
-    account = None
-    token = None
+    account: AcAccount
+    token: AcToken
 
     def __init__(self, account: AcAccount, token: AcToken):
         self.account = account
@@ -133,6 +133,9 @@ class AcClient:
 
     def get_subtasks(self, project_id: int, task_id: int):
         return self._get('projects/%d/tasks/%d/subtasks' % (project_id, task_id))
+
+    def post_subtask(self, project_id: int, task_id: int, data: dict) -> Response:
+        return self._post('projects/%d/tasks/%d/subtasks' % (project_id, task_id), json.dumps(data))
 
     # comments
 
