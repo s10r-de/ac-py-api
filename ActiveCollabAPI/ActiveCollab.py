@@ -361,7 +361,12 @@ class ActiveCollab:
 
     def upload_attachment(self, files):
         client = AcClient(self.session.cur_account, self.session.token)
-        return client.upload_attachment(files)
+        res = client.upload_attachment(files)
+        if res.status_code != 200:
+            logging.error("Error %d - %s" % (res.status_code, str(res.text)))
+            return None
+        res_data = res.json()
+        return res_data
 
     def create_attachment(self, attachment: AcAttachment) -> dict | None:
         logging.debug("Create attachment: " + attachment.to_json())
