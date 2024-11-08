@@ -182,7 +182,7 @@ class AcClient:
                     f.write(chunk)
         return tmp_filename_safe
 
-    def upload_attachment(self, files: dict) -> Response:
+    def upload_files(self, files: dict) -> Response:
         return self._upload("upload-files", files=files)
 
     def post_attachment(self, parent_type: str, parent_id: int, data: dict) -> Response:
