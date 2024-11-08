@@ -1,7 +1,10 @@
 import logging
 
 from AcAttachment import AcAttachment
-from AcAttachmentUploadResponse import AcAttachmentUploadResponse, attachment_upload_response_from_json
+from AcAttachmentUploadResponse import (
+    AcAttachmentUploadResponse,
+    attachment_upload_response_from_json,
+)
 from AcCompany import AcCompany, company_from_json
 from AcFileAccessToken import AcFileAccessToken, fileaccesstoken_from_json
 from AcLoginResponse import AcLoginResponse
@@ -11,7 +14,13 @@ from AcProjectNote import AcProjectNote, project_note_from_json
 from AcTaskHistory import AcTaskHistory, task_history_from_json
 from AcTaskLabel import task_label_from_json, AcTaskLabel
 from AcTaskList import AcTaskList, task_list_from_json
-from ActiveCollabAPI import AC_API_VERSION, AC_CLASS_USER_OWNER
+from ActiveCollabAPI import (
+    AC_API_VERSION,
+    AC_CLASS_COMMENT,
+    AC_CLASS_PROJECT_NOTE,
+    AC_CLASS_TASK,
+    AC_CLASS_USER_OWNER,
+)
 from ActiveCollabAPI.AcAccount import AcAccount, account_from_json
 from ActiveCollabAPI.AcAuthenticator import AcAuthenticator
 from ActiveCollabAPI.AcClient import AcClient
@@ -77,8 +86,7 @@ class ActiveCollab:
         if account is not None:
             cur_account = self.select_account(login_res.accounts, account)
         token = self.create_token(cur_account, login_res.user)
-        self.session = AcSession(
-            login_res.user, login_res.accounts, cur_account, token)
+        self.session = AcSession(login_res.user, login_res.accounts, cur_account, token)
 
     def auth_cloud(self, email: str, password: str) -> AcCloudLoginResponse:
         auth = AcAuthenticator(self.base_url)
@@ -88,16 +96,14 @@ class ActiveCollab:
         res_data = res.json()
         if res_data["is_ok"] != 1:
             raise Exception("Login failed! (2)")
-        accounts = list(
-            map(lambda a: account_from_json(a), res_data["accounts"]))
+        accounts = list(map(lambda a: account_from_json(a), res_data["accounts"]))
         user = AcLoginUser(**res_data["user"])
         return AcCloudLoginResponse(user, accounts)
 
     def login_to_self_hosted(self, email, password):
         login_res = self.auth_self_hosted(email, password)
         token = AcToken(login_res.token)
-        user = AcLoginUser(avatar_url="", first_name="",
-                           last_name="", intent="")
+        user = AcLoginUser(avatar_url="", first_name="", last_name="", intent="")
         accounts = []
         cur_account = AcAccount(
             name=0,
@@ -133,8 +139,7 @@ class ActiveCollab:
 
     @staticmethod
     def create_token(account: AcAccount, user: AcLoginUser) -> AcToken:
-        authenticator = AcTokenAuthenticator(
-            account.url + "/api/v%s" % AC_API_VERSION)
+        authenticator = AcTokenAuthenticator(account.url + "/api/v%s" % AC_API_VERSION)
         res = authenticator.issue_token_intent(user.intent)
         if res.status_code != 200:
             raise Exception("Request token failed!")
@@ -360,10 +365,16 @@ class ActiveCollab:
         )
         return tmp_filename
 
-    def upload_attachment(self, attachment: AcAttachment, bin_file: str) -> list[AcAttachmentUploadResponse]:
-        response = []
+    def upload_attachment(self, attachment: AcAttachment, bin_file: str) -> dict:
+        """
+        Upload a saved file to the Server.
+
+        Note: The API would support upload of multiple files but our
+        current implemenation handles only one file!
+        """
         client = AcClient(self.session.cur_account, self.session.token)
 
+        # 1. upload file
         files = {
             "file": (
                 attachment.name,
@@ -371,15 +382,54 @@ class ActiveCollab:
                 attachment.mime_type,
             )
         }
-
         res = client.upload_files(files)
         if res.status_code != 200:
-            logging.error("Error %d - %s" % (res.status_code, str(res.text)))
-            return response
+            msg = "Error %d - %s" % (res.status_code, str(res.text))
+            logging.error(msg)
+            raise Exception(msg)
         res_data = res.json()
-        for file in res_data:
-            response.append(attachment_upload_response_from_json(file))
-        return response
+        attachment_upload_response = attachment_upload_response_from_json(res_data[0])
+
+        # assign file to the parent
+        if attachment.parent_type == AC_CLASS_TASK:
+            res = client.update_task_assign_file(
+                project_id=attachment.folder_id,
+                parent_type=attachment.parent_type,
+                parent_id=attachment.parent_id,
+                disposition=attachment.disposition,
+                code=attachment_upload_response.code,
+            )
+        if attachment.parent_type == AC_CLASS_COMMENT:
+            res = client.update_comment_assign_file(
+                project_id=attachment.folder_id,
+                parent_type=attachment.parent_type,
+                parent_id=attachment.parent_id,
+                disposition=attachment.disposition,
+                code=attachment_upload_response.code,
+            )
+        if attachment.parent_type == AC_CLASS_PROJECT_NOTE:
+            logging.info("Attachments for notes not yet implemented!")
+            return {}
+            res = client.update_note_assign_file(
+                project_id=attachment.folder_id,
+                parent_type=attachment.parent_type,
+                parent_id=attachment.parent_id,
+                disposition=attachment.disposition,
+                code=attachment_upload_response.code,
+            )
+
+        if res.status_code == 404:
+            logging.error(
+                "Parent %s/%d not found! Can not create attachment!"
+                % (attachment.parent_type, attachment.parent_id)
+            )
+            return {}
+        if res.status_code != 200:
+            msg = "Error %d - %s" % (res.status_code, str(res.text))
+            raise Exception(msg)
+        res_data = res.json()
+
+        return res_data
 
     def create_attachment(self, attachment: AcAttachment) -> dict | None:
         logging.debug("Create attachment: " + attachment.to_json())
@@ -409,8 +459,7 @@ class ActiveCollab:
         if res.status_code != 200:
             raise Exception("Error %d" % res.status_code)
         res_data = res.json()
-        project_labels = list(
-            map(lambda l: project_label_from_json(l), res_data))
+        project_labels = list(map(lambda l: project_label_from_json(l), res_data))
         return project_labels
 
     def create_project_label(self, project_label: AcProjectLabel) -> dict | None:
@@ -521,7 +570,7 @@ class ActiveCollab:
         return project_categories
 
     def create_project_category(
-            self, project_category: AcProjectCategory
+        self, project_category: AcProjectCategory
     ) -> dict | None:
         logging.debug("create project category: " + project_category.to_json())
         client = AcClient(self.session.cur_account, self.session.token)
@@ -538,6 +587,5 @@ class ActiveCollab:
         if res.status_code != 200:
             raise Exception("Error %d" % res.status_code)
         res_data = res.json()
-        project_notes = list(
-            map(lambda l: project_note_from_json(l), res_data))
+        project_notes = list(map(lambda l: project_note_from_json(l), res_data))
         return project_notes

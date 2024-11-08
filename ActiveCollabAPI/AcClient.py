@@ -69,10 +69,8 @@ class AcClient:
 
     def _upload(self, url: str, files: dict) -> Response:
         headers = self.headers()
-        del (headers["Content-Type"])
-        return requests.post(
-            self.base_url + "/" + url, headers=headers, files=files
-        )
+        del headers["Content-Type"]
+        return requests.post(self.base_url + "/" + url, headers=headers, files=files)
 
     def _put(self, url: str, data: str) -> Response:
         return requests.put(
@@ -103,6 +101,22 @@ class AcClient:
     def get_project_completed_tasks(self, project_id: int):
         return self._get("projects/%d/tasks/archive" % project_id)
 
+    def update_task_assign_file(
+        self,
+        project_id: int,
+        parent_type: str,
+        parent_id: int,
+        disposition: str,
+        code: str,
+    ) -> Response:
+        data = {
+            "disposition": disposition,
+            "attach_uploaded_files": [
+                code,
+            ],
+        }
+        return self._put("projects/%s/tasks/%d" % (project_id, parent_id), data)
+
     # projects
 
     def get_active_projects(self):
@@ -122,6 +136,23 @@ class AcClient:
     def get_project_notes(self, project_id: int):
         return self._get("projects/%d/notes" % project_id)
 
+    def update_note_assign_file(
+        self,
+        project_id: int,
+        parent_type: str,
+        parent_id: int,
+        disposition: str,
+        code: str,
+    ) -> Response:
+        data = {
+            "notes_id": parent_id,
+            "disposition": disposition,
+            "attach_uploaded_files": [
+                code,
+            ],
+        }
+        return self._put("projects/%s/notes/%d" % (project_id, parent_id), data)
+
     # users
 
     def get_all_users(self):
@@ -140,8 +171,7 @@ class AcClient:
 
     def post_subtask(self, project_id: int, task_id: int, data: dict) -> Response:
         return self._post(
-            "projects/%d/tasks/%d/subtasks" % (project_id,
-                                               task_id), json.dumps(data)
+            "projects/%d/tasks/%d/subtasks" % (project_id, task_id), json.dumps(data)
         )
 
     # comments
@@ -151,6 +181,23 @@ class AcClient:
 
     def post_comment(self, parent_type: str, parent_id: int, data: dict) -> Response:
         return self._post("comments/%s/%d" % (parent_type, parent_id), json.dumps(data))
+
+    def update_comment_assign_file(
+        self,
+        project_id: int,
+        parent_type: str,
+        parent_id: int,
+        disposition: str,
+        code: str,
+    ) -> Response:
+        data = {
+            "disposition": disposition,
+            "project_id": project_id,
+            "attach_uploaded_files": [
+                code,
+            ],
+        }
+        return self._put("comments/%d" % parent_id, data)
 
     # attachments
 
@@ -175,8 +222,7 @@ class AcClient:
         with requests.get(download_url, headers=self.headers(), stream=True) as r:
             r.raise_for_status()
             tmp_filename = os.path.join(gettempdir(), filename)
-            tmp_filename_safe = hashlib.sha256(
-                tmp_filename.encode("utf-8")).hexdigest()
+            tmp_filename_safe = hashlib.sha256(tmp_filename.encode("utf-8")).hexdigest()
             with open(tmp_filename_safe, "w+b") as f:
                 for chunk in r.iter_content(chunk_size=8192):
                     f.write(chunk)
@@ -184,11 +230,6 @@ class AcClient:
 
     def upload_files(self, files: dict) -> Response:
         return self._upload("upload-files", files=files)
-
-    def post_attachment(self, parent_type: str, parent_id: int, data: dict) -> Response:
-        return self._post(
-            "attachments/%s/%d" % (parent_type, parent_id), json.dumps(data)
-        )
 
     # project labels
 
