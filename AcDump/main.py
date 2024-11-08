@@ -1,3 +1,7 @@
+import argparse
+import configparser
+import json
+import logging
 import os
 import argparse
 import logging
@@ -38,17 +42,10 @@ def run_testing(ac: ActiveCollab, config: configparser.ConfigParser):
     storage_path = config.get("STORAGE", "path")
     ac_storage = AcFileStorage(storage_path, account_id)
 
-    base_path = "./data/account-00000000/attachments/"
-    filename = base_path + "attachment-000000000000039161.json.png"
-    files = {
-        "file": (
-            "Bildschirmfoto 2024-11-04 um 14.38.48.png",
-            open(filename, "rb"),
-            "image/png",
-        )
-    }
-    result = ac.upload_attachment(files)
-    return result
+    attachment = ac_storage.data_objects["attachments"].load(39161)
+    bin_file = ac_storage.data_objects["attachments"].get_bin_filename(attachment)
+    result = ac.upload_attachment(attachment, bin_file)
+    return map(lambda r: r.to_json(), result)
 
 
 def run_version():

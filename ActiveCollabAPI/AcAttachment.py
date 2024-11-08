@@ -52,6 +52,9 @@ class AcAttachment:
     def to_json(self) -> str:
         return json.dumps(self.to_dict())
 
+    def get_bin_filename(self) -> str:
+        pass
+
 
 def attachment_from_json(json_obj: dict) -> AcAttachment:
     assert (

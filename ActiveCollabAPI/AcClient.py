@@ -1,12 +1,11 @@
+import hashlib
 import json
 import logging
-import hashlib
 import os
 from tempfile import gettempdir
 
 import requests
 from requests import Response
-from requests.sessions import Request
 
 from ActiveCollabAPI import AC_USER_AGENT, AC_API_VERSION
 from ActiveCollabAPI.AcAccount import AcAccount
@@ -66,6 +65,13 @@ class AcClient:
     def _post(self, url: str, data: str, files=None) -> Response:
         return requests.post(
             self.base_url + "/" + url, headers=self.headers(), data=data, files=files
+        )
+
+    def _upload(self, url: str, files: dict) -> Response:
+        headers = self.headers()
+        del (headers["Content-Type"])
+        return requests.post(
+            self.base_url + "/" + url, headers=headers, files=files
         )
 
     def _put(self, url: str, data: str) -> Response:
@@ -176,9 +182,8 @@ class AcClient:
                     f.write(chunk)
         return tmp_filename_safe
 
-    def upload_attachment(self, files: dict) -> Request:
-        res = self._post("/upload-files", data="", files=files)
-        return res
+    def upload_files(self, files: dict) -> Response:
+        return self._upload("upload-files", files=files)
 
     def post_attachment(self, parent_type: str, parent_id: int, data: dict) -> Response:
         return self._post(

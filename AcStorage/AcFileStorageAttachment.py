@@ -1,13 +1,13 @@
 import os
 import shutil
 
-from ActiveCollabAPI.AcAttachment import AcAttachment, attachment_from_json
 from AcFileStorageBaseClass import AcFileStorageBaseClass
 from ActiveCollabAPI import (
     AC_ERROR_WRONG_CLASS,
     AC_CLASS_ATTACHMENT_WAREHOUSE,
     AC_CLASS_ATTACHMENT_LOCAL,
 )
+from ActiveCollabAPI.AcAttachment import AcAttachment, attachment_from_json
 
 
 class AcFileStorageAttachment(AcFileStorageBaseClass):
@@ -21,15 +21,20 @@ class AcFileStorageAttachment(AcFileStorageBaseClass):
 
     def save(self, attachment: AcAttachment, tmp_download: str) -> str:
         assert (
-            attachment.class_ == AC_CLASS_ATTACHMENT_WAREHOUSE
-            or attachment.class_ == AC_CLASS_ATTACHMENT_LOCAL
+                attachment.class_ == AC_CLASS_ATTACHMENT_WAREHOUSE
+                or attachment.class_ == AC_CLASS_ATTACHMENT_LOCAL
         ), AC_ERROR_WRONG_CLASS
         assert os.path.exists(tmp_download)
+
         attachment_full_filename = super().save_with_id(attachment, attachment.id)
-        shutil.move(tmp_download, attachment_full_filename +
-                    "." + attachment.extension)
+        shutil.move(tmp_download, self.get_bin_filename(attachment))
         return attachment_full_filename
 
-    def load(self, task_id: int) -> AcAttachment:
-        task = self.load_by_id(task_id)
-        return attachment_from_json(task)
+    def get_bin_filename(self, attachment):
+        filename = self.filename_with_id(attachment.id)  # FIXME: 2 lines duplicate with base class save_id()
+        full_filename = self.get_full_filename(filename)
+        return full_filename + "." + attachment.extension
+
+    def load(self, attachment_id: int) -> AcAttachment:
+        attachment_json = self.load_by_id(attachment_id)
+        return attachment_from_json(attachment_json)

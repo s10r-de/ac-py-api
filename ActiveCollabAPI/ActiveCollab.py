@@ -1,6 +1,7 @@
 import logging
 
 from AcAttachment import AcAttachment
+from AcAttachmentUploadResponse import AcAttachmentUploadResponse, attachment_upload_response_from_json
 from AcCompany import AcCompany, company_from_json
 from AcFileAccessToken import AcFileAccessToken, fileaccesstoken_from_json
 from AcLoginResponse import AcLoginResponse
@@ -359,9 +360,26 @@ class ActiveCollab:
         )
         return tmp_filename
 
-    def upload_attachment(self, files):
+    def upload_attachment(self, attachment: AcAttachment, bin_file: str) -> list[AcAttachmentUploadResponse]:
+        response = []
         client = AcClient(self.session.cur_account, self.session.token)
-        return client.upload_attachment(files)
+
+        files = {
+            "file": (
+                attachment.name,
+                open(bin_file, "rb"),
+                attachment.mime_type,
+            )
+        }
+
+        res = client.upload_files(files)
+        if res.status_code != 200:
+            logging.error("Error %d - %s" % (res.status_code, str(res.text)))
+            return response
+        res_data = res.json()
+        for file in res_data:
+            response.append(attachment_upload_response_from_json(file))
+        return response
 
     def create_attachment(self, attachment: AcAttachment) -> dict | None:
         logging.debug("Create attachment: " + attachment.to_json())
@@ -503,7 +521,7 @@ class ActiveCollab:
         return project_categories
 
     def create_project_category(
-        self, project_category: AcProjectCategory
+            self, project_category: AcProjectCategory
     ) -> dict | None:
         logging.debug("create project category: " + project_category.to_json())
         client = AcClient(self.session.cur_account, self.session.token)
