@@ -3,10 +3,6 @@ import configparser
 import json
 import logging
 import os
-import argparse
-import logging
-import configparser
-import json
 import sys
 from collections.abc import Iterator
 
@@ -30,6 +26,10 @@ def load_config(args):
     config = configparser.ConfigParser(interpolation=None)
     config.read(args.config)
     return config
+
+
+def map_company_id(config: configparser.ConfigParser, from_company_id: int):
+    return config.getint('DEFAULT', 'map_company_id_%d' % from_company_id)
 
 
 def serialize_output(output):
@@ -394,7 +394,7 @@ def run_load_all(ac: ActiveCollab, config: configparser.ConfigParser):
 
     cnt = _load_companies(ac, ac_storage)
     print("Imported %d companies" % cnt)
-    cnt = _load_users(ac, ac_storage)
+    cnt = _load_users(config, ac, ac_storage)
     print("Imported %d users" % cnt)
 
     cnt = _load_project_categories(ac, ac_storage)
@@ -402,7 +402,7 @@ def run_load_all(ac: ActiveCollab, config: configparser.ConfigParser):
     cnt = _load_project_labels(ac, ac_storage)
     print("Imported %d project-labels" % cnt)
 
-    cnt = _load_projects(ac, ac_storage)
+    cnt = _load_projects(config, ac, ac_storage)
     print("Imported %d projects" % cnt)
     cnt = _load_task_lists(ac, ac_storage)
     print("Imported %d task-lists" % cnt)
@@ -508,10 +508,11 @@ def _load_task_lists(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
     return cnt
 
 
-def _load_projects(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
+def _load_projects(config: configparser.ConfigParser, ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
     cnt = 0
     for project_id in ac_storage.data_objects["projects"].list_ids():
         project = ac_storage.data_objects["projects"].load(project_id)
+        project.company_id = map_company_id(config, project.company_id)
         if ac.create_project(project):
             cnt += 1
     return cnt
@@ -537,10 +538,11 @@ def _load_project_categories(ac: ActiveCollab, ac_storage: AcFileStorage) -> int
     return cnt
 
 
-def _load_users(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
+def _load_users(config: configparser.ConfigParser, ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
     cnt = 0
     for user_id in ac_storage.data_objects["users"].list_ids():
         user = ac_storage.data_objects["users"].load(user_id)
+        user.company_id = map_company_id(config, user.company_id)
         if ac.create_user(user):
             cnt += 1
     return cnt
