@@ -2,8 +2,13 @@ import dataclasses
 import json
 from dataclasses import dataclass
 
-from ActiveCollabAPI import AC_CLASS_ATTACHMENT_WAREHOUSE, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_, \
-    AC_CLASS_ATTACHMENT_LOCAL, AC_ERROR_WRONG_CLASS
+from ActiveCollabAPI import (
+    AC_CLASS_ATTACHMENT_WAREHOUSE,
+    AC_PROPERTY_CLASS,
+    AC_PROPERTY_CLASS_,
+    AC_CLASS_ATTACHMENT_LOCAL,
+    AC_ERROR_WRONG_CLASS,
+)
 
 
 @dataclass
@@ -27,29 +32,35 @@ class AcAttachment:
     created_by_email: str
     updated_on: int
     updated_by_id: int
-    folder_id: int
+    folder_id: int  # == project_id ?
     disposition: str
     project_id: int
     is_hidden_from_clients: bool
     extension: str
     file_type: str
+    type: str | None = dataclasses.field(default=None)
 
     def to_dict(self) -> dict:
         d = dataclasses.asdict(self)
         d[AC_PROPERTY_CLASS] = d[AC_PROPERTY_CLASS_]
         del d[AC_PROPERTY_CLASS_]
-        if d['extension'] is None:
-            d['extension'] = 'none'
-        d['extension'] = d['extension'].lower()
+        if d["extension"] is None:
+            d["extension"] = "none"
+        d["extension"] = d["extension"].lower()
         return d
 
     def to_json(self) -> str:
         return json.dumps(self.to_dict())
 
+    def get_bin_filename(self) -> str:
+        pass
+
 
 def attachment_from_json(json_obj: dict) -> AcAttachment:
-    assert json_obj[AC_PROPERTY_CLASS] == AC_CLASS_ATTACHMENT_WAREHOUSE or json_obj[
-        AC_PROPERTY_CLASS] == AC_CLASS_ATTACHMENT_LOCAL, AC_ERROR_WRONG_CLASS
+    assert (
+        json_obj[AC_PROPERTY_CLASS] == AC_CLASS_ATTACHMENT_WAREHOUSE
+        or json_obj[AC_PROPERTY_CLASS] == AC_CLASS_ATTACHMENT_LOCAL
+    ), AC_ERROR_WRONG_CLASS
     json_obj[AC_PROPERTY_CLASS_] = json_obj[AC_PROPERTY_CLASS]
     del json_obj[AC_PROPERTY_CLASS]
     if json_obj["extension"] is None:
