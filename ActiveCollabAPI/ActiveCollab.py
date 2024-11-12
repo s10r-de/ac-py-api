@@ -2,7 +2,6 @@ import logging
 
 from AcAttachment import AcAttachment
 from AcAttachmentUploadResponse import (
-    AcAttachmentUploadResponse,
     attachment_upload_response_from_json,
 )
 from AcCompany import AcCompany, company_from_json
@@ -387,24 +386,23 @@ class ActiveCollab:
             msg = "Error %d - %s" % (res.status_code, str(res.text))
             logging.error(msg)
             raise Exception(msg)
+        logging.debug("Upload file response: %s" % res.text)
         res_data = res.json()
         attachment_upload_response = attachment_upload_response_from_json(res_data[0])
 
         # assign file to the parent
         if attachment.parent_type == AC_CLASS_TASK:
             res = client.update_task_assign_file(
-                project_id=attachment.folder_id,
-                parent_type=attachment.parent_type,
-                parent_id=attachment.parent_id,
+                project_id=attachment.project_id,
+                task_id=attachment.parent_id,
                 disposition=attachment.disposition,
                 code=attachment_upload_response.code,
             )
         if attachment.parent_type == AC_CLASS_COMMENT:
             res = client.update_comment_assign_file(
-                project_id=attachment.folder_id,
-                parent_type=attachment.parent_type,
-                parent_id=attachment.parent_id,
+                comment_id=attachment.parent_id,
                 disposition=attachment.disposition,
+                name=attachment.name,
                 code=attachment_upload_response.code,
             )
         if attachment.parent_type == AC_CLASS_PROJECT_NOTE:
@@ -428,30 +426,29 @@ class ActiveCollab:
             msg = "Error %d - %s" % (res.status_code, str(res.text))
             raise Exception(msg)
         res_data = res.json()
-
         return res_data
 
-    def create_attachment(self, attachment: AcAttachment) -> dict | None:
-        logging.debug("Create attachment: " + attachment.to_json())
-        client = AcClient(self.session.cur_account, self.session.token)
-        attachment.type = attachment.class_  # FIXME
-        attachment.parent_type = attachment.parent_type.lower()
-        res = client.post_attachment(
-            attachment.parent_type,
-            attachment.parent_id,
-            attachment.to_dict(),
-        )
-        if res.status_code == 404:
-            logging.error(
-                "Parent %s/%d not found! Can not create attachment!"
-                % (attachment.parent_type, attachment.parent_id)
-            )
-            return None
-        if res.status_code != 200:
-            logging.error("Error %d - %s" % (res.status_code, str(res.text)))
-            return None
-        res_data = res.json()
-        return res_data
+    # def create_attachment(self, attachment: AcAttachment) -> dict | None:
+    #     logging.debug("Create attachment: " + attachment.to_json())
+    #     client = AcClient(self.session.cur_account, self.session.token)
+    #     attachment.type = attachment.class_  # FIXME
+    #     attachment.parent_type = attachment.parent_type.lower()
+    #     res = client.post_attachment(
+    #         attachment.parent_type,
+    #         attachment.parent_id,
+    #         attachment.to_dict(),
+    #     )
+    #     if res.status_code == 404:
+    #         logging.error(
+    #             "Parent %s/%d not found! Can not create attachment!"
+    #             % (attachment.parent_type, attachment.parent_id)
+    #         )
+    #         return None
+    #     if res.status_code != 200:
+    #         logging.error("Error %d - %s" % (res.status_code, str(res.text)))
+    #         return None
+    #     res_data = res.json()
+    #     return res_data
 
     def get_project_labels(self) -> list[AcProjectLabel]:
         client = AcClient(self.session.cur_account, self.session.token)

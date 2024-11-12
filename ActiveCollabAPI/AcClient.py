@@ -74,7 +74,7 @@ class AcClient:
 
     def _put(self, url: str, data: str) -> Response:
         return requests.put(
-            self.base_url + "/" + url, headers=self.headers(), data=json.dumps(data)
+            self.base_url + "/" + url, headers=self.headers(), data=data
         )
 
     def get_info(self):
@@ -102,12 +102,11 @@ class AcClient:
         return self._get("projects/%d/tasks/archive" % project_id)
 
     def update_task_assign_file(
-        self,
-        project_id: int,
-        parent_type: str,
-        parent_id: int,
-        disposition: str,
-        code: str,
+            self,
+            project_id: int,
+            task_id: int,
+            disposition: str,
+            code: str,
     ) -> Response:
         data = {
             "disposition": disposition,
@@ -115,7 +114,7 @@ class AcClient:
                 code,
             ],
         }
-        return self._put("projects/%s/tasks/%d" % (project_id, parent_id), data)
+        return self._put("projects/%d/tasks/%d" % (project_id, task_id), json.dumps(data))
 
     # projects
 
@@ -137,12 +136,12 @@ class AcClient:
         return self._get("projects/%d/notes" % project_id)
 
     def update_note_assign_file(
-        self,
-        project_id: int,
-        parent_type: str,
-        parent_id: int,
-        disposition: str,
-        code: str,
+            self,
+            project_id: int,
+            parent_type: str,
+            parent_id: int,
+            disposition: str,
+            code: str,
     ) -> Response:
         data = {
             "notes_id": parent_id,
@@ -151,7 +150,7 @@ class AcClient:
                 code,
             ],
         }
-        return self._put("projects/%s/notes/%d" % (project_id, parent_id), data)
+        return self._put("projects/%d/notes/%d" % (project_id, parent_id), json.dumps(data))
 
     # users
 
@@ -183,21 +182,20 @@ class AcClient:
         return self._post("comments/%s/%d" % (parent_type, parent_id), json.dumps(data))
 
     def update_comment_assign_file(
-        self,
-        project_id: int,
-        parent_type: str,
-        parent_id: int,
-        disposition: str,
-        code: str,
+            self,
+            comment_id: int,
+            disposition: str,
+            name: str,
+            code: str,
     ) -> Response:
         data = {
+            "name": name,
             "disposition": disposition,
-            "project_id": project_id,
             "attach_uploaded_files": [
                 code,
             ],
         }
-        return self._put("comments/%d" % parent_id, data)
+        return self._put("comments/%d" % comment_id, json.dumps(data))
 
     # attachments
 
@@ -210,7 +208,7 @@ class AcClient:
         )
 
     def download_attachment(
-        self, download_url: str, file_access_token: str, filename: str
+            self, download_url: str, file_access_token: str, filename: str
     ) -> str:
         # replace &intent=--DOWNLOAD-TOKEN--  with download token
         download_url = download_url.replace(
