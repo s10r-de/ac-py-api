@@ -1,23 +1,30 @@
 import argparse
 import configparser
+import http.client as http_client
 import json
 import logging
 import os
 import sys
+import time
 from collections.abc import Iterator
 
 from AcStorage.AcFileStorage import AcFileStorage
 from ActiveCollabAPI.ActiveCollab import ActiveCollab
 
 
-def setup_logging():
+def setup_logging(debugging=False, http_debugging=False):
     root = logging.getLogger()
-    root.setLevel(logging.DEBUG)
+    if debugging:
+        root.setLevel(logging.DEBUG)
     handler = logging.StreamHandler(sys.stdout)
-    handler.setLevel(logging.DEBUG)
+    if debugging:
+        handler.setLevel(logging.DEBUG)
     formatter = logging.Formatter("%(levelname)s - %(message)s")
     handler.setFormatter(formatter)
     root.addHandler(handler)
+    if http_debugging:
+        # These two lines enable debugging at httplib level (requests->urllib3->http.client)
+        http_client.HTTPConnection.debuglevel = 1
 
 
 def load_config(args):
@@ -582,8 +589,6 @@ def run(args, parser, config: configparser.ConfigParser):
 
 
 def main():
-    setup_logging()
-    logging.info("Started")
     # parse arguments
     parser = argparse.ArgumentParser(
         prog="acdump",
@@ -593,6 +598,8 @@ def main():
     parser.add_argument(
         "-c", "--config", required=True, help="use the named config file"
     )
+    parser.add_argument("--debug", action='store_true', help="Enable debug output")
+    parser.add_argument("--http-debug", action='store_true', help="Enable HTTP debug output")
     parser.add_argument(
         "command",
         choices=[
@@ -609,12 +616,15 @@ def main():
     )
     args = parser.parse_args()
     config = load_config(args)
+    setup_logging(args.debug, args.http_debug)
+    t_start = time.time()
+    logging.info("Started")
     output = run(args, parser, config)
     if isinstance(output, Iterator):
         output = list(output)
     if output is not None:
         print(serialize_output(output))
-    logging.info("Finished")
+    logging.info("Finished after %0.3f seconds" % (time.time() - t_start))
 
 
 if __name__ == "__main__":
