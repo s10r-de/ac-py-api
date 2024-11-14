@@ -14,8 +14,9 @@
       <excludeFolder url="file://$MODULE_DIR$/tests/data-test" />
       <excludeFolder url="file://$MODULE_DIR$/data-test" />
       <excludeFolder url="file://$MODULE_DIR$/data.bak" />
+      <excludeFolder url="file://$MODULE_DIR$/data-prod" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.12 (active-collab-backup)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.13 (active-collab-backup)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

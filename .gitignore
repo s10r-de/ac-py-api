@@ -1,10 +1,20 @@
+# mac system files
 .DS_Store
-/config.ini
-/config-selfhosted.ini
-/data/
-/data-self-hosted/
-/tests/data-test/
+._*
+
+# ignore python opcode and virtual env
 __pycache__
-ActiveCollabServer/env
-*.zip
+*.pyc
 .venv/
+
+# ignore logfiles
+*.log
+*.log.gz
+
+# ignore config files
+/config*.ini
+
+# ignore data
+/data*/
+/tests/data-test/
+
