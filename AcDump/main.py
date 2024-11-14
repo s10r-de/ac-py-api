@@ -15,13 +15,11 @@ from Statistics import Statistics
 overall_statistics = Statistics()
 
 
-def setup_logging(debugging=False, http_debugging=False):
+def setup_logging(log_level=logging.ERROR, http_debugging=False):
     root = logging.getLogger()
-    if debugging:
-        root.setLevel(logging.DEBUG)
+    root.setLevel(log_level)
     handler = logging.StreamHandler(sys.stdout)
-    if debugging:
-        handler.setLevel(logging.DEBUG)
+    handler.setLevel(log_level)
     formatter = logging.Formatter("%(levelname)s - %(message)s")
     handler.setFormatter(formatter)
     root.addHandler(handler)
@@ -105,8 +103,7 @@ def run_dump_all(ac: ActiveCollab, config: configparser.ConfigParser):
 
 
 def dump_all_projects_with_all_data(ac, ac_storage):
-    projects = ac.get_active_projects()
-    # projects.extend(ac.get_archived_projects()) # Task#64 ignore completed projects because not all related data is accessible over the API
+    projects = ac.get_all_projects()
     for project in projects:
         ac_storage.data_objects["projects"].save(project)
         dump_all_project_notes(ac, ac_storage, project)
@@ -120,6 +117,7 @@ def dump_all_project_notes(ac, ac_storage, project):
         overall_statistics.project_notes.increment()
         for attachment in project_note.attachments:
             dump_attachment(ac, ac_storage, attachment)
+
 
 def dump_all_task_lists_of_project(ac, ac_storage, project):
     for task_list in ac.get_project_task_lists(project.id):
@@ -616,6 +614,7 @@ def main():
     parser.add_argument(
         "-c", "--config", required=True, help="use the named config file"
     )
+    parser.add_argument("--verbose", action='store_true', help="Enable some move verbose output")
     parser.add_argument("--debug", action='store_true', help="Enable debug output")
     parser.add_argument("--http-debug", action='store_true', help="Enable HTTP debug output")
     parser.add_argument(
@@ -634,7 +633,12 @@ def main():
     )
     args = parser.parse_args()
     config = load_config(args)
-    setup_logging(args.debug, args.http_debug)
+    log_level = logging.ERROR
+    if args.verbose:
+        log_level = logging.INFO
+    if args.debug:
+        log_level = logging.DEBUG
+    setup_logging(log_level, args.http_debug)
     t_start = time.time()
     logging.info("Started")
     output = run(args, parser, config)
