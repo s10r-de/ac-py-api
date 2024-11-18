@@ -75,6 +75,7 @@ class AcClient:
 
     def post_task(self, data: dict) -> Response:
         project_id = data["project_id"]
+        data["labels"] = list(map(lambda l: l["name"], data["labels"]))
         return self._post("projects/%d/tasks" % project_id, json.dumps(data))
 
     def complete_task(self, task_id: int) -> Response:

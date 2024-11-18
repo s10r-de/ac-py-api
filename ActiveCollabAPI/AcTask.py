@@ -5,6 +5,7 @@ from dataclasses import dataclass
 
 from AcAttachment import AcAttachment, attachment_from_json
 from AcTaskDependencies import AcTaskDependencies, taskdependency_from_json
+from AcTaskLabel import AcTaskLabel, task_label_from_json
 from ActiveCollabAPI import AC_CLASS_TASK, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_, \
     AC_ERROR_WRONG_CLASS
 
@@ -38,7 +39,7 @@ class AcTask:
     is_important: bool
     is_trashed: bool
     job_type_id: int
-    labels: list  # FIXME
+    labels: list[AcTaskLabel]
     name: str
     open_dependencies: AcTaskDependencies
     open_subtasks: int
@@ -81,8 +82,9 @@ class AcTask:
         if d["open_dependencies"] is not None:
             d["open_dependencies"] = self.open_dependencies.to_dict()
         if d["attachments"] is not None:
-            d["attachments"] = list(
-                map(lambda a: a.to_dict(), self.get_attachments()))
+            d["attachments"] = list(map(lambda a: a.to_dict(), self.get_attachments()))
+        if d["labels"] is not None:
+            d["labels"] = list(map(lambda a: a.to_dict(), self.labels))
         return d
 
     def to_json(self) -> str:
@@ -102,4 +104,6 @@ def task_from_json(json_obj: dict) -> AcTask:
     if json_obj["attachments"] is not None:
         json_obj["attachments"] = list(
             map(attachment_from_json, json_obj["attachments"]))
+    if json_obj["labels"] is not None:
+        json_obj["labels"] = list(map(task_label_from_json, json_obj["labels"]))
     return AcTask(**json_obj)

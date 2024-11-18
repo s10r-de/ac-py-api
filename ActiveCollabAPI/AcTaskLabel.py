@@ -7,18 +7,18 @@ from ActiveCollabAPI import AC_CLASS_TASK_LABEL, AC_PROPERTY_CLASS, AC_PROPERTY_
 
 @dataclass
 class AcTaskLabel:
-    class_: str
     color: str
     darker_text_color: str
     id: int
-    is_default: bool
-    is_global: bool
     lighter_text_color: str
     name: str
-    position: int
-    project_id: int | None
-    updated_on: int
-    url_path: str
+    is_default: bool = dataclasses.field(default=False)
+    is_global: bool = dataclasses.field(default=False)
+    position: int = dataclasses.field(default=0)
+    project_id: int | None = dataclasses.field(default=None)
+    updated_on: int | None = dataclasses.field(default=None)
+    url_path: str = dataclasses.field(default="")
+    class_: str = dataclasses.field(default=AC_CLASS_TASK_LABEL)
 
     def to_dict(self) -> dict:
         d = dataclasses.asdict(self)
@@ -31,7 +31,8 @@ class AcTaskLabel:
 
 
 def task_label_from_json(json_obj: dict) -> AcTaskLabel:
-    assert json_obj[AC_PROPERTY_CLASS] == AC_CLASS_TASK_LABEL
-    json_obj[AC_PROPERTY_CLASS_] = json_obj[AC_PROPERTY_CLASS]
-    del json_obj[AC_PROPERTY_CLASS]
+    if getattr(json_obj, AC_PROPERTY_CLASS, None):
+        assert json_obj[AC_PROPERTY_CLASS] == AC_CLASS_TASK_LABEL
+        json_obj[AC_PROPERTY_CLASS_] = json_obj[AC_PROPERTY_CLASS]
+        del json_obj[AC_PROPERTY_CLASS]
     return AcTaskLabel(**json_obj)
