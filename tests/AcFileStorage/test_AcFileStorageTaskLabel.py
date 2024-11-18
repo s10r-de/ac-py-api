@@ -17,7 +17,7 @@ class TestAcFileStorageTaskLabel(TestCase):
     def _generate_test_task_label(label_id: int) -> dict:
         return {
             "id": label_id,
-            "class": "TaskLabel",
+            "class_": "TaskLabel",
             "url_path": "/task/label/%d" % label_id,
             "name": "Test Task Label",
             "updated_on": int(time.time()),
