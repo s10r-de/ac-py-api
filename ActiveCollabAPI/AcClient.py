@@ -151,6 +151,9 @@ class AcClient:
     def post_user(self, data: dict) -> Response:
         return self._post("users", json.dumps(data))
 
+    def archive_user(self, user_id: int) -> Response:
+        return self._put("/move-to-archive/user/%d" % user_id, "")
+
     # subtasks
 
     def get_subtasks(self, project_id: int, task_id: int):

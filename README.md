@@ -85,8 +85,7 @@ Now you can start the dump of all data:
 ```
 
 All data will be saved under `./data-cloud` (see config file "
-STORAGE.path")
-
+STORAGE.path") and previous data in this folder will be removed!
 
 ## Noteable
 
@@ -153,7 +152,22 @@ cp -r data-cloud/account-00416910 data-selfhosted/account-00000000
 Now import all the data:
 
 ```console
-./acdump.sh -c config-selfhosted.ini load
+./acdump.sh -c config-selfhosted.ini --debug load
+```
+
+The script should not be interrupted. If it stops for some reason you
+need to start from scratch by first empty the database and then import
+all data again.
+
+```console
+# delete all data (move to trash)
+# **BE CAREFUL TO USE THE RIGHT CONFIG**
+
+./acdump.sh -c config-selfhosted.ini --debug delete
+
+# finally empty the trash
+
+./acdump.sh -c config-selfhosted.ini --debug empty
 ```
 
 Note: depending on how much you have already used the self-hosted server
@@ -184,8 +198,7 @@ adminer" and login into the database with the "acuser" credentials.
 Then cleanup the table
 
 ```sql
-delete
-* from job_queue;
+delete * from job_queue;
 ```
 
 You can find the CRONTAB here:

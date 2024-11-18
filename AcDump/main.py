@@ -13,6 +13,8 @@ from AcStorage.AcFileStorage import AcFileStorage
 from AcSubtask import AcSubtask
 from AcTask import AcTask
 from AcTaskList import AcTaskList
+from AcUser import AcUser
+from ActiveCollabAPI import AC_CLASS_USER_OWNER, AC_CLASS_USER_MEMBER
 from ActiveCollabAPI.ActiveCollab import ActiveCollab
 from Statistics import Statistics
 
@@ -424,25 +426,19 @@ def run_load_all(ac: ActiveCollab, config: configparser.ConfigParser):
     storage_path = config.get("STORAGE", "path")
     ac_storage = AcFileStorage(storage_path, account_id)
 
-    cnt = _load_companies(ac, ac_storage)
-    print("Imported %d companies" % cnt)
-    cnt = _load_users(config, ac, ac_storage)
-    print("Imported %d users" % cnt)
+    _load_companies(ac, ac_storage)  # TODO: archived companies
+    archived_users = _load_users(config, ac, ac_storage)
 
-    cnt = _load_project_categories(ac, ac_storage)
-    print("Imported %d project-category" % cnt)
-    cnt = _load_project_labels(ac, ac_storage)
-    print("Imported %d project-labels" % cnt)
+    _load_project_categories(ac, ac_storage)  # TODO: archived categories
+    _load_project_labels(ac, ac_storage)  # TODO: archived labels
 
     complete_projects = _load_projects(config, ac, ac_storage)
     complete_task_lists = _load_task_lists(ac, ac_storage)
     complete_tasks = _load_tasks(ac, ac_storage)
     complete_subtasks = _load_subtasks(ac, ac_storage)
 
-    cnt = _load_comments(ac, ac_storage)
-    print("Imported %d comments" % cnt)
-    cnt = _load_attachments(ac, ac_storage)
-    print("Imported %d attachments" % cnt)
+    _load_comments(ac, ac_storage)  # TODO: archived comments?
+    _load_attachments(ac, ac_storage)  # TODO: archived attachments?
 
     for subtask in complete_subtasks:
         ac.complete_subtask(subtask)
@@ -452,6 +448,8 @@ def run_load_all(ac: ActiveCollab, config: configparser.ConfigParser):
         ac.complete_task_list(task_list)
     for project in complete_projects:
         ac.complete_project(project)
+    for user in archived_users:
+        ac.archive_user(user)
 
 
 def _delete_all_tasks(ac: ActiveCollab, config: configparser.ConfigParser):
@@ -597,14 +595,19 @@ def _load_project_categories(ac: ActiveCollab, ac_storage: AcFileStorage) -> int
 
 def _load_users(
         config: configparser.ConfigParser, ac: ActiveCollab, ac_storage: AcFileStorage
-) -> int:
-    cnt = 0
+) -> list[AcUser]:
+    archived = []
     for user_id in ac_storage.data_objects["users"].list_ids():
         user = ac_storage.data_objects["users"].load(user_id)
         user.company_id = map_company_id(config, user.company_id)
-        if ac.create_user(user):
-            cnt += 1
-    return cnt
+        if user.is_archived:
+            archived.append(user)
+            user.is_archived = False
+        if user.class_ == AC_CLASS_USER_OWNER:
+            user.class_ = AC_CLASS_USER_MEMBER
+        ac.create_user(user)
+    return archived
+
 
 
 def _load_companies(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:

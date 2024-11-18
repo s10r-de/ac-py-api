@@ -308,6 +308,14 @@ class ActiveCollab:
         res_data = res.json()
         return res_data
 
+    def archive_user(self, user: AcUser) -> dict | None:
+        client = AcClient(self.session.cur_account, self.session.token)
+        res = client.archive_user(user.id)
+        if res.status_code != 200:
+            raise Exception("Error %d" % res.status_code)
+        res_data = res.json()
+        return res_data
+
     def get_subtasks(self, task: AcTask) -> list[AcSubtask]:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_subtasks(task.project_id, task.id)
