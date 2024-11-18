@@ -175,17 +175,29 @@ class ActiveCollab:
         tasks = list(map(lambda p: task_from_json(p), res_data))
         return tasks
 
+    def complete_task(self, task: AcTask) -> dict | None:
+        logging.debug("Complete task: " + task.to_json())
+        client = AcClient(self.session.cur_account, self.session.token)
+        res = client.complete_task(task.id)
+        if res.status_code != 200:
+            logging.error("Error %d - %s" % (res.status_code, str(res.text)))
+            return None
+        res_data = res.json()
+        return res_data
+
     def create_task(self, task: AcTask) -> dict | None:
         logging.debug("Create task: " + task.to_json())
         client = AcClient(self.session.cur_account, self.session.token)
         task.type = task.class_  # FIXME
         res = client.post_task(task.to_dict())
         if res.status_code == 404:
+            logging.error(task.to_dict())
             logging.error(
                 "Project %d not found! Can not create task list!" % task.project_id
             )
             return None
         if res.status_code != 200:
+            logging.error(task.to_dict())
             logging.error("Error %d - %s" % (res.status_code, str(res.text)))
             return None
         res_data = res.json()
@@ -195,7 +207,7 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         tasks = []
         for task in self.get_all_tasks(project_id):
-            tasks.append(task.to_dict())
+            tasks.append(task)
             client.delete_task(project_id, task.id)
         return tasks
 
@@ -233,12 +245,21 @@ class ActiveCollab:
         projects = list(map(lambda p: project_from_json(p), res_data))
         return projects
 
+    def complete_project(self, project: AcProject) -> dict | None:
+        client = AcClient(self.session.cur_account, self.session.token)
+        res = client.complete_project(project.id)
+        if res.status_code != 200:
+            raise Exception("Error %d" % res.status_code)
+        res_data = res.json()
+        return res_data
+
     def create_project(self, project: AcProject) -> dict | None:
         logging.debug("Creating project: " + project.to_json())
         client = AcClient(self.session.cur_account, self.session.token)
         project = _workaround_project_fix_type_from_class(project)
         res = client.post_project(project.to_dict())
         if res.status_code != 200:
+            logging.error(project.to_dict())
             logging.error(
                 "cant creeate project! (%d - %s)" % (res.status_code, res.text)
             )
@@ -281,8 +302,17 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.post_user(user.to_dict())
         if res.status_code != 200:
+            logging.error(user.to_dict())
             logging.error("Error %d - %s" % (res.status_code, str(res.text)))
             return None
+        res_data = res.json()
+        return res_data
+
+    def archive_user(self, user: AcUser) -> dict | None:
+        client = AcClient(self.session.cur_account, self.session.token)
+        res = client.archive_user(user.id)
+        if res.status_code != 200:
+            raise Exception("Error %d" % res.status_code)
         res_data = res.json()
         return res_data
 
@@ -294,6 +324,16 @@ class ActiveCollab:
         res_data = res.json()
         subtasks = list(map(lambda u: subtask_from_json(u), res_data))
         return subtasks
+
+    def complete_subtask(self, subtask: AcSubtask) -> dict | None:
+        logging.debug("Complete subtask: " + subtask.to_json())
+        client = AcClient(self.session.cur_account, self.session.token)
+        res = client.complete_subtask(subtask.id)
+        if res.status_code != 200:
+            logging.error("Error %d - %s" % (res.status_code, str(res.text)))
+            return None
+        res_data = res.json()
+        return res_data
 
     def create_subtask(self, subtask: AcSubtask) -> dict | None:
         logging.debug("Create subtask: " + subtask.to_json())
@@ -527,18 +567,44 @@ class ActiveCollab:
         task_lists = list(map(lambda t: task_list_from_json(t), res_data))
         return task_lists
 
+    def get_project_archived_task_lists(self, project_id: int) -> list[AcTaskList]:
+        client = AcClient(self.session.cur_account, self.session.token)
+        res = client.get_archived_task_lists(project_id)
+        if res.status_code != 200:
+            raise Exception("Error %d" % res.status_code)
+        res_data = res.json()
+        task_lists = list(map(lambda t: task_list_from_json(t), res_data))
+        return task_lists
+
+    def get_project_all_task_lists(self, project: AcProject) -> list[AcTaskList]:
+        task_lists = self.get_project_task_lists(project.id)
+        task_lists.extend(self.get_project_archived_task_lists(project.id))
+        return task_lists
+
+    def complete_task_list(self, task_list: AcTaskList) -> dict | None:
+        logging.debug("create task list: " + task_list.to_json())
+        client = AcClient(self.session.cur_account, self.session.token)
+        res = client.complete_task_list(task_list.id)
+        if res.status_code != 200:
+            logging.error("Error %d - %s" % (res.status_code, str(res.text)))
+            return None
+        res_data = res.json()
+        return res_data
+
     def create_task_list(self, task_list: AcTaskList) -> dict | None:
         logging.debug("create task list: " + task_list.to_json())
         client = AcClient(self.session.cur_account, self.session.token)
         task_list.type = task_list.class_  # FIXME
         res = client.post_task_list(task_list.to_dict())
         if res.status_code == 404:
+            logging.error(task_list.to_dict())
             logging.error(
                 "Project %d not found! Can not create task list!" % task_list.project_id
             )
             return None
             # raise Exception("Project %d not found!" % task_list.project_id)
         if res.status_code != 200:
+            logging.error(task_list.to_dict())
             logging.error("Error %d - %s" % (res.status_code, str(res.text)))
             return None
         res_data = res.json()
@@ -567,13 +633,14 @@ class ActiveCollab:
         return project_categories
 
     def create_project_category(
-        self, project_category: AcProjectCategory
+            self, project_category: AcProjectCategory
     ) -> dict | None:
         logging.debug("create project category: " + project_category.to_json())
         client = AcClient(self.session.cur_account, self.session.token)
         project_category.type = project_category.class_  # FIXME
         res = client.post_project_category(project_category.to_dict())
         if res.status_code != 200:
+            logging.error(project_category.to_dict())
             raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
         res_data = res.json()
         return res_data

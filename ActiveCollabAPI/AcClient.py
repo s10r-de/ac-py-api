@@ -77,6 +77,9 @@ class AcClient:
         project_id = data["project_id"]
         return self._post("projects/%d/tasks" % project_id, json.dumps(data))
 
+    def complete_task(self, task_id: int) -> Response:
+        return self._put("complete/task/%d" % task_id, "")
+
     def delete_task(self, project_id: int, task_id: int) -> Response:
         return self._delete("projects/%d/tasks/%d" % (project_id, task_id))
 
@@ -108,6 +111,9 @@ class AcClient:
 
     def post_project(self, data: dict) -> Response:
         return self._post("projects", json.dumps(data))
+
+    def complete_project(self, project_id: int) -> Response:
+        return self._put("complete/project/%d" % project_id, "")
 
     def delete_project(self, project_id: int) -> Response:
         return self._delete("projects/%d" % project_id)
@@ -145,6 +151,9 @@ class AcClient:
     def post_user(self, data: dict) -> Response:
         return self._post("users", json.dumps(data))
 
+    def archive_user(self, user_id: int) -> Response:
+        return self._put("/move-to-archive/user/%d" % user_id, "")
+
     # subtasks
 
     def get_subtasks(self, project_id: int, task_id: int):
@@ -154,6 +163,9 @@ class AcClient:
         return self._post(
             "projects/%d/tasks/%d/subtasks" % (project_id, task_id), json.dumps(data)
         )
+
+    def complete_subtask(self, subtask_id: int) -> Response:
+        return self._put("complete/subtask/%d" % subtask_id, "")
 
     # comments
 
@@ -243,9 +255,15 @@ class AcClient:
     def get_task_lists(self, project_id: int) -> Response:
         return self._get("projects/%d/task-lists" % project_id)
 
+    def get_archived_task_lists(self, project_id: int) -> Response:
+        return self._get("projects/%d/task-lists/archive" % project_id)
+
     def post_task_list(self, data: dict) -> Response:
         project_id = data["project_id"]
         return self._post("projects/%d/task-lists" % project_id, json.dumps(data))
+
+    def complete_task_list(self, task_list_id: int) -> Response:
+        return self._put("complete/task-list/%d" % task_list_id, "")
 
     def delete_task_list(self, project_id: int, task_list_id: int) -> Response:
         return self._delete("projects/%d/task-lists/%d" % (project_id, task_list_id))

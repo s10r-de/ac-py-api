@@ -8,7 +8,13 @@ import sys
 import time
 from collections.abc import Iterator
 
+from AcProject import AcProject
 from AcStorage.AcFileStorage import AcFileStorage
+from AcSubtask import AcSubtask
+from AcTask import AcTask
+from AcTaskList import AcTaskList
+from AcUser import AcUser
+from ActiveCollabAPI import AC_CLASS_USER_OWNER, AC_CLASS_USER_MEMBER
 from ActiveCollabAPI.ActiveCollab import ActiveCollab
 from Statistics import Statistics
 
@@ -37,7 +43,7 @@ def load_config(args):
 
 
 def map_company_id(config: configparser.ConfigParser, from_company_id: int):
-    return config.getint('DEFAULT', 'map_company_id_%d' % from_company_id)
+    return config.getint("DEFAULT", "map_company_id_%d" % from_company_id)
 
 
 def serialize_output(output):
@@ -53,15 +59,18 @@ def run_testing(ac: ActiveCollab, config: configparser.ConfigParser):
     result = []
 
     attachment = ac_storage.data_objects["attachments"].load(32609)
-    bin_file = ac_storage.data_objects["attachments"].get_bin_filename(attachment)
+    bin_file = ac_storage.data_objects["attachments"].get_bin_filename(
+        attachment)
     result.append(ac.upload_attachment(attachment, bin_file))
 
     attachment = ac_storage.data_objects["attachments"].load(29717)
-    bin_file = ac_storage.data_objects["attachments"].get_bin_filename(attachment)
+    bin_file = ac_storage.data_objects["attachments"].get_bin_filename(
+        attachment)
     result.append(ac.upload_attachment(attachment, bin_file))
 
     attachment = ac_storage.data_objects["attachments"].load(29703)
-    bin_file = ac_storage.data_objects["attachments"].get_bin_filename(attachment)
+    bin_file = ac_storage.data_objects["attachments"].get_bin_filename(
+        attachment)
     result.append(ac.upload_attachment(attachment, bin_file))
 
     return result
@@ -98,13 +107,12 @@ def run_dump_all(ac: ActiveCollab, config: configparser.ConfigParser):
     return {
         "account": account_id,
         "storage_path": storage_path,
-        "statistics": overall_statistics.get()
+        "statistics": overall_statistics.get(),
     }
 
 
 def dump_all_projects_with_all_data(ac, ac_storage):
-    projects = ac.get_all_projects()
-    for project in projects:
+    for project in ac.get_all_projects():
         ac_storage.data_objects["projects"].save(project)
         dump_all_project_notes(ac, ac_storage, project)
         dump_all_task_lists_of_project(ac, ac_storage, project)
@@ -120,14 +128,13 @@ def dump_all_project_notes(ac, ac_storage, project):
 
 
 def dump_all_task_lists_of_project(ac, ac_storage, project):
-    for task_list in ac.get_project_task_lists(project.id):
+    for task_list in ac.get_project_all_task_lists(project):
         ac_storage.data_objects["task-lists"].save(task_list)
         overall_statistics.task_lists.increment()
 
 
 def dump_all_tasks_of_project(ac, ac_storage, project):
-    tasks = ac.get_all_tasks(project.id)
-    for task in tasks:
+    for task in ac.get_all_tasks(project.id):
         ac_storage.data_objects["tasks"].save(task)
         overall_statistics.tasks.increment()
         for attachment in task.get_attachments():
@@ -204,7 +211,8 @@ def _login(config: configparser.ConfigParser) -> ActiveCollab:
     if is_cloud:
         account = config.get("LOGIN", "account", fallback="")
     ac = ActiveCollab(base_url, is_cloud)
-    ac.login(config.get("LOGIN", "username"), config.get("LOGIN", "password"), account)
+    ac.login(config.get("LOGIN", "username"),
+             config.get("LOGIN", "password"), account)
     return ac
 
 
@@ -257,7 +265,8 @@ def _verify_project_labels(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
     server_project_labels = ac.get_project_labels()
     for label_id in ac_storage.data_objects["project-labels"].list_ids():
         category = ac_storage.data_objects["project-labels"].load(label_id)
-        server_labels = list(filter(lambda c: c.id == label_id, server_project_labels))
+        server_labels = list(
+            filter(lambda c: c.id == label_id, server_project_labels))
         if len(server_labels) == 0:
             logging.error("Project Label %d not found!" % label_id)
             result = False
@@ -274,7 +283,8 @@ def _verify_project_categories(ac: ActiveCollab, ac_storage: AcFileStorage) -> b
     result = True
     server_project_categories = ac.get_project_categories()
     for category_id in ac_storage.data_objects["project-categories"].list_ids():
-        category = ac_storage.data_objects["project-categories"].load(category_id)
+        category = ac_storage.data_objects["project-categories"].load(
+            category_id)
         server_category = list(
             filter(lambda c: c.id == category_id, server_project_categories)
         )
@@ -332,7 +342,7 @@ def _verify_task_lists(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
         server_all_project_task_lists = []
         try:
             server_all_project_task_lists = ac.get_project_task_lists(project_id)
-        except Exception as e:
+        except Exception:
             pass  # ignore exception here
         if len(server_all_project_task_lists) == 0:
             logging.error("No task lists for project %d found!" % project_id)
@@ -343,7 +353,8 @@ def _verify_task_lists(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
         )
         if len(server_task_list) == 0:
             logging.error(
-                "Task list %d for project %d not found!" % (task_list.id, project_id)
+                "Task list %d for project %d not found!" % (
+                    task_list.id, project_id)
             )
             result = False
             continue
@@ -361,7 +372,8 @@ def _verify_projects(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
     server_projects = ac.get_all_projects()
     for project_id in ac_storage.data_objects["projects"].list_ids():
         company = ac_storage.data_objects["projects"].load(project_id)
-        server_project = list(filter(lambda c: c.id == project_id, server_projects))
+        server_project = list(
+            filter(lambda c: c.id == project_id, server_projects))
         if len(server_project) == 0:
             logging.error("Project %d not found!" % project_id)
             result = False
@@ -414,29 +426,30 @@ def run_load_all(ac: ActiveCollab, config: configparser.ConfigParser):
     storage_path = config.get("STORAGE", "path")
     ac_storage = AcFileStorage(storage_path, account_id)
 
-    cnt = _load_companies(ac, ac_storage)
-    print("Imported %d companies" % cnt)
-    cnt = _load_users(config, ac, ac_storage)
-    print("Imported %d users" % cnt)
+    _load_companies(ac, ac_storage)  # TODO: archived companies
+    archived_users = _load_users(config, ac, ac_storage)
 
-    cnt = _load_project_categories(ac, ac_storage)
-    print("Imported %d project-category" % cnt)
-    cnt = _load_project_labels(ac, ac_storage)
-    print("Imported %d project-labels" % cnt)
+    _load_project_categories(ac, ac_storage)  # TODO: archived categories
+    _load_project_labels(ac, ac_storage)  # TODO: archived labels
 
-    cnt = _load_projects(config, ac, ac_storage)
-    print("Imported %d projects" % cnt)
-    cnt = _load_task_lists(ac, ac_storage)
-    print("Imported %d task-lists" % cnt)
-    cnt = _load_tasks(ac, ac_storage)
-    print("Imported %d tasks" % cnt)
-    cnt = _load_subtasks(ac, ac_storage)
-    print("Imported %d subtasks" % cnt)
-    cnt = _load_comments(ac, ac_storage)
-    print("Imported %d comments" % cnt)
+    complete_projects = _load_projects(config, ac, ac_storage)
+    complete_task_lists = _load_task_lists(ac, ac_storage)
+    complete_tasks = _load_tasks(ac, ac_storage)
+    complete_subtasks = _load_subtasks(ac, ac_storage)
 
-    cnt = _load_attachments(ac, ac_storage)
-    print("Imported %d attachments" % cnt)
+    _load_comments(ac, ac_storage)  # TODO: archived comments?
+    _load_attachments(ac, ac_storage)  # TODO: archived attachments?
+
+    for subtask in complete_subtasks:
+        ac.complete_subtask(subtask)
+    for task in complete_tasks:
+        ac.complete_task(task)
+    for task_list in complete_task_lists:
+        ac.complete_task_list(task_list)
+    for project in complete_projects:
+        ac.complete_project(project)
+    for user in archived_users:
+        ac.archive_user(user)
 
 
 def _delete_all_tasks(ac: ActiveCollab, config: configparser.ConfigParser):
@@ -487,7 +500,8 @@ def _load_attachments(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
     cnt = 0
     for attachment_id in ac_storage.data_objects["attachments"].list_ids():
         attachment = ac_storage.data_objects["attachments"].load(attachment_id)
-        bin_file = ac_storage.data_objects["attachments"].get_bin_filename(attachment)
+        bin_file = ac_storage.data_objects["attachments"].get_bin_filename(
+            attachment)
         logging.debug("Uploading file %s" % bin_file)
         if ac.upload_attachment(attachment, bin_file):
             cnt += 1
@@ -503,41 +517,60 @@ def _load_comments(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
     return cnt
 
 
-def _load_subtasks(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
-    cnt = 0
+def _load_subtasks(ac: ActiveCollab, ac_storage: AcFileStorage) -> list[AcSubtask]:
+    completed = []
     for subtask_id in ac_storage.data_objects["subtasks"].list_ids():
         subtask = ac_storage.data_objects["subtasks"].load(subtask_id)
-        if ac.create_subtask(subtask):
-            cnt += 1
-    return cnt
+        if subtask.is_completed:
+            completed.append(subtask)
+            subtask.is_completed = False
+            subtask.completed_by_id = None
+            subtask.completed_on = None
+        ac.create_subtask(subtask)
+    return completed
 
 
-def _load_tasks(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
-    cnt = 0
+def _load_tasks(ac: ActiveCollab, ac_storage: AcFileStorage) -> list[AcTask]:
+    completed = []
     for task_id in ac_storage.data_objects["tasks"].list_ids():
         task = ac_storage.data_objects["tasks"].load(task_id)
-        if ac.create_task(task):
-            cnt += 1
-    return cnt
+        if task.is_completed:
+            completed.append(task)
+            task.is_completed = False
+            task.completed_by_id = None
+            task.completed_on = None
+        ac.create_task(task)
+    return completed
 
 
-def _load_task_lists(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
-    cnt = 0
+def _load_task_lists(ac: ActiveCollab, ac_storage: AcFileStorage) -> list[AcTaskList]:
+    completed = []
     for task_list_id in ac_storage.data_objects["task-lists"].list_ids():
         task_list = ac_storage.data_objects["task-lists"].load(task_list_id)
-        if ac.create_task_list(task_list):
-            cnt += 1
-    return cnt
+        if task_list.is_completed:
+            completed.append(task_list)
+            task_list.is_completed = False
+            task_list.completed_by_id = None
+            task_list.completed_on = None
+            task_list.open_tasks = 0
+        ac.create_task_list(task_list)
+    return completed
 
 
-def _load_projects(config: configparser.ConfigParser, ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
-    cnt = 0
+def _load_projects(
+        config: configparser.ConfigParser, ac: ActiveCollab, ac_storage: AcFileStorage
+) -> list[AcProject]:
+    completed = []
     for project_id in ac_storage.data_objects["projects"].list_ids():
         project = ac_storage.data_objects["projects"].load(project_id)
         project.company_id = map_company_id(config, project.company_id)
-        if ac.create_project(project):
-            cnt += 1
-    return cnt
+        if project.is_completed:
+            completed.append(project)
+            project.is_completed = False
+            project.completed_on = None
+            project.completed_by_id = None
+        ac.create_project(project)
+    return completed
 
 
 def _load_project_labels(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
@@ -560,14 +593,21 @@ def _load_project_categories(ac: ActiveCollab, ac_storage: AcFileStorage) -> int
     return cnt
 
 
-def _load_users(config: configparser.ConfigParser, ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
-    cnt = 0
+def _load_users(
+        config: configparser.ConfigParser, ac: ActiveCollab, ac_storage: AcFileStorage
+) -> list[AcUser]:
+    archived = []
     for user_id in ac_storage.data_objects["users"].list_ids():
         user = ac_storage.data_objects["users"].load(user_id)
         user.company_id = map_company_id(config, user.company_id)
-        if ac.create_user(user):
-            cnt += 1
-    return cnt
+        if user.is_archived:
+            archived.append(user)
+            user.is_archived = False
+        if user.class_ == AC_CLASS_USER_OWNER:
+            user.class_ = AC_CLASS_USER_MEMBER
+        ac.create_user(user)
+    return archived
+
 
 
 def _load_companies(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
@@ -613,9 +653,14 @@ def main():
     parser.add_argument(
         "-c", "--config", required=True, help="use the named config file"
     )
-    parser.add_argument("--verbose", action='store_true', help="Enable some move verbose output")
-    parser.add_argument("--debug", action='store_true', help="Enable debug output")
-    parser.add_argument("--http-debug", action='store_true', help="Enable HTTP debug output")
+    parser.add_argument(
+        "--verbose", action="store_true", help="Enable some move verbose output"
+    )
+    parser.add_argument("--debug", action="store_true",
+                        help="Enable debug output")
+    parser.add_argument(
+        "--http-debug", action="store_true", help="Enable HTTP debug output"
+    )
     parser.add_argument(
         "command",
         choices=[
