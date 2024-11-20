@@ -16,6 +16,7 @@
       <excludeFolder url="file://$MODULE_DIR$/data.bak" />
       <excludeFolder url="file://$MODULE_DIR$/.idea/dataSources" />
       <excludeFolder url="file://$MODULE_DIR$/data-prod" />
+      <excludeFolder url="file://$MODULE_DIR$/.venv2" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.12 (active-collab-backup)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
