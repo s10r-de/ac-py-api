@@ -57,7 +57,7 @@ class AcTask:
     type: str | None = dataclasses.field(default=None)
 
     def __eq__(self, other) -> bool:
-        ignored_fields = []
+        ignored_fields = ["updated_on", "updated_by_id", "completed_on", "completed_by_id"]
         result = True
         this_data = self.to_dict()
         other_data = other.to_dict()

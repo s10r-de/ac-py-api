@@ -56,7 +56,7 @@ class AcUser(AcDataObject):
     type: str = dataclasses.field(default="")  # equal value to "class"
 
     def __eq__(self, other) -> bool:
-        ignored_fields = ["avatar_url", "avatar_version", "has_custom_avatar"]
+        ignored_fields = ["avatar_url", "avatar_version", "has_custom_avatar", "company_id", "language_id"]
         result = True
         this_data = self.to_dict()
         other_data = other.to_dict()
