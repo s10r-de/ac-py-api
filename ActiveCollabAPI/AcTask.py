@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 from AcAttachment import AcAttachment, attachment_from_json
 from AcTaskDependencies import AcTaskDependencies, taskdependency_from_json
-from AcTaskLabel import AcTaskLabel, task_label_from_json
+from AcTaskLabel import AcTaskLabel, task_label_from_json, task_label_from_task_json
 from ActiveCollabAPI import AC_CLASS_TASK, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_, \
     AC_ERROR_WRONG_CLASS
 
@@ -105,5 +105,5 @@ def task_from_json(json_obj: dict) -> AcTask:
         json_obj["attachments"] = list(
             map(attachment_from_json, json_obj["attachments"]))
     if json_obj["labels"] is not None:
-        json_obj["labels"] = list(map(task_label_from_json, json_obj["labels"]))
+        json_obj["labels"] = list(map(task_label_from_task_json, json_obj["labels"]))
     return AcTask(**json_obj)

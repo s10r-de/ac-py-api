@@ -31,8 +31,11 @@ class AcTaskLabel:
 
 
 def task_label_from_json(json_obj: dict) -> AcTaskLabel:
-    if getattr(json_obj, AC_PROPERTY_CLASS, None):
-        assert json_obj[AC_PROPERTY_CLASS] == AC_CLASS_TASK_LABEL
-        json_obj[AC_PROPERTY_CLASS_] = json_obj[AC_PROPERTY_CLASS]
-        del json_obj[AC_PROPERTY_CLASS]
+    assert json_obj[AC_PROPERTY_CLASS] == AC_CLASS_TASK_LABEL
+    json_obj[AC_PROPERTY_CLASS_] = json_obj[AC_PROPERTY_CLASS]
+    del json_obj[AC_PROPERTY_CLASS]
+    return AcTaskLabel(**json_obj)
+
+
+def task_label_from_task_json(json_obj: dict) -> AcTaskLabel:
     return AcTaskLabel(**json_obj)
