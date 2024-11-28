@@ -20,6 +20,8 @@ class AcProject:
     company_id: int
     completed_by_id: int | None
     completed_on: int | None
+    completed_by_name: str | None
+    completed_by_email: str | None
     count_discussions: int
     count_files: int
     count_notes: int
@@ -56,7 +58,14 @@ class AcProject:
     type: str | None = dataclasses.field(default=None)
 
     def __eq__(self, other) -> bool:
-        ignored_fields = ["email", "last_activity_on", "updated_on", "updated_by_id", "company_id", "based_on_id"]
+        ignored_fields = [
+            "email",
+            "last_activity_on",
+            "updated_on",
+            "updated_by_id",
+            "company_id",
+            "based_on_id",
+        ]
         result = True
         this_data = self.to_dict()
         other_data = other.to_dict()
@@ -67,12 +76,15 @@ class AcProject:
             other_value = other_data[key]
             if this_value != other_value:
                 logging.error(
-                    "AcProject[%d]: %s '%s'!='%s' - does not match -> FAIL" % (
-                        self.id, key, this_value, other_value))
+                    "AcProject[%d]: %s '%s'!='%s' - does not match -> FAIL"
+                    % (self.id, key, this_value, other_value)
+                )
                 result = False
             else:
                 logging.debug(
-                    "AcProject[%d]: %s '%s' - matches -> OK" % (self.id, key, this_value))
+                    "AcProject[%d]: %s '%s' - matches -> OK"
+                    % (self.id, key, this_value)
+                )
         return result
 
     def to_dict(self) -> dict:
