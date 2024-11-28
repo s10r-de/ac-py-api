@@ -11,6 +11,8 @@
   "company_id": 5,
   "completed_by_id": null,
   "completed_on": null,
+  "completed_by_name": "Carsten",
+  "completed_by_email": "cs@example.com",
   "count_discussions": 0,
   "count_files": 0,
   "count_notes": 0,

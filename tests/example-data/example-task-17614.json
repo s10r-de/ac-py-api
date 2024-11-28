@@ -9,6 +9,7 @@
   "completed_by_id": null,
   "completed_on": null,
   "completed_subtasks": 0,
+  "completed_by_name": "Carsten",
   "created_by_email": "cs@example.com",
   "created_by_id": 30,
   "created_by_name": "Charlie Sloan",

@@ -11,6 +11,8 @@ class AcSubtask:
     class_: str
     completed_by_id: int | None
     completed_on: int | None
+    completed_by_name: str | None
+    completed_by_email: str | None
     created_by_email: str
     created_by_id: int
     created_by_name: str

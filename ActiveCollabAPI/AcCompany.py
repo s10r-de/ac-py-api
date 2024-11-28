@@ -26,11 +26,14 @@ class AcCompany(AcDataObject):
     name: str
     phone: str | None
     tax_id: str | None
+    tax_number: str | None
     trashed_by_id: int
     trashed_on: int | None
     updated_by_id: int
     updated_on: int
     url_path: str
+    default_invoice_due_after: int | None
+    default_invoice_recipients: str | None
 
     def __eq__(self, other) -> bool:
         ignored_fields = ["members"]
