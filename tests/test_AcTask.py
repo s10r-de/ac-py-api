@@ -47,7 +47,7 @@ class TestAcTask(TestCase):
         task_id = 17614
         task = self._generate_test_task(task_id)
         task.open_dependencies = AcTaskDependencies(parents_count=2, children_count=3)
-        task.attachments = None
+        task.attachments = []
         task_dict = task.to_dict()
         self.assertEqual(task_id, task_dict["id"])
         self.assertEqual(2, task_dict["open_dependencies"]["parents_count"])
@@ -57,7 +57,7 @@ class TestAcTask(TestCase):
         task_id = 17614
         task = self._generate_test_task(task_id)
         task.open_dependencies = AcTaskDependencies(parents_count=2, children_count=3)
-        task.attachments = None
+        task.attachments = []
         task_json = task.to_json()
         parsed_json = json.loads(task_json)
         self.assertEqual(task_id, parsed_json["id"])
