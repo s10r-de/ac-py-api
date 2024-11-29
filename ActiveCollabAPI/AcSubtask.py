@@ -11,8 +11,6 @@ class AcSubtask:
     class_: str
     completed_by_id: int | None
     completed_on: int | None
-    completed_by_name: str | None
-    completed_by_email: str | None
     created_by_email: str
     created_by_id: int
     created_by_name: str
@@ -32,6 +30,8 @@ class AcSubtask:
     trashed_on: int | None
     updated_on: int
     url_path: str
+    completed_by_name: str | None = dataclasses.field(default="")
+    completed_by_email: str | None = dataclasses.field(default="")
     type: str | None = dataclasses.field(default=None)
     body: str = dataclasses.field(default="")
 

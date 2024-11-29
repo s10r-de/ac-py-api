@@ -29,8 +29,6 @@ class AcTask:
     completed_by_id: int
     completed_on: int
     completed_subtasks: int
-    completed_by_name: str | None
-    completed_by_email: str | None
     created_by_email: str
     created_by_id: int
     created_by_name: str
@@ -63,6 +61,8 @@ class AcTask:
     updated_by_id: int
     updated_on: int
     url_path: str
+    completed_by_name: str | None = dataclasses.field(default="")
+    completed_by_email: str | None = dataclasses.field(default="")
     type: str | None = dataclasses.field(default=None)
 
     def __eq__(self, other) -> bool:

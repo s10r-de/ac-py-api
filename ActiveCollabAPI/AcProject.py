@@ -20,8 +20,6 @@ class AcProject:
     company_id: int
     completed_by_id: int | None
     completed_on: int | None
-    completed_by_name: str | None
-    completed_by_email: str | None
     count_discussions: int
     count_files: int
     count_notes: int
@@ -55,6 +53,8 @@ class AcProject:
     updated_by_id: int | None
     updated_on: int | None
     url_path: str
+    completed_by_name: str | None = dataclasses.field(default="")
+    completed_by_email: str | None = dataclasses.field(default="")
     type: str | None = dataclasses.field(default=None)
 
     def __eq__(self, other) -> bool:
