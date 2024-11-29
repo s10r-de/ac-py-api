@@ -3,14 +3,13 @@ import os.path
 import re
 from unittest import TestCase
 
-from AcAttachment import AcAttachment, attachment_from_json
+from ActiveCollabAPI.AcAttachment import AcAttachment, attachment_from_json
 from AcStorage.AcFileStorage import AcFileStorage
 
-DATA_DIR = './data'
+DATA_DIR = "./data"
 
 
 class TestAcFileStorage(TestCase):
-
     def test__010_reset(self):
         account_id = 12341234
         ac_storage = AcFileStorage(DATA_DIR, account_id)
@@ -21,14 +20,28 @@ class TestAcFileStorage(TestCase):
         self.assertFalse(os.path.isdir(ac_storage.data_objects["users"].get_path()))
         self.assertFalse(os.path.isdir(ac_storage.data_objects["subtasks"].get_path()))
         self.assertFalse(os.path.isdir(ac_storage.data_objects["comments"].get_path()))
-        self.assertFalse(os.path.isdir(ac_storage.data_objects["attachments"].get_path()))
-        self.assertFalse(os.path.isdir(ac_storage.data_objects["project-labels"].get_path()))
-        self.assertFalse(os.path.isdir(ac_storage.data_objects["task-labels"].get_path()))
+        self.assertFalse(
+            os.path.isdir(ac_storage.data_objects["attachments"].get_path())
+        )
+        self.assertFalse(
+            os.path.isdir(ac_storage.data_objects["project-labels"].get_path())
+        )
+        self.assertFalse(
+            os.path.isdir(ac_storage.data_objects["task-labels"].get_path())
+        )
         self.assertFalse(os.path.isdir(ac_storage.data_objects["companies"].get_path()))
-        self.assertFalse(os.path.isdir(ac_storage.data_objects["task-lists"].get_path()))
-        self.assertFalse(os.path.isdir(ac_storage.data_objects["task-history"].get_path()))
-        self.assertFalse(os.path.isdir(ac_storage.data_objects["project-categories"].get_path()))
-        self.assertFalse(os.path.isdir(ac_storage.data_objects["project-notes"].get_path()))
+        self.assertFalse(
+            os.path.isdir(ac_storage.data_objects["task-lists"].get_path())
+        )
+        self.assertFalse(
+            os.path.isdir(ac_storage.data_objects["task-history"].get_path())
+        )
+        self.assertFalse(
+            os.path.isdir(ac_storage.data_objects["project-categories"].get_path())
+        )
+        self.assertFalse(
+            os.path.isdir(ac_storage.data_objects["project-notes"].get_path())
+        )
 
     def test_020_ensure_dirs(self):
         account_id = 12341234
@@ -41,14 +54,26 @@ class TestAcFileStorage(TestCase):
         self.assertTrue(os.path.isdir(ac_storage.data_objects["users"].get_path()))
         self.assertTrue(os.path.isdir(ac_storage.data_objects["subtasks"].get_path()))
         self.assertTrue(os.path.isdir(ac_storage.data_objects["comments"].get_path()))
-        self.assertTrue(os.path.isdir(ac_storage.data_objects["attachments"].get_path()))
-        self.assertTrue(os.path.isdir(ac_storage.data_objects["project-labels"].get_path()))
-        self.assertTrue(os.path.isdir(ac_storage.data_objects["task-labels"].get_path()))
+        self.assertTrue(
+            os.path.isdir(ac_storage.data_objects["attachments"].get_path())
+        )
+        self.assertTrue(
+            os.path.isdir(ac_storage.data_objects["project-labels"].get_path())
+        )
+        self.assertTrue(
+            os.path.isdir(ac_storage.data_objects["task-labels"].get_path())
+        )
         self.assertTrue(os.path.isdir(ac_storage.data_objects["companies"].get_path()))
         self.assertTrue(os.path.isdir(ac_storage.data_objects["task-lists"].get_path()))
-        self.assertTrue(os.path.isdir(ac_storage.data_objects["task-history"].get_path()))
-        self.assertTrue(os.path.isdir(ac_storage.data_objects["project-categories"].get_path()))
-        self.assertTrue(os.path.isdir(ac_storage.data_objects["project-notes"].get_path()))
+        self.assertTrue(
+            os.path.isdir(ac_storage.data_objects["task-history"].get_path())
+        )
+        self.assertTrue(
+            os.path.isdir(ac_storage.data_objects["project-categories"].get_path())
+        )
+        self.assertTrue(
+            os.path.isdir(ac_storage.data_objects["project-notes"].get_path())
+        )
 
     def test_030_get_account_path(self):
         account_id = 12341234
@@ -58,7 +83,7 @@ class TestAcFileStorage(TestCase):
     # attachments
     @staticmethod
     def _generate_test_attachment(attachment_id: int) -> AcAttachment:
-        with open('example-data/example-attachment-29703.json', 'r') as fh:
+        with open("example-data/example-attachment-29703.json", "r") as fh:
             attachment = attachment_from_json(json.load(fh))
         attachment.id = attachment_id
         return attachment

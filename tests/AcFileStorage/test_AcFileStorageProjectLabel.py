@@ -3,16 +3,15 @@ import os.path
 import time
 from unittest import TestCase
 
-from AcFileStorageProjectLabel import AcFileStorageProjectLabel
-from AcProjectLabel import project_label_from_json
+from AcStorage.AcFileStorageProjectLabel import AcFileStorageProjectLabel
+from ActiveCollabAPI.AcProjectLabel import project_label_from_json
 from ActiveCollabAPI import AC_ERROR_WRONG_CLASS
 
-DATA_DIR = './data-test/%s/' % __name__
+DATA_DIR = "./data-test/%s/" % __name__
 ACCOUNT_ID = 12345
 
 
 class TestAcFileStorageProjectLabel(TestCase):
-
     @staticmethod
     def _generate_test_project_label(label_id: int) -> dict:
         return {
@@ -26,7 +25,7 @@ class TestAcFileStorageProjectLabel(TestCase):
             "darker_text_color": "#a0a0a0",
             "is_default": True,
             "position": 1,
-            "project_id": 56
+            "project_id": 56,
         }
 
     def test_save(self):

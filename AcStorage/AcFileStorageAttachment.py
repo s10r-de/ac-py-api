@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from AcFileStorageBaseClass import AcFileStorageBaseClass
+from AcStorage.AcFileStorageBaseClass import AcFileStorageBaseClass
 from ActiveCollabAPI import (
     AC_ERROR_WRONG_CLASS,
     AC_CLASS_ATTACHMENT_WAREHOUSE,
@@ -21,8 +21,8 @@ class AcFileStorageAttachment(AcFileStorageBaseClass):
 
     def save(self, attachment: AcAttachment, tmp_download: str) -> str:
         assert (
-                attachment.class_ == AC_CLASS_ATTACHMENT_WAREHOUSE
-                or attachment.class_ == AC_CLASS_ATTACHMENT_LOCAL
+            attachment.class_ == AC_CLASS_ATTACHMENT_WAREHOUSE
+            or attachment.class_ == AC_CLASS_ATTACHMENT_LOCAL
         ), AC_ERROR_WRONG_CLASS
         assert os.path.exists(tmp_download)
 
@@ -31,7 +31,8 @@ class AcFileStorageAttachment(AcFileStorageBaseClass):
         return attachment_full_filename
 
     def get_bin_filename(self, attachment):
-        filename = self.filename_with_id(attachment.id)  # FIXME: 2 lines duplicate with base class save_id()
+        # FIXME: 2 lines duplicate with base class save_id()
+        filename = self.filename_with_id(attachment.id)
         full_filename = self.get_full_filename(filename)
         return full_filename + "." + attachment.extension
 

@@ -5,8 +5,13 @@ import random
 import string
 from dataclasses import dataclass
 
-from AcDataObject import AcDataObject
-from ActiveCollabAPI import AC_CLASS_USER_MEMBER, AC_CLASS_USER_OWNER, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
+from ActiveCollabAPI.AcDataObject import AcDataObject
+from ActiveCollabAPI import (
+    AC_CLASS_USER_MEMBER,
+    AC_CLASS_USER_OWNER,
+    AC_PROPERTY_CLASS,
+    AC_PROPERTY_CLASS_,
+)
 
 AC_CLOUD_LANG_ID_GERMAN = 5
 AC_CLOUD_LANG_ID_ENGLISH = 26
@@ -56,7 +61,13 @@ class AcUser(AcDataObject):
     type: str = dataclasses.field(default="")  # equal value to "class"
 
     def __eq__(self, other) -> bool:
-        ignored_fields = ["avatar_url", "avatar_version", "has_custom_avatar", "company_id", "language_id"]
+        ignored_fields = [
+            "avatar_url",
+            "avatar_version",
+            "has_custom_avatar",
+            "company_id",
+            "language_id",
+        ]
         result = True
         this_data = self.to_dict()
         other_data = other.to_dict()
@@ -67,11 +78,14 @@ class AcUser(AcDataObject):
             other_value = other_data[key]
             if this_value != other_value:
                 logging.error(
-                    "AcUser[%d]: %s '%s'!='%s' - does not match -> FAIL" % (self.id, key, this_value, other_value))
+                    "AcUser[%d]: %s '%s'!='%s' - does not match -> FAIL"
+                    % (self.id, key, this_value, other_value)
+                )
                 result = False
             else:
                 logging.debug(
-                    "AcUser[%d]: %s ='%s' - matches -> OK" % (self.id, key, this_value))
+                    "AcUser[%d]: %s ='%s' - matches -> OK" % (self.id, key, this_value)
+                )
         return result
 
     def to_dict(self) -> dict:
@@ -85,7 +99,10 @@ class AcUser(AcDataObject):
 
 
 def user_from_json(json_obj: dict) -> AcUser:
-    assert json_obj[AC_PROPERTY_CLASS] == AC_CLASS_USER_MEMBER or json_obj[AC_PROPERTY_CLASS] == AC_CLASS_USER_OWNER
+    assert (
+        json_obj[AC_PROPERTY_CLASS] == AC_CLASS_USER_MEMBER
+        or json_obj[AC_PROPERTY_CLASS] == AC_CLASS_USER_OWNER
+    )
     json_obj[AC_PROPERTY_CLASS_] = json_obj[AC_PROPERTY_CLASS]
     del json_obj[AC_PROPERTY_CLASS]
     return AcUser(**json_obj)
@@ -124,8 +141,12 @@ def generate_random_password(user: AcUser) -> AcUser:
     :param user: original AcUser Object
     :return: modified AcUser Object
     """
-    user.password = ''.join(random.choices(
-        string.ascii_uppercase + string.ascii_lowercase + string.digits, k=16))
-    logging.debug("password for user '%s' is '%s'" %
-                  (user.email, user.password))  # logging only for debugging!!
+    user.password = "".join(
+        random.choices(
+            string.ascii_uppercase + string.ascii_lowercase + string.digits, k=16
+        )
+    )
+    logging.debug(
+        "password for user '%s' is '%s'" % (user.email, user.password)
+    )  # logging only for debugging!!
     return user

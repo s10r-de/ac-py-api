@@ -3,19 +3,18 @@ import json
 import os.path
 from unittest import TestCase
 
-from AcFileStorageProject import AcFileStorageProject
-from AcProject import project_from_json
+from AcStorage.AcFileStorageProject import AcFileStorageProject
+from ActiveCollabAPI.AcProject import project_from_json
 from ActiveCollabAPI import AC_ERROR_WRONG_CLASS
 
-DATA_DIR = './data-test/%s/' % __name__
+DATA_DIR = "./data-test/%s/" % __name__
 ACCOUNT_ID = 12345
 
 
 class TestAcFileStorageProject(TestCase):
-
     @staticmethod
     def _generate_test_project(project_id: int) -> dict:
-        with open('example-data/example-project-611.json', 'r') as fh:
+        with open("tests/example-data/example-project-611.json", "r") as fh:
             project_son = json.load(fh)
         project_son["id"] = project_id
         return project_son

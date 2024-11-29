@@ -2,12 +2,11 @@ import json
 import time
 from unittest import TestCase
 
-from AcTaskLabel import AcTaskLabel
+from ActiveCollabAPI.AcTaskLabel import AcTaskLabel
 from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 
 
 class TestAcTaskLabel(TestCase):
-
     @staticmethod
     def _generate_test_task_label(label_id: int) -> AcTaskLabel:
         return AcTaskLabel(
@@ -22,7 +21,7 @@ class TestAcTaskLabel(TestCase):
             is_default=True,
             is_global=True,
             position=3,
-            project_id=34
+            project_id=34,
         )
 
     def test_constructor(self):

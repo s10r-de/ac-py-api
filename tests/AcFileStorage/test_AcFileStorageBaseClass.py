@@ -6,10 +6,10 @@ import random
 import shutil
 from unittest import TestCase
 
-from AcCompany import company_from_json
-from AcFileStorageBaseClass import AcFileStorageBaseClass
+from ActiveCollabAPI.AcCompany import company_from_json
+from AcStorage.AcFileStorageBaseClass import AcFileStorageBaseClass
 
-DATA_DIR = './data-test/TestAcFileStorageBaseClass/'
+DATA_DIR = "./data-test/TestAcFileStorageBaseClass/"
 ACCOUNT_ID = 98765
 
 TEST_FILENAME_PREFIX = "test-file-prefix"
@@ -17,7 +17,6 @@ TEST_DIR_NAME = "test-dir"
 
 
 class TestAcFileStorageBaseClass(TestCase):
-
     @classmethod
     def setUpClass(cls):
         if os.path.exists(DATA_DIR):
@@ -50,7 +49,7 @@ class TestAcFileStorageBaseClass(TestCase):
         storage.dir_name = TEST_DIR_NAME
         filename = storage.get_account_path()
         self.assertGreater(len(filename), 0)
-        regex_ac = r'%s/account-%08d' % (DATA_DIR + m_name, ACCOUNT_ID)
+        regex_ac = r"%s/account-%08d" % (DATA_DIR + m_name, ACCOUNT_ID)
         self.assertRegex(filename, regex_ac)
 
     def test_get_path(self):
@@ -70,7 +69,7 @@ class TestAcFileStorageBaseClass(TestCase):
         storage.dir_name = TEST_DIR_NAME
         filename = storage.filename_with_id(test_id)
         self.assertGreater(len(filename), 0)
-        regex = r'.*-%018d.json$' % test_id
+        regex = r".*-%018d.json$" % test_id
         self.assertRegex(filename, regex)
 
     def test_get_full_filename(self):
@@ -80,9 +79,14 @@ class TestAcFileStorageBaseClass(TestCase):
         storage.dir_name = TEST_DIR_NAME
         filename = storage.get_full_filename(TEST_FILENAME_PREFIX)
         self.assertGreater(len(filename), 0)
-        regex = r'.*/%s$' % TEST_FILENAME_PREFIX
+        regex = r".*/%s$" % TEST_FILENAME_PREFIX
         self.assertRegex(filename, regex)
-        regex_ac = r'%s/account-%08d/%s/%s' % (DATA_DIR + m_name, ACCOUNT_ID, TEST_DIR_NAME, TEST_FILENAME_PREFIX)
+        regex_ac = r"%s/account-%08d/%s/%s" % (
+            DATA_DIR + m_name,
+            ACCOUNT_ID,
+            TEST_DIR_NAME,
+            TEST_FILENAME_PREFIX,
+        )
         self.assertRegex(filename, regex_ac)
 
     def test_save_with_id(self):
@@ -92,12 +96,12 @@ class TestAcFileStorageBaseClass(TestCase):
         storage.dir_name = TEST_DIR_NAME
         storage.reset()
         storage.ensure_dirs()
-        with open('example-data/example-company-5.json', 'r') as fh:
+        with open("tests/example-data/example-company-5.json", "r") as fh:
             company_json = json.load(fh)
             company = company_from_json(company_json)
         filename = storage.save_with_id(company, company.id)
         self.assertGreater(len(filename), 0)
-        regex = r'.*-%018d.json$' % company.id
+        regex = r".*-%018d.json$" % company.id
         self.assertRegex(filename, regex)
         self.assertTrue(os.path.exists(filename))
 
@@ -108,7 +112,7 @@ class TestAcFileStorageBaseClass(TestCase):
         storage.dir_name = TEST_DIR_NAME
         storage.reset()
         storage.ensure_dirs()
-        with open('example-data/example-company-5.json', 'r') as fh:
+        with open("tests/example-data/example-company-5.json", "r") as fh:
             company_json = json.load(fh)
             company = company_from_json(company_json)
         company77 = copy.copy(company)
@@ -129,7 +133,7 @@ class TestAcFileStorageBaseClass(TestCase):
         storage.dir_name = TEST_DIR_NAME
         storage.reset()
         storage.ensure_dirs()
-        with open('example-data/example-company-5.json', 'r') as fh:
+        with open("tests/example-data/example-company-5.json", "r") as fh:
             company_json = json.load(fh)
             company = company_from_json(company_json)
         company.id = 44

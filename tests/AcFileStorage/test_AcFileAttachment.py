@@ -3,23 +3,21 @@ import os.path
 from tempfile import mkstemp
 from unittest import TestCase
 
-from AcAttachment import attachment_from_json
-from AcFileStorageAttachment import AcFileStorageAttachment
+from ActiveCollabAPI.AcAttachment import attachment_from_json
+from AcStorage.AcFileStorageAttachment import AcFileStorageAttachment
 from ActiveCollabAPI import AC_ERROR_WRONG_CLASS
 
-DATA_DIR = './data'
+DATA_DIR = "./data"
 ACCOUNT_ID = 12345
 
 
 class TestAcFileStorageAttachment(TestCase):
-
     @staticmethod
     def _generate_test_attachment(attachment_id: int) -> dict:
-        with open('example-data/example-attachment-29703.json', 'r') as fh:
+        with open("tests/example-data/example-attachment-29703.json", "r") as fh:
             attachment = json.load(fh)
         attachment["id"] = attachment_id
         return attachment
-
 
     def test_save(self):
         account_id = ACCOUNT_ID

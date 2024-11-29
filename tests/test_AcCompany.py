@@ -1,15 +1,14 @@
 import json
 from unittest import TestCase
 
-from AcCompany import company_from_json
+from ActiveCollabAPI.AcCompany import company_from_json
 from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 
 
 class TestAcCompany(TestCase):
-
     @staticmethod
     def _generate_test_company(company_id: int) -> dict:
-        with open('example-data/example-company-5.json', 'r') as fh:
+        with open("tests/example-data/example-company-5.json", "r") as fh:
             company_json = json.load(fh)
         company_json["id"] = company_id
         return company_json
@@ -19,7 +18,7 @@ class TestAcCompany(TestCase):
         company_json = self._generate_test_company(company_id)
         company = company_from_json(company_json)
         company_dict = company.to_dict()
-        self.assertEqual(company_id, company_dict['id'])
+        self.assertEqual(company_id, company_dict["id"])
         self.assertIn(AC_PROPERTY_CLASS, company_dict.keys())
         self.assertNotIn(AC_PROPERTY_CLASS_, company_dict.keys())
 

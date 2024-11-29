@@ -1,12 +1,11 @@
 from unittest import TestCase
 
-from AcAccount import AcAccount
-from AcCloudLoginResponse import AcCloudLoginResponse
-from AcLoginUser import AcLoginUser
+from ActiveCollabAPI.AcAccount import AcAccount
+from ActiveCollabAPI.AcCloudLoginResponse import AcCloudLoginResponse
+from ActiveCollabAPI.AcLoginUser import AcLoginUser
 
 
 class TestAcLoginResponse(TestCase):
-
     def test_ac_login_response_constructor(self):
         first_name = "Carsten"
         intent = "alskdjflkadsjfkldsajfk"
@@ -16,7 +15,7 @@ class TestAcLoginResponse(TestCase):
             avatar_url="https://avatar.example.com",
             first_name=first_name,
             last_name="Last name",
-            intent=intent
+            intent=intent,
         )
 
         account = AcAccount(
@@ -25,14 +24,11 @@ class TestAcLoginResponse(TestCase):
             display_name="#%d" % account_id,
             user_display_name="Account display name",
             position=1,
-            class_='ActiveCollab\\Shepherd\\Model\\Account\\ActiveCollab\\FeatherAccount',
-            status="active"
+            class_="ActiveCollab\\Shepherd\\Model\\Account\\ActiveCollab\\FeatherAccount",
+            status="active",
         )
 
-        response = AcCloudLoginResponse(
-            user=login_user,
-            accounts=[account]
-        )
+        response = AcCloudLoginResponse(user=login_user, accounts=[account])
         self.assertIsInstance(response, AcCloudLoginResponse)
         self.assertEqual(first_name, response.user.first_name)
         self.assertEqual(account_id, response.accounts[0].name)

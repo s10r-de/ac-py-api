@@ -3,8 +3,13 @@ import json
 import logging
 from dataclasses import dataclass
 
-from AcDataObject import AcDataObject
-from ActiveCollabAPI import AC_CLASS_COMPANY, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_, AC_ERROR_WRONG_CLASS
+from ActiveCollabAPI.AcDataObject import AcDataObject
+from ActiveCollabAPI import (
+    AC_CLASS_COMPANY,
+    AC_PROPERTY_CLASS,
+    AC_PROPERTY_CLASS_,
+    AC_ERROR_WRONG_CLASS,
+)
 
 
 @dataclass
@@ -47,11 +52,15 @@ class AcCompany(AcDataObject):
             other_value = other_data[key]
             if this_value != other_value:
                 logging.error(
-                    "AcCompany[%d]: %s '%s'!='%s' - does not match -> FAIL" % (self.id, key, this_value, other_value))
+                    "AcCompany[%d]: %s '%s'!='%s' - does not match -> FAIL"
+                    % (self.id, key, this_value, other_value)
+                )
                 result = False
             else:
                 logging.debug(
-                    "AcCompany[%d]: %s '%s' - matches -> OK" % (self.id, key, this_value))
+                    "AcCompany[%d]: %s '%s' - matches -> OK"
+                    % (self.id, key, this_value)
+                )
         return result
 
     def to_dict(self) -> dict:
@@ -65,8 +74,9 @@ class AcCompany(AcDataObject):
 
 
 def company_from_json(json_obj: dict) -> AcCompany:
-    assert json_obj[AC_PROPERTY_CLASS] == AC_CLASS_COMPANY, AC_ERROR_WRONG_CLASS + \
-        " " + json_obj[AC_PROPERTY_CLASS]
+    assert json_obj[AC_PROPERTY_CLASS] == AC_CLASS_COMPANY, (
+        AC_ERROR_WRONG_CLASS + " " + json_obj[AC_PROPERTY_CLASS]
+    )
     json_obj[AC_PROPERTY_CLASS_] = json_obj[AC_PROPERTY_CLASS]
     del json_obj[AC_PROPERTY_CLASS]
     return AcCompany(**json_obj)

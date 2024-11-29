@@ -1,17 +1,22 @@
 import json
 from unittest import TestCase
 
-from AcUser import map_cloud_user_language_id, AC_CLOUD_LANG_ID_ENGLISH, AC_CLOUD_LANG_ID_GERMAN, \
-    AC_SELFHOSTED_LANG_ID_GERMAN, AC_SELFHOSTED_LANG_ID_ENGLISH, generate_random_password
+from ActiveCollabAPI.AcUser import (
+    map_cloud_user_language_id,
+    AC_CLOUD_LANG_ID_ENGLISH,
+    AC_CLOUD_LANG_ID_GERMAN,
+    AC_SELFHOSTED_LANG_ID_GERMAN,
+    AC_SELFHOSTED_LANG_ID_ENGLISH,
+    generate_random_password,
+    user_from_json,
+)
 from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
-from ActiveCollabAPI.AcUser import user_from_json
 
 
 class TestAcUser(TestCase):
-
     @staticmethod
     def _generate_test_user(user_id: int) -> dict:
-        with open('example-data/example-user-00000240.json', 'r') as fh:
+        with open("tests/example-data/example-user-00000240.json", "r") as fh:
             user_json = json.load(fh)
         user_json["id"] = user_id
         return user_json
@@ -21,7 +26,7 @@ class TestAcUser(TestCase):
         user_json = self._generate_test_user(user_id)
         user = user_from_json(user_json)
         user_dict = user.to_dict()
-        self.assertEqual(user_id, user_dict['id'])
+        self.assertEqual(user_id, user_dict["id"])
         self.assertIn(AC_PROPERTY_CLASS, user_dict.keys())
         self.assertNotIn(AC_PROPERTY_CLASS_, user_dict.keys())
 

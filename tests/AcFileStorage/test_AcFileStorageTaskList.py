@@ -3,19 +3,18 @@ import json
 import os.path
 from unittest import TestCase
 
-from AcFileStorageTaskList import AcFileStorageTaskList
-from AcTaskList import task_list_from_json
+from AcStorage.AcFileStorageTaskList import AcFileStorageTaskList
+from ActiveCollabAPI.AcTaskList import task_list_from_json
 from ActiveCollabAPI import AC_ERROR_WRONG_CLASS
 
-DATA_DIR = './data-test/%s/' % __name__
+DATA_DIR = "./data-test/%s/" % __name__
 ACCOUNT_ID = 12345
 
 
 class TestAcFileStorageTaskList(TestCase):
-
     @staticmethod
     def _generate_test_task_list(task_list_id: int) -> dict:
-        with open('example-data/example-task-list-37314.json', 'r') as fh:
+        with open("tests/example-data/example-task-list-37314.json", "r") as fh:
             task_list_json = json.load(fh)
         task_list_json["id"] = task_list_id
         return task_list_json
