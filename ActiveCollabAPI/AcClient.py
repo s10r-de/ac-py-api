@@ -1,12 +1,14 @@
 import hashlib
 import json
 import os
+import time
+import logging
 from tempfile import gettempdir
 
 import requests
 from requests import Response
 
-from ActiveCollabAPI import AC_USER_AGENT, AC_API_VERSION
+from ActiveCollabAPI import AC_API_VERSION, AC_USER_AGENT
 from ActiveCollabAPI.AcAccount import AcAccount
 from ActiveCollabAPI.AcToken import AcToken
 
@@ -38,8 +40,15 @@ class AcClient:
             "User-Agent": AC_USER_AGENT,
         }
 
-    def _get(self, url: str) -> Response:
-        return requests.get(self.base_url + "/" + url, headers=self.headers())
+    def _get(self, url: str, retry=3, pause=5) -> Response:
+        res = requests.get(self.base_url + "/" + url, headers=self.headers())
+        if res.status_code >= 500:
+            if retry > 0:
+                logging.warn("Got status code %d in GET %s" % (res.status_code, url))
+                logging.warn("+ Retry No.%d in %d seconds..." % (retry, pause))
+                time.sleep(pause)
+                res = self._get(url, retry=retry - 1)
+        return res
 
     def _delete(self, url: str) -> Response:
         return requests.delete(self.base_url + "/" + url, headers=self.headers())
@@ -88,11 +97,11 @@ class AcClient:
         return self._get("projects/%d/tasks/archive" % project_id)
 
     def update_task_assign_file(
-            self,
-            project_id: int,
-            task_id: int,
-            disposition: str,
-            code: str,
+        self,
+        project_id: int,
+        task_id: int,
+        disposition: str,
+        code: str,
     ) -> Response:
         data = {
             "disposition": disposition,
@@ -100,7 +109,9 @@ class AcClient:
                 code,
             ],
         }
-        return self._put("projects/%d/tasks/%d" % (project_id, task_id), json.dumps(data))
+        return self._put(
+            "projects/%d/tasks/%d" % (project_id, task_id), json.dumps(data)
+        )
 
     # projects
 
@@ -125,12 +136,12 @@ class AcClient:
         return self._get("projects/%d/notes" % project_id)
 
     def update_note_assign_file(
-            self,
-            project_id: int,
-            parent_type: str,
-            parent_id: int,
-            disposition: str,
-            code: str,
+        self,
+        project_id: int,
+        parent_type: str,
+        parent_id: int,
+        disposition: str,
+        code: str,
     ) -> Response:
         data = {
             "notes_id": parent_id,
@@ -139,7 +150,9 @@ class AcClient:
                 code,
             ],
         }
-        return self._put("projects/%d/notes/%d" % (project_id, parent_id), json.dumps(data))
+        return self._put(
+            "projects/%d/notes/%d" % (project_id, parent_id), json.dumps(data)
+        )
 
     # users
 
@@ -177,11 +190,11 @@ class AcClient:
         return self._post("comments/%s/%d" % (parent_type, parent_id), json.dumps(data))
 
     def update_comment_assign_file(
-            self,
-            comment_id: int,
-            disposition: str,
-            name: str,
-            code: str,
+        self,
+        comment_id: int,
+        disposition: str,
+        name: str,
+        code: str,
     ) -> Response:
         data = {
             "name": name,
@@ -197,13 +210,20 @@ class AcClient:
     def get_attachment(self, attachment_id: int):
         return self._get("attachments/%d" % attachment_id)
 
-    def get_file_access_token(self) -> Response:
-        return requests.get(
+    def get_file_access_token(self, retry=3, pause=5) -> Response:
+        res = requests.get(
             self.base_url + "/issue-file-access-token", headers=self.headers()
         )
+        if res.status_code >= 500:
+            if retry > 0:
+                logging.warn("GET file_access_token got status %d" % res.status_code)
+                logging.warn("Retry No.%d in %d seconds..." % (retry, pause))
+                time.sleep(pause)
+                res = self.get_file_access_token(retry=retry - 1)
+        return res
 
     def download_attachment(
-            self, download_url: str, file_access_token: str, filename: str
+        self, download_url: str, file_access_token: str, filename: str
     ) -> str:
         # replace &intent=--DOWNLOAD-TOKEN--  with download token
         download_url = download_url.replace(
