@@ -3,21 +3,20 @@ import os.path
 import time
 from unittest import TestCase
 
-from AcFileStorageTaskLabel import AcFileStorageTaskLabel
-from AcTaskLabel import task_label_from_json
+from AcStorage.AcFileStorageTaskLabel import AcFileStorageTaskLabel
+from ActiveCollabAPI.AcTaskLabel import task_label_from_json
 from ActiveCollabAPI import AC_ERROR_WRONG_CLASS
 
-DATA_DIR = './data-test/%s/' % __name__
+DATA_DIR = "./data-test/%s/" % __name__
 ACCOUNT_ID = 12345
 
 
 class TestAcFileStorageTaskLabel(TestCase):
-
     @staticmethod
     def _generate_test_task_label(label_id: int) -> dict:
         return {
             "id": label_id,
-            "class_": "TaskLabel",
+            "class": "TaskLabel",
             "url_path": "/task/label/%d" % label_id,
             "name": "Test Task Label",
             "updated_on": int(time.time()),
@@ -27,7 +26,7 @@ class TestAcFileStorageTaskLabel(TestCase):
             "is_default": True,
             "is_global": True,
             "position": 3,
-            "project_id": 34
+            "project_id": 34,
         }
 
     def test_save(self):

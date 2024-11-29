@@ -3,19 +3,18 @@ import json
 import os.path
 from unittest import TestCase
 
-from AcFileStorageUser import AcFileStorageUser
-from AcUser import user_from_json
+from AcStorage.AcFileStorageUser import AcFileStorageUser
+from ActiveCollabAPI.AcUser import user_from_json
 from ActiveCollabAPI import AC_ERROR_WRONG_CLASS
 
-DATA_DIR = './data-test/%s/' % __name__
+DATA_DIR = "./data-test/%s/" % __name__
 ACCOUNT_ID = 12345
 
 
 class TestAcFileStorageUser(TestCase):
-
     @staticmethod
     def _generate_test_user(user_id: int) -> dict:
-        with open('example-data/example-user-00000240.json', 'r') as fh:
+        with open("tests/example-data/example-user-00000240.json", "r") as fh:
             user_json = json.load(fh)
         user_json["id"] = user_id
         return user_json

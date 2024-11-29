@@ -2,24 +2,23 @@ import os
 import shutil
 import time
 
-from AcFileStorageAttachment import AcFileStorageAttachment
-from AcFileStorageComment import AcFileStorageComment
-from AcFileStorageCompany import AcFileStorageCompany
-from AcFileStorageProject import AcFileStorageProject
-from AcFileStorageProjectCategory import AcFileStorageProjectCategory
-from AcFileStorageProjectLabel import AcFileStorageProjectLabel
-from AcFileStorageProjectNote import AcFileStorageProjectNote
-from AcFileStorageSubtask import AcFileStorageSubtask
-from AcFileStorageTask import AcFileStorageTask
-from AcFileStorageTaskHistory import AcFileStorageTaskHistory
-from AcFileStorageTaskLabel import AcFileStorageTaskLabel
-from AcFileStorageTaskList import AcFileStorageTaskList
-from AcFileStorageUser import AcFileStorageUser
+from AcStorage.AcFileStorageAttachment import AcFileStorageAttachment
+from AcStorage.AcFileStorageComment import AcFileStorageComment
+from AcStorage.AcFileStorageCompany import AcFileStorageCompany
+from AcStorage.AcFileStorageProject import AcFileStorageProject
+from AcStorage.AcFileStorageProjectCategory import AcFileStorageProjectCategory
+from AcStorage.AcFileStorageProjectLabel import AcFileStorageProjectLabel
+from AcStorage.AcFileStorageProjectNote import AcFileStorageProjectNote
+from AcStorage.AcFileStorageSubtask import AcFileStorageSubtask
+from AcStorage.AcFileStorageTask import AcFileStorageTask
+from AcStorage.AcFileStorageTaskHistory import AcFileStorageTaskHistory
+from AcStorage.AcFileStorageTaskLabel import AcFileStorageTaskLabel
+from AcStorage.AcFileStorageTaskList import AcFileStorageTaskList
+from AcStorage.AcFileStorageUser import AcFileStorageUser
 from AcStorage import DEFAULT_MODE_DIRS
 
 
 class AcFileStorage:
-
     def __init__(self, root_path: str, account_id: int):
         self.root_path = root_path
         self.account_id = account_id
@@ -36,14 +35,14 @@ class AcFileStorage:
             "task-history": AcFileStorageTaskHistory(root_path, account_id),
             "subtasks": AcFileStorageSubtask(root_path, account_id),
             "comments": AcFileStorageComment(root_path, account_id),
-            "attachments": AcFileStorageAttachment(root_path, account_id)
+            "attachments": AcFileStorageAttachment(root_path, account_id),
         }
 
     def reset(self):
         for obj in self.data_objects.keys():
             self.data_objects[obj].reset()
         if os.path.exists(self.root_path):
-            tmp_path = '%s_%d' % (self.root_path, time.time())
+            tmp_path = "%s_%d" % (self.root_path, time.time())
             os.rename(self.root_path, tmp_path)
             shutil.rmtree(tmp_path)
 

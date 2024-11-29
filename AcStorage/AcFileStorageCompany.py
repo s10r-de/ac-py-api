@@ -1,10 +1,9 @@
 from ActiveCollabAPI.AcCompany import AcCompany, company_from_json
-from AcFileStorageBaseClass import AcFileStorageBaseClass
+from AcStorage.AcFileStorageBaseClass import AcFileStorageBaseClass
 from ActiveCollabAPI import AC_CLASS_COMPANY, AC_ERROR_WRONG_CLASS
 
 
 class AcFileStorageCompany(AcFileStorageBaseClass):
-
     def __init__(self, root_path: str, account_id: int):
         super().__init__(root_path, account_id)
         self.dir_name = "companies"

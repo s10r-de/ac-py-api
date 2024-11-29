@@ -1,10 +1,9 @@
-from AcFileStorageBaseClass import AcFileStorageBaseClass
+from AcStorage.AcFileStorageBaseClass import AcFileStorageBaseClass
 from ActiveCollabAPI.AcTaskList import AcTaskList, task_list_from_json
 from ActiveCollabAPI import AC_ERROR_WRONG_CLASS, AC_CLASS_TASK_LIST
 
 
 class AcFileStorageTaskList(AcFileStorageBaseClass):
-
     def __init__(self, root_path: str, account_id: int):
         super().__init__(root_path, account_id)
         self.filename_prefix = "task-list"

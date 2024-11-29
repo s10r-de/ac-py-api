@@ -6,10 +6,9 @@ from ActiveCollabAPI.AcSubtask import subtask_from_json, AcSubtask
 
 
 class TestAcSubtask(TestCase):
-
     @staticmethod
     def _generate_test_subtask(task_id: int, subtask_id: int) -> AcSubtask:
-        with open('example-data/example-subtask-00041071.json', 'r') as fh:
+        with open("tests/example-data/example-subtask-00041071.json", "r") as fh:
             subtask = subtask_from_json(json.load(fh))
         subtask.task_id = task_id
         subtask.id = subtask_id

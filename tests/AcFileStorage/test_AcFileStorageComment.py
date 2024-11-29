@@ -3,19 +3,18 @@ import json
 import os.path
 from unittest import TestCase
 
-from AcComment import comment_from_json
-from AcFileStorageComment import AcFileStorageComment
+from ActiveCollabAPI.AcComment import comment_from_json
+from AcStorage.AcFileStorageComment import AcFileStorageComment
 from ActiveCollabAPI import AC_ERROR_WRONG_CLASS
 
-DATA_DIR = './data-test/%s/' % __name__
+DATA_DIR = "./data-test/%s/" % __name__
 ACCOUNT_ID = 12345
 
 
 class TestAcFileStorageComment(TestCase):
-
     @staticmethod
     def _generate_test_comment(comment_id: int) -> dict:
-        with open('example-data/example-comment-95993.json', 'r') as fh:
+        with open("tests/example-data/example-comment-95993.json", "r") as fh:
             comment = json.load(fh)
         comment["id"] = comment_id
         return comment

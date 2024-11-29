@@ -6,10 +6,9 @@ from ActiveCollabAPI.AcProject import AcProject, project_from_json
 
 
 class TestAcProject(TestCase):
-
     @staticmethod
     def _generate_test_project(project_id: int) -> AcProject:
-        with open('example-data/example-project-611.json', 'r') as fh:
+        with open("tests/example-data/example-project-611.json", "r") as fh:
             project = project_from_json(json.load(fh))
         project.id = project_id
         return project

@@ -1,9 +1,9 @@
 AC_API_VERSION: int = 1
 
-AC_API_CLIENT_NAME: str = 'backup-activecollab-py'
-AC_API_CLIENT_VENDOR: str = 'ACME-VC'
+AC_API_CLIENT_NAME: str = "backup-activecollab-py"
+AC_API_CLIENT_VENDOR: str = "ACME-VC"
 
-AC_USER_AGENT: str = 'Active Collab Backup'
+AC_USER_AGENT: str = "Active Collab Backup"
 
 # because "class" is a reserved keyword in python we need to
 # convert it to something else "class_" and back
@@ -12,7 +12,7 @@ AC_PROPERTY_CLASS_ = "class_"
 
 # Most AC Objects have a class name
 AC_CLASS_ATTACHMENT_WAREHOUSE = "WarehouseAttachment"
-AC_CLASS_ATTACHMENT_LOCAL = 'LocalAttachment'
+AC_CLASS_ATTACHMENT_LOCAL = "LocalAttachment"
 AC_CLASS_ATTACHMENT_UPLOAD_RESPONSE = "LocalUploadedFile"
 AC_CLASS_COMMENT = "Comment"
 AC_CLASS_COMPANY = "Company"
@@ -30,7 +30,9 @@ AC_CLASS_USER_OWNER = "Owner"
 AC_USER_TYPE__OWNER = "Owner"
 AC_USER_TYPE__CLIENT = "Client"
 
-AC_CLASS_ACCOUNT = 'ActiveCollab\\Shepherd\\Model\\Account\\ActiveCollab\\FeatherAccount'
+AC_CLASS_ACCOUNT = (
+    "ActiveCollab\\Shepherd\\Model\\Account\\ActiveCollab\\FeatherAccount"
+)
 
 AC_ERROR_WRONG_CLASS = "Wrong Object Class!"
 AC_ERROR_CAN_NOT_CREATE_OWNER_COMPANY = "Can not create company when is_owner is true!"

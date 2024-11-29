@@ -3,9 +3,12 @@ import json
 import logging
 from dataclasses import dataclass
 
-from AcAttachment import AcAttachment, attachment_from_json
-from AcTaskDependencies import AcTaskDependencies, taskdependency_from_json
-from AcTaskLabel import AcTaskLabel, task_label_from_json, task_label_from_task_json
+from ActiveCollabAPI.AcAttachment import AcAttachment, attachment_from_json
+from ActiveCollabAPI.AcTaskDependencies import (
+    AcTaskDependencies,
+    taskdependency_from_json,
+)
+from ActiveCollabAPI.AcTaskLabel import AcTaskLabel, task_label_from_task_json
 from ActiveCollabAPI import (
     AC_CLASS_TASK,
     AC_PROPERTY_CLASS,
@@ -85,8 +88,7 @@ class AcTask:
                 result = False
             else:
                 logging.debug(
-                    "acTask[%d]: %s '%s' - matches -> OK" % (
-                        self.id, key, this_value)
+                    "acTask[%d]: %s '%s' - matches -> OK" % (self.id, key, this_value)
                 )
         return result
 
@@ -97,8 +99,7 @@ class AcTask:
         if d["open_dependencies"] is not None:
             d["open_dependencies"] = self.open_dependencies.to_dict()
         if d["attachments"] is not None:
-            d["attachments"] = list(
-                map(lambda a: a.to_dict(), self.get_attachments()))
+            d["attachments"] = list(map(lambda a: a.to_dict(), self.get_attachments()))
         if d["labels"] is not None:
             d["labels"] = list(map(lambda a: a.to_dict(), self.labels))
         return d
@@ -123,6 +124,5 @@ def task_from_json(json_obj: dict) -> AcTask:
             map(attachment_from_json, json_obj["attachments"])
         )
     if json_obj["labels"] is not None:
-        json_obj["labels"] = list(
-            map(task_label_from_task_json, json_obj["labels"]))
+        json_obj["labels"] = list(map(task_label_from_task_json, json_obj["labels"]))
     return AcTask(**json_obj)

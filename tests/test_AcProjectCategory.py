@@ -2,12 +2,11 @@ import json
 import time
 from unittest import TestCase
 
-from AcProjectCategory import AcProjectCategory
+from ActiveCollabAPI.AcProjectCategory import AcProjectCategory
 from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 
 
 class TestAcProjectCategory(TestCase):
-
     @staticmethod
     def _generate_test_project_category(category_id: int) -> AcProjectCategory:
         return AcProjectCategory(
@@ -21,7 +20,7 @@ class TestAcProjectCategory(TestCase):
             parent_id=None,
             parent_type=None,
             updated_on=int(time.time()) + 2,
-            url_path="/categories/%d" % category_id
+            url_path="/categories/%d" % category_id,
         )
 
     def test_constructor(self):
@@ -34,7 +33,10 @@ class TestAcProjectCategory(TestCase):
         category = self._generate_test_project_category(category_id)
         category_dict = category.to_dict()
         self.assertEqual(category_id, category_dict["id"])
-        self.assertEqual("ProjectCategory", category_dict["class"], )
+        self.assertEqual(
+            "ProjectCategory",
+            category_dict["class"],
+        )
         self.assertIn(AC_PROPERTY_CLASS, category_dict.keys())
         self.assertNotIn(AC_PROPERTY_CLASS_, category_dict.keys())
 
@@ -43,6 +45,9 @@ class TestAcProjectCategory(TestCase):
         category = self._generate_test_project_category(category_id)
         category_json = category.to_json()
         self.assertEqual(category_id, json.loads(category_json)["id"])
-        self.assertEqual("ProjectCategory", json.loads(category_json)["class"], )
+        self.assertEqual(
+            "ProjectCategory",
+            json.loads(category_json)["class"],
+        )
         self.assertIn(AC_PROPERTY_CLASS, json.loads(category_json).keys())
         self.assertNotIn(AC_PROPERTY_CLASS_, json.loads(category_json).keys())
