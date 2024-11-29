@@ -12,6 +12,6 @@ for SNAP in $(sudo lvdisplay -c |awk -F: "/${SERVICE_NAME}-snap-20/{print \$1}")
     echo "check age of ${SNAP} timestamp=${snap_date}"
     if [ $t_snap_date -lt $t_oldest ]; then
         echo lvremove -f "${SNAP}"
-        #lvremove -f "${SNAP}"
+        lvremove -f "${SNAP}"
     fi
 done
