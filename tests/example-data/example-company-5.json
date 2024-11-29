@@ -62,5 +62,8 @@
   "tax_id": null,
   "currency_id": 0,
   "is_owner": true,
-  "has_note": false
+  "has_note": false,
+  "tax_number": "DE123456789",
+  "default_invoice_due_after": 30,
+  "default_invoice_recipients": null
 }

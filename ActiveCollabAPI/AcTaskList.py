@@ -12,6 +12,8 @@ class AcTaskList:
     completed_by_id: int | None
     completed_on: int | None
     completed_tasks: int
+    completed_by_name: str | None
+    completed_by_email: str | None
     created_by_email: str
     created_by_id: int
     created_by_name: str
@@ -33,7 +35,12 @@ class AcTaskList:
     type: str | None = dataclasses.field(default=None)
 
     def __eq__(self, other) -> bool:
-        ignored_fields = ["updated_on", "updated_by_id", "completed_on", "completed_by_id"]
+        ignored_fields = [
+            "updated_on",
+            "updated_by_id",
+            "completed_on",
+            "completed_by_id",
+        ]
         result = True
         this_data = self.to_dict()
         other_data = other.to_dict()
@@ -44,11 +51,15 @@ class AcTaskList:
             other_value = other_data[key]
             if this_value != other_value:
                 logging.error(
-                    "AcTaskList[%d]: %s '%s'!='%s' - does not match -> FAIL" % (self.id, key, this_value, other_value))
+                    "AcTaskList[%d]: %s '%s'!='%s' - does not match -> FAIL"
+                    % (self.id, key, this_value, other_value)
+                )
                 result = False
             else:
                 logging.debug(
-                    "AcTaskList[%d]: %s ='%s' - matches -> OK" % (self.id, key, this_value))
+                    "AcTaskList[%d]: %s ='%s' - matches -> OK"
+                    % (self.id, key, this_value)
+                )
         return result
 
     def to_dict(self) -> dict:

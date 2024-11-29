@@ -8,6 +8,8 @@
   "trashed_by_id": 0,
   "completed_on": null,
   "completed_by_id": null,
+  "completed_by_name": "Carsten",
+  "completed_by_email": "cs@example.com",
   "is_completed": false,
   "project_id": 611,
   "created_on": 1723451932,
