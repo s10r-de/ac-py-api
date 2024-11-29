@@ -38,4 +38,6 @@ def task_label_from_json(json_obj: dict) -> AcTaskLabel:
 
 
 def task_label_from_task_json(json_obj: dict) -> AcTaskLabel:
+    json_obj[AC_PROPERTY_CLASS_] = json_obj[AC_PROPERTY_CLASS]
+    del json_obj[AC_PROPERTY_CLASS]
     return AcTaskLabel(**json_obj)

@@ -1,9 +1,13 @@
+from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 import json
 import time
 from unittest import TestCase
 
-from ActiveCollabAPI.AcTaskLabel import AcTaskLabel
-from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
+from ActiveCollabAPI.AcTaskLabel import (
+    AcTaskLabel,
+    task_label_from_json,
+    task_label_from_task_json,
+)
 
 
 class TestAcTaskLabel(TestCase):
@@ -46,3 +50,44 @@ class TestAcTaskLabel(TestCase):
         self.assertEqual("TaskLabel", json.loads(label_json)["class"])
         self.assertIn(AC_PROPERTY_CLASS, json.loads(label_json).keys())
         self.assertNotIn(AC_PROPERTY_CLASS_, json.loads(label_json).keys())
+
+    def test_from_json(self):
+        label_id = 763
+        task_json = {
+            "id": label_id,
+            "class": "TaskLabel",
+            "url_path": "/task/label/%d" % label_id,
+            "name": "Test Task Label",
+            "updated_on": int(time.time()),
+            "color": "#ff00ff",
+            "lighter_text_color": "#ffa0ff",
+            "darker_text_color": "#a0a0a0",
+            "is_default": True,
+            "is_global": True,
+            "position": 3,
+            "project_id": 34,
+        }
+        task_label = task_label_from_json(task_json)
+        self.assertEqual(label_id, task_label.id)
+        self.assertEqual("TaskLabel", task_label.class_)
+
+    def test_from_task_json(self):
+        label_id = 769
+        task_json = {
+            "class": "TaskLabel",
+            "color": "#C3E799",
+            "darker_text_color": "#718658",
+            "id": label_id,
+            "is_default": False,
+            "is_global": True,
+            "lighter_text_color": "#80C333",
+            "name": "WONT FIX",
+            "position": "5",
+            "project_id": None,
+            "updated_on": None,
+            "url_path": "/labels/61",
+        }
+
+        task_label = task_label_from_task_json(task_json)
+        self.assertEqual(label_id, task_label.id)
+        self.assertEqual("TaskLabel", task_label.class_)
