@@ -1,0 +1,26 @@
+#  Template python-build
+
+#  This template allows you to validate your python code.
+#  The workflow allows running tests and code linting on the default branch.
+
+image: python:3.12
+
+pipelines:
+  default:
+    - parallel:
+      - step:
+          name: Test
+          caches:
+            - pip
+          script:
+            - pip install -r requirements.txt
+            - pip install -r requirements-dev.txt
+            - pip install unittest-xml-reporting
+            - if [ ! -d test-reports ] ; then mkdir test-reports ; fi
+            - python -m xmlrunner -v --output-file test-reports/report.xml
+      - step:
+          name: Lint code
+          script:
+            # Enforce style consistency across Python projects https://flake8.pycqa.org
+            - pip install -r requirements-dev.txt
+            - flake8 . --extend-exclude=dist,build --show-source --statistics
