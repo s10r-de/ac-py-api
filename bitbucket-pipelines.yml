@@ -21,5 +21,6 @@ pipelines:
         - step:
             name: Lint code
             script:
+              - pip install -r requirements.txt
               - pip install -r requirements-dev.txt
-              - pylint . --ignore .venv active_collab_storage/ tests --reports=y
+              - pylint . --ignore .venv --reports=y
