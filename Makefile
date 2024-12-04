@@ -10,38 +10,38 @@ CONTAINER_NAME=active-collab-backup
 CONTAINER_NAME_DEV=active-collab-backup-dev
 
 # docker based
-docker: Dockerfile
+docker: clean Dockerfile
 	docker buildx build -f Dockerfile -t $(IMAGE_NAME) .
 
-docker-dev: Dockerfile-dev
+docker-dev: clean Dockerfile Dockerfile-dev
 	docker buildx build -f Dockerfile-dev -t $(IMAGE_NAME_DEV) .
 
 DOCKER_RUN_OPTS=run --rm -v $(CONFIG):/config.ini -v $(DATA):/data --name $(CONTAINER_NAME) $(IMAGE_NAME)
 DOCKER_RUN_OPTS_DEV=run --rm -v $(CONFIG):/config.ini -v $(DATA):/data --name $(CONTAINER_NAME_DEV) $(IMAGE_NAME_DEV)
 
-docker_run_info: docker
+run_info: docker
 	@echo "info for localhost"
 	docker $(DOCKER_RUN_OPTS) -c /config.ini $(DEBUG) info
 
-docker_run_dump: docker
+run_dump: docker
 	@echo "dump for localhost"
 	docker $(DOCKER_RUN_OPTS) -c /config.ini $(DEBUG) dump
 
-docker_run_delete: docker
+run_delete: docker
 	@echo "delete for localhost"
 	docker $(DOCKER_RUN_OPTS) -c /config.ini $(DEBUG) delete
 
-docker_run_empty: docker
+run_empty: docker
 	@echo "empty for localhost"
 	docker $(DOCKER_RUN_OPTS) -c /config.ini $(DEBUG) empty
 
-docker_run_load: docker
+run_load: docker
 	@echo "load for localhost"
 	docker $(DOCKER_RUN_OPTS) -c /config.ini $(DEBUG) load
 
-
-docker_test: docker-dev
-	docker $(DOCKER_RUN_OPTS_DEV) /app/.venv/bin/python3 -m unittest -v
+run_verify: docker
+	@echo "verify for localhost"
+	docker $(DOCKER_RUN_OPTS) -c /config.ini $(DEBUG) verify
 
 # local venv
 .venv: .venv/touchfile
@@ -57,9 +57,13 @@ docker_test: docker-dev
 	@echo "build for DEVELOPMENT..."
 	. .venv/bin/activate; pip3 install -r requirements-dev.txt
 	touch .venv/touchfile-dev
+test: docker-dev
+	docker $(DOCKER_RUN_OPTS_DEV) /app/.venv/bin/python3 -m unittest -v
 
 test: .venv-dev
 	. .venv/bin/activate; python3 -m unittest -v
+lint: docker-dev
+	docker $(DOCKER_RUN_OPTS_DEV) /app/.venv/bin/pylint AcDump/ AcStorage/ ActiveCollab/
 
 lint: .venv-dev
 	. .venv/bin/activate; pylint AcDump/ AcStorage/ ActiveCollab/
