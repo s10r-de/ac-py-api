@@ -8,7 +8,6 @@ import sys
 import time
 from collections.abc import Iterator
 
-from AcProject import AcProject
 from AcStorage.AcFileStorage import AcFileStorage
 from ActiveCollabAPI import AC_CLASS_USER_MEMBER, AC_CLASS_USER_OWNER
 from ActiveCollabAPI.AcProject import AcProject
