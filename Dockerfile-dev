@@ -2,11 +2,11 @@ FROM ubuntu:24.04
 
 # --- install packages
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get upgrade -y && \
+RUN apt-get update && apt-get upgrade --no-install-recommends -y && \
   apt-get install -y \
   python3=3.12.3-0ubuntu2 \
   python3-venv=3.12.3-0ubuntu2 \
-  python3-pip
+  python3-pip=24.0+dfsg-1ubuntu1.1
 
 WORKDIR /app
 COPY AcDump /app/AcDump
@@ -32,6 +32,6 @@ COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # docker run --rm -it active-collab-backup --help
-ENTRYPOINT ["/app/acdump.sh"]
+#ENTRYPOINT ["/app/acdump.sh"]
 
 CMD ["/app/acdump.sh"]
