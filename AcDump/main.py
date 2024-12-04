@@ -8,7 +8,7 @@ import sys
 import time
 from collections.abc import Iterator
 
-from AcStorage.AcFileStorage import AcFileStorage
+from active_collab_storage.AcFileStorage import AcFileStorage
 from active_collab_api import AC_CLASS_USER_MEMBER, AC_CLASS_USER_OWNER
 from active_collab_api.AcProject import AcProject
 from active_collab_api.AcSubtask import AcSubtask

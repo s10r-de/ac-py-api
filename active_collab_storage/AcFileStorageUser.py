@@ -1,4 +1,4 @@
-from AcStorage.AcFileStorageBaseClass import AcFileStorageBaseClass
+from active_collab_storage.AcFileStorageBaseClass import AcFileStorageBaseClass
 from active_collab_api.AcUser import AcUser, user_from_json
 from active_collab_api import (
     AC_CLASS_USER_MEMBER,

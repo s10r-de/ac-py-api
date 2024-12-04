@@ -4,7 +4,7 @@ import os.path
 from unittest import TestCase
 
 from active_collab_api.AcCompany import company_from_json
-from AcStorage.AcFileStorageCompany import AcFileStorageCompany
+from active_collab_storage.AcFileStorageCompany import AcFileStorageCompany
 from active_collab_api import AC_ERROR_WRONG_CLASS
 
 DATA_DIR = "./data-test/%s/" % __name__

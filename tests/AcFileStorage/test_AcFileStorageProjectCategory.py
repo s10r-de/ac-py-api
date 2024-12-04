@@ -3,7 +3,7 @@ import json
 import os.path
 from unittest import TestCase
 
-from AcStorage.AcFileStorageProjectCategory import AcFileStorageProjectCategory
+from active_collab_storage.AcFileStorageProjectCategory import AcFileStorageProjectCategory
 from active_collab_api.AcProjectCategory import project_category_from_json
 from active_collab_api import AC_ERROR_WRONG_CLASS
 

@@ -10,7 +10,7 @@ RUN apt-get update && apt-get upgrade --no-install-recommends -y && \
 
 WORKDIR /app
 COPY AcDump /app/AcDump
-COPY AcStorage /app/AcStorage
+COPY active_collab_storage /app/active_collab_storage
 COPY active_collab_api /app/active_collab_api
 COPY tests /app/tests
 

@@ -3,7 +3,7 @@ import os.path
 import time
 from unittest import TestCase
 
-from AcStorage.AcFileStorageTaskHistory import AcFileStorageTaskHistory
+from active_collab_storage.AcFileStorageTaskHistory import AcFileStorageTaskHistory
 from active_collab_api.AcTaskHistory import task_history_from_json
 
 DATA_DIR = "./data-test/%s/" % __name__

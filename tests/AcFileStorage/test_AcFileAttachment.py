@@ -4,7 +4,7 @@ from tempfile import mkstemp
 from unittest import TestCase
 
 from active_collab_api.AcAttachment import attachment_from_json
-from AcStorage.AcFileStorageAttachment import AcFileStorageAttachment
+from active_collab_storage.AcFileStorageAttachment import AcFileStorageAttachment
 from active_collab_api import AC_ERROR_WRONG_CLASS
 
 DATA_DIR = "./data"

@@ -3,7 +3,7 @@ import json
 import os.path
 from unittest import TestCase, skipIf
 
-from AcStorage.AcFileStorageProjectNote import AcFileStorageProjectNote
+from active_collab_storage.AcFileStorageProjectNote import AcFileStorageProjectNote
 from active_collab_api.AcProjectNote import project_note_from_json
 from active_collab_api import AC_ERROR_WRONG_CLASS
 

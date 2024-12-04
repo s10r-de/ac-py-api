@@ -3,7 +3,7 @@ import json
 import os.path
 from unittest import TestCase
 
-from AcStorage.AcFileStorageSubtask import AcFileStorageSubtask
+from active_collab_storage.AcFileStorageSubtask import AcFileStorageSubtask
 from active_collab_api.AcSubtask import subtask_from_json
 from active_collab_api import AC_ERROR_WRONG_CLASS
 

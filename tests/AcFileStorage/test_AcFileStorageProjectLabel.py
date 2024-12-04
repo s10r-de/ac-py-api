@@ -3,7 +3,7 @@ import os.path
 import time
 from unittest import TestCase
 
-from AcStorage.AcFileStorageProjectLabel import AcFileStorageProjectLabel
+from active_collab_storage.AcFileStorageProjectLabel import AcFileStorageProjectLabel
 from active_collab_api.AcProjectLabel import project_label_from_json
 from active_collab_api import AC_ERROR_WRONG_CLASS
 
