@@ -16,9 +16,16 @@ from active_collab_api.ac_task_list import AcTaskList
 from active_collab_api.ac_user import AcUser
 from active_collab_api.active_collab import ActiveCollab
 from active_collab_storage.storage import AcFileStorage
+
 from active_collab_app.statistics import Statistics
 
+from version import VERSION
+
 overall_statistics = Statistics()
+
+
+class DoNotDeleteCloud(Exception):
+    pass
 
 
 def setup_logging(log_level=logging.ERROR, http_debugging=False):
@@ -75,8 +82,6 @@ def run_testing(ac: ActiveCollab, config: configparser.ConfigParser):
 
 
 def run_version():
-    from version import VERSION
-
     return {"version": VERSION}
 
 
@@ -223,7 +228,7 @@ def check_is_cloud(config: configparser.ConfigParser) -> bool:
 
 def run_delete_all(ac: ActiveCollab, config: configparser.ConfigParser):
     if check_is_cloud(config):
-        raise Exception("Do not delete data from cloud!")
+        raise DoNotDeleteCloud("Do not delete data from cloud!")
     # _delete_all_attachments(ac, config)
     _delete_all_task_lists(ac, config)
     _delete_all_tasks(ac, config)
@@ -236,7 +241,7 @@ def run_delete_all(ac: ActiveCollab, config: configparser.ConfigParser):
 
 def run_empty_trash(ac: ActiveCollab, config: configparser.ConfigParser):
     if check_is_cloud(config):
-        raise Exception("Do not empty trash from cloud!")
+        raise DoNotDeleteCloud("Do not empty trash from cloud!")
     return ac.empty_trash()  # FIXME loop until empty
 
 
@@ -446,45 +451,45 @@ def run_load_all(ac: ActiveCollab, config: configparser.ConfigParser):
 
 def _delete_all_tasks(ac: ActiveCollab, config: configparser.ConfigParser):
     if check_is_cloud(config):
-        raise Exception("Do not delete data from cloud!")
+        raise DoNotDeleteCloud("Do not delete data from cloud!")
     for project in ac.get_all_projects():
         ac.delete_all_tasks(project.id)
 
 
 def _delete_all_task_lists(ac: ActiveCollab, config: configparser.ConfigParser):
     if check_is_cloud(config):
-        raise Exception("Do not delete data from cloud!")
+        raise DoNotDeleteCloud("Do not delete data from cloud!")
     for project in ac.get_all_projects():
         ac.delete_all_task_lists(project)
 
 
 def _delete_all_projects(ac: ActiveCollab, config: configparser.ConfigParser):
     if check_is_cloud(config):
-        raise Exception("Do not delete data from cloud!")
+        raise DoNotDeleteCloud("Do not delete data from cloud!")
     return ac.delete_all_projects()
 
 
 def _delete_all_project_categories(ac: ActiveCollab, config: configparser.ConfigParser):
     if check_is_cloud(config):
-        raise Exception("Do not delete data from cloud!")
+        raise DoNotDeleteCloud("Do not delete data from cloud!")
     return ac.delete_all_project_categories()
 
 
 def _delete_all_project_labels(ac: ActiveCollab, config: configparser.ConfigParser):
     if check_is_cloud(config):
-        raise Exception("Do not delete data from cloud!")
+        raise DoNotDeleteCloud("Do not delete data from cloud!")
     return ac.delete_all_project_labels()
 
 
 def _delete_all_users(ac: ActiveCollab, config: configparser.ConfigParser):
     if check_is_cloud(config):
-        raise Exception("Do not delete data from cloud!")
+        raise DoNotDeleteCloud("Do not delete data from cloud!")
     return ac.delete_all_users()
 
 
 def _delete_all_companies(ac: ActiveCollab, config: configparser.ConfigParser):
     if check_is_cloud(config):
-        raise Exception("Do not delete data from cloud!")
+        raise DoNotDeleteCloud("Do not delete data from cloud!")
     return ac.delete_all_companies()
 
 

@@ -1,18 +1,5 @@
 import logging
 
-from ac_attachment import AcAttachment
-from ac_attachment_upload_response import (
-    attachment_upload_response_from_json,
-)
-from ac_company import AcCompany, company_from_json
-from ac_file_access_token import AcFileAccessToken, fileaccesstoken_from_json
-from ac_login_response import AcLoginResponse
-from ac_project_category import AcProjectCategory, project_category_from_json
-from ac_project_label import AcProjectLabel, project_label_from_json
-from ac_project_note import AcProjectNote, project_note_from_json
-from ac_task_history import AcTaskHistory, task_history_from_json
-from ac_task_label import AcTaskLabel, task_label_from_json
-from ac_task_list import AcTaskList, task_list_from_json
 from active_collab_api import (
     AC_API_VERSION,
     AC_CLASS_COMMENT,
@@ -21,12 +8,28 @@ from active_collab_api import (
     AC_CLASS_USER_OWNER,
 )
 from active_collab_api.ac_account import AcAccount, account_from_json
+from active_collab_api.ac_attachment import AcAttachment
+from active_collab_api.ac_attachment_upload_response import (
+    attachment_upload_response_from_json,
+)
 from active_collab_api.ac_authenticator import AcAuthenticator
 from active_collab_api.ac_client import AcClient
 from active_collab_api.ac_cloud_login_response import AcCloudLoginResponse
 from active_collab_api.ac_comment import AcComment, comment_from_json
+from active_collab_api.ac_company import AcCompany, company_from_json
+from active_collab_api.ac_file_access_token import (
+    AcFileAccessToken,
+    fileaccesstoken_from_json,
+)
+from active_collab_api.ac_login_response import AcLoginResponse
 from active_collab_api.ac_login_user import AcLoginUser
 from active_collab_api.ac_project import AcProject, project_from_json
+from active_collab_api.ac_project_category import (
+    AcProjectCategory,
+    project_category_from_json,
+)
+from active_collab_api.ac_project_label import AcProjectLabel, project_label_from_json
+from active_collab_api.ac_project_note import AcProjectNote, project_note_from_json
 from active_collab_api.ac_session import AcSession
 from active_collab_api.ac_subtask import (
     AcSubtask,
@@ -34,6 +37,9 @@ from active_collab_api.ac_subtask import (
     subtask_map_name_to_text,
 )
 from active_collab_api.ac_task import AcTask, task_from_json
+from active_collab_api.ac_task_history import AcTaskHistory, task_history_from_json
+from active_collab_api.ac_task_label import AcTaskLabel, task_label_from_json
+from active_collab_api.ac_task_list import AcTaskList, task_list_from_json
 from active_collab_api.ac_token import AcToken
 from active_collab_api.ac_token_authenticator import AcTokenAuthenticator
 from active_collab_api.ac_user import (
@@ -52,6 +58,10 @@ def _workaround_user_fix_type_from_class(user: AcUser) -> AcUser:
 def _workaround_project_fix_type_from_class(project: AcProject) -> AcProject:
     project.type = project.class_
     return project
+
+
+class AcApiError(Exception):
+    pass
 
 
 class ActiveCollab:
@@ -91,11 +101,11 @@ class ActiveCollab:
         auth = AcAuthenticator(self.base_url)
         res = auth.login_cloud(email, password)
         if res.status_code != 200:
-            raise Exception("Login to cloud failed!")
+            raise AcApiError("Login to cloud failed!")
         res_data = res.json()
         if res_data["is_ok"] != 1:
-            raise Exception("Login failed! (2)")
-        accounts = list(map(lambda a: account_from_json(a), res_data["accounts"]))
+            raise AcApiError("Login failed! (2)")
+        accounts = list(map(account_from_json, res_data["accounts"]))
         user = AcLoginUser(**res_data["user"])
         return AcCloudLoginResponse(user, accounts)
 
@@ -119,10 +129,10 @@ class ActiveCollab:
         auth = AcAuthenticator(self.base_url)
         res = auth.login_self_hosted(email, password)
         if res.status_code != 200:
-            raise Exception("Login failed!")
+            raise AcApiError("Login failed!")
         res_data = res.json()
         if res_data["is_ok"] != 1:
-            raise Exception("Login failed! (2)")
+            raise AcApiError("Login failed! (2)")
         return AcLoginResponse(**res_data)
 
     @staticmethod
@@ -133,7 +143,7 @@ class ActiveCollab:
     def select_account(accounts: list[AcAccount], account: str) -> AcAccount:
         found = list(filter(lambda a: a.display_name == account, accounts))
         if len(found) == 0:
-            raise Exception("Account not found!")
+            raise AcApiError("Account not found!")
         return found[0]
 
     @staticmethod
@@ -141,10 +151,10 @@ class ActiveCollab:
         authenticator = AcTokenAuthenticator(account.url + "/api/v%s" % AC_API_VERSION)
         res = authenticator.issue_token_intent(user.intent)
         if res.status_code != 200:
-            raise Exception("Request token failed!")
+            raise AcApiError("Request token failed!")
         res_data = res.json()
         if res_data["is_ok"] != 1:
-            raise Exception("Request token failed! (2)")
+            raise AcApiError("Request token failed! (2)")
         return AcToken(res_data["token"])
 
     def get_info(self):
@@ -161,18 +171,18 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_project_active_tasks(project_id)
         if res.status_code != 200:
-            raise Exception("Error %d" % res.status_code)
+            raise AcApiError("Error %d" % res.status_code)
         res_data = res.json()
-        tasks = list(map(lambda p: task_from_json(p), res_data["tasks"]))
+        tasks = list(map(task_from_json, res_data["tasks"]))
         return tasks
 
     def get_completed_tasks(self, project_id: int) -> list[AcTask]:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_project_completed_tasks(project_id)
         if res.status_code != 200:
-            raise Exception("Error %d" % res.status_code)
+            raise AcApiError("Error %d" % res.status_code)
         res_data = res.json()
-        tasks = list(map(lambda p: task_from_json(p), res_data))
+        tasks = list(map(task_from_json, res_data))
         return tasks
 
     def complete_task(self, task: AcTask) -> dict | None:
@@ -231,25 +241,25 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_active_projects()
         if res.status_code != 200:
-            raise Exception("Error %d" % res.status_code)
+            raise AcApiError("Error %d" % res.status_code)
         res_data = res.json()
-        projects = list(map(lambda p: project_from_json(p), res_data))
+        projects = list(map(project_from_json, res_data))
         return projects
 
     def get_archived_projects(self) -> list[AcProject]:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_archived_projects()
         if res.status_code != 200:
-            raise Exception("Error %d" % res.status_code)
+            raise AcApiError("Error %d" % res.status_code)
         res_data = res.json()
-        projects = list(map(lambda p: project_from_json(p), res_data))
+        projects = list(map(project_from_json, res_data))
         return projects
 
     def complete_project(self, project: AcProject) -> dict | None:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.complete_project(project.id)
         if res.status_code != 200:
-            raise Exception("Error %d" % res.status_code)
+            raise AcApiError("Error %d" % res.status_code)
         res_data = res.json()
         return res_data
 
@@ -286,9 +296,9 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_all_users()
         if res.status_code != 200:
-            raise Exception("Error %d" % res.status_code)
+            raise AcApiError("Error %d" % res.status_code)
         res_data = res.json()
-        users = list(map(lambda u: user_from_json(u), res_data))
+        users = list(map(user_from_json, res_data))
         return users
 
     def create_user(self, user: AcUser) -> dict | None:
@@ -312,7 +322,7 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.archive_user(user.id)
         if res.status_code != 200:
-            raise Exception("Error %d" % res.status_code)
+            raise AcApiError("Error %d" % res.status_code)
         res_data = res.json()
         return res_data
 
@@ -320,9 +330,9 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_subtasks(task.project_id, task.id)
         if res.status_code != 200:
-            raise Exception("Error %d" % res.status_code)
+            raise AcApiError("Error %d" % res.status_code)
         res_data = res.json()
-        subtasks = list(map(lambda u: subtask_from_json(u), res_data))
+        subtasks = list(map(subtask_from_json, res_data))
         return subtasks
 
     def complete_subtask(self, subtask: AcSubtask) -> dict | None:
@@ -359,9 +369,9 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_comments(task.id)
         if res.status_code != 200:
-            raise Exception("Error %d" % res.status_code)
+            raise AcApiError("Error %d" % res.status_code)
         res_data = res.json()
-        comments = list(map(lambda c: comment_from_json(c), res_data))
+        comments = list(map(comment_from_json, res_data))
         return comments
 
     def create_comment(self, comment: AcComment) -> dict | None:
@@ -389,7 +399,7 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_file_access_token()
         if res.status_code != 200:
-            raise Exception("Error %d" % res.status_code)
+            raise AcApiError("Error %d" % res.status_code)
         res_data = res.json()
         file_access_token = fileaccesstoken_from_json(res_data)
         return file_access_token
@@ -425,7 +435,7 @@ class ActiveCollab:
         if res.status_code != 200:
             msg = "Error %d - %s" % (res.status_code, str(res.text))
             logging.error(msg)
-            raise Exception(msg)
+            raise AcApiError(msg)
         logging.debug("Upload file response: %s" % res.text)
         res_data = res.json()
         attachment_upload_response = attachment_upload_response_from_json(res_data[0])
@@ -464,7 +474,7 @@ class ActiveCollab:
             return {}
         if res.status_code != 200:
             msg = "Error %d - %s" % (res.status_code, str(res.text))
-            raise Exception(msg)
+            raise AcApiError(msg)
         res_data = res.json()
         return res_data
 
@@ -494,11 +504,9 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_project_labels()
         if res.status_code != 200:
-            raise Exception("Error %d" % res.status_code)
+            raise AcApiError("Error %d" % res.status_code)
         res_data = res.json()
-        project_labels = list(
-            map(lambda label: project_label_from_json(label), res_data)
-        )
+        project_labels = list(map(project_label_from_json, res_data))
         return project_labels
 
     def create_project_label(self, project_label: AcProjectLabel) -> dict | None:
@@ -507,7 +515,7 @@ class ActiveCollab:
         project_label.type = project_label.class_  # FIXME
         res = client.post_project_label(project_label.to_dict())
         if res.status_code != 200:
-            raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
+            raise AcApiError("Error %d - %s" % (res.status_code, str(res.text)))
         res_data = res.json()
         return res_data
 
@@ -515,18 +523,18 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_task_labels()
         if res.status_code != 200:
-            raise Exception("Error %d" % res.status_code)
+            raise AcApiError("Error %d" % res.status_code)
         res_data = res.json()
-        task_labels = list(map(lambda u: task_label_from_json(u), res_data))
+        task_labels = list(map(task_label_from_json, res_data))
         return task_labels
 
     def get_all_companies(self) -> list[AcCompany]:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_all_companies()
         if res.status_code != 200:
-            raise Exception("Error %d" % res.status_code)
+            raise AcApiError("Error %d" % res.status_code)
         res_data = res.json()
-        companies = list(map(lambda u: company_from_json(u), res_data))
+        companies = list(map(company_from_json, res_data))
         return companies
 
     def create_company(self, company: AcCompany) -> dict | None:
@@ -537,7 +545,7 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.post_company(company.to_dict())
         if res.status_code != 200:
-            raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
+            raise AcApiError("Error %d - %s" % (res.status_code, str(res.text)))
         res_data = res.json()
         return res_data
 
@@ -564,18 +572,18 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_task_lists(project_id)
         if res.status_code != 200:
-            raise Exception("Error %d" % res.status_code)
+            raise AcApiError("Error %d" % res.status_code)
         res_data = res.json()
-        task_lists = list(map(lambda t: task_list_from_json(t), res_data))
+        task_lists = list(map(task_list_from_json, res_data))
         return task_lists
 
     def get_project_archived_task_lists(self, project_id: int) -> list[AcTaskList]:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_archived_task_lists(project_id)
         if res.status_code != 200:
-            raise Exception("Error %d" % res.status_code)
+            raise AcApiError("Error %d" % res.status_code)
         res_data = res.json()
-        task_lists = list(map(lambda t: task_list_from_json(t), res_data))
+        task_lists = list(map(task_list_from_json, res_data))
         return task_lists
 
     def get_project_all_task_lists(self, project: AcProject) -> list[AcTaskList]:
@@ -604,7 +612,7 @@ class ActiveCollab:
                 "Project %d not found! Can not create task list!" % task_list.project_id
             )
             return None
-            # raise Exception("Project %d not found!" % task_list.project_id)
+            # raise AcApiError("Project %d not found!" % task_list.project_id)
         if res.status_code != 200:
             logging.error(task_list.to_dict())
             logging.error("Error %d - %s" % (res.status_code, str(res.text)))
@@ -616,7 +624,7 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_task_history(task.id)
         if res.status_code != 200:
-            raise Exception("Error %d" % res.status_code)
+            raise AcApiError("Error %d" % res.status_code)
         res_data = res.json()
         task_history = list(
             map(lambda u: task_history_from_json(u, task_id=task.id), res_data)
@@ -627,11 +635,9 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_project_categories()
         if res.status_code != 200:
-            raise Exception("Error %d" % res.status_code)
+            raise AcApiError("Error %d" % res.status_code)
         res_data = res.json()
-        project_categories = list(
-            map(lambda l: project_category_from_json(l), res_data)
-        )
+        project_categories = list(map(project_category_from_json, res_data))
         return project_categories
 
     def create_project_category(
@@ -643,7 +649,7 @@ class ActiveCollab:
         res = client.post_project_category(project_category.to_dict())
         if res.status_code != 200:
             logging.error(project_category.to_dict())
-            raise Exception("Error %d - %s" % (res.status_code, str(res.text)))
+            raise AcApiError("Error %d - %s" % (res.status_code, str(res.text)))
         res_data = res.json()
         return res_data
 
@@ -651,7 +657,7 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_project_notes(project.id)
         if res.status_code != 200:
-            raise Exception("Error %d" % res.status_code)
+            raise AcApiError("Error %d" % res.status_code)
         res_data = res.json()
-        project_notes = list(map(lambda l: project_note_from_json(l), res_data))
+        project_notes = list(map(project_note_from_json, res_data))
         return project_notes

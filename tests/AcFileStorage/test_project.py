@@ -7,21 +7,22 @@ from active_collab_api import AC_ERROR_WRONG_CLASS
 from active_collab_api.ac_project import project_from_json
 from active_collab_storage.project import AcFileStorageProject
 
-DATA_DIR = "./data-test/%s/" % __name__
+DATA_DIR = f"./data-test/{__name__}/"
 ACCOUNT_ID = 12345
 
 
-class TestAcFileStorageProject(TestCase):
+class TestStorageProject(TestCase):
     @staticmethod
     def _generate_test_project(project_id: int) -> dict:
-        with open("tests/example-data/example-project-611.json", "r") as fh:
+        with open(
+            "tests/example-data/example-project-611.json", "r", encoding="utf-8"
+        ) as fh:
             project_son = json.load(fh)
         project_son["id"] = project_id
         return project_son
 
     def test_save(self):
         m_name = inspect.stack()[0][3]
-        account_id = ACCOUNT_ID
         storage = AcFileStorageProject(DATA_DIR + m_name, ACCOUNT_ID)
         storage.reset()
         storage.ensure_dirs()
