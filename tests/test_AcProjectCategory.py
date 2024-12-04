@@ -2,8 +2,8 @@ import json
 import time
 from unittest import TestCase
 
-from ActiveCollabAPI.AcProjectCategory import AcProjectCategory
-from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
+from active_collab_api.AcProjectCategory import AcProjectCategory
+from active_collab_api import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 
 
 class TestAcProjectCategory(TestCase):

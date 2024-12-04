@@ -8,9 +8,9 @@ from tempfile import gettempdir
 import requests
 from requests import Response
 
-from ActiveCollabAPI import AC_API_VERSION, AC_USER_AGENT
-from ActiveCollabAPI.AcAccount import AcAccount
-from ActiveCollabAPI.AcToken import AcToken
+from active_collab_api import AC_API_VERSION, AC_USER_AGENT
+from active_collab_api.AcAccount import AcAccount
+from active_collab_api.AcToken import AcToken
 
 
 class AcClient:

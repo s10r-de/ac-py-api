@@ -1,8 +1,8 @@
 from unittest import TestCase
 
-from ActiveCollabAPI.AcAccount import AcAccount
-from ActiveCollabAPI.AcCloudLoginResponse import AcCloudLoginResponse
-from ActiveCollabAPI.AcLoginUser import AcLoginUser
+from active_collab_api.AcAccount import AcAccount
+from active_collab_api.AcCloudLoginResponse import AcCloudLoginResponse
+from active_collab_api.AcLoginUser import AcLoginUser
 
 
 class TestAcLoginResponse(TestCase):

@@ -2,9 +2,9 @@ import dataclasses
 import json
 from dataclasses import dataclass
 
-from ActiveCollabAPI.AcAccount import AcAccount
-from ActiveCollabAPI.AcToken import AcToken
-from ActiveCollabAPI.AcLoginUser import AcLoginUser
+from active_collab_api.AcAccount import AcAccount
+from active_collab_api.AcToken import AcToken
+from active_collab_api.AcLoginUser import AcLoginUser
 
 
 @dataclass

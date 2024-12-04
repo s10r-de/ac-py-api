@@ -6,7 +6,7 @@ import random
 import shutil
 from unittest import TestCase
 
-from ActiveCollabAPI.AcCompany import company_from_json
+from active_collab_api.AcCompany import company_from_json
 from AcStorage.AcFileStorageBaseClass import AcFileStorageBaseClass
 
 DATA_DIR = "./data-test/TestAcFileStorageBaseClass/"

@@ -2,7 +2,7 @@ import dataclasses
 import json
 from dataclasses import dataclass
 
-from ActiveCollabAPI import (
+from active_collab_api import (
     AC_CLASS_ATTACHMENT_WAREHOUSE,
     AC_PROPERTY_CLASS,
     AC_PROPERTY_CLASS_,

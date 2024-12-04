@@ -9,13 +9,13 @@ import time
 from collections.abc import Iterator
 
 from AcStorage.AcFileStorage import AcFileStorage
-from ActiveCollabAPI import AC_CLASS_USER_MEMBER, AC_CLASS_USER_OWNER
-from ActiveCollabAPI.AcProject import AcProject
-from ActiveCollabAPI.AcSubtask import AcSubtask
-from ActiveCollabAPI.AcTask import AcTask
-from ActiveCollabAPI.AcTaskList import AcTaskList
-from ActiveCollabAPI.AcUser import AcUser
-from ActiveCollabAPI.ActiveCollab import ActiveCollab
+from active_collab_api import AC_CLASS_USER_MEMBER, AC_CLASS_USER_OWNER
+from active_collab_api.AcProject import AcProject
+from active_collab_api.AcSubtask import AcSubtask
+from active_collab_api.AcTask import AcTask
+from active_collab_api.AcTaskList import AcTaskList
+from active_collab_api.AcUser import AcUser
+from active_collab_api.ActiveCollab import ActiveCollab
 from Statistics import Statistics
 
 overall_statistics = Statistics()
@@ -59,18 +59,15 @@ def run_testing(ac: ActiveCollab, config: configparser.ConfigParser):
     result = []
 
     attachment = ac_storage.data_objects["attachments"].load(32609)
-    bin_file = ac_storage.data_objects["attachments"].get_bin_filename(
-        attachment)
+    bin_file = ac_storage.data_objects["attachments"].get_bin_filename(attachment)
     result.append(ac.upload_attachment(attachment, bin_file))
 
     attachment = ac_storage.data_objects["attachments"].load(29717)
-    bin_file = ac_storage.data_objects["attachments"].get_bin_filename(
-        attachment)
+    bin_file = ac_storage.data_objects["attachments"].get_bin_filename(attachment)
     result.append(ac.upload_attachment(attachment, bin_file))
 
     attachment = ac_storage.data_objects["attachments"].load(29703)
-    bin_file = ac_storage.data_objects["attachments"].get_bin_filename(
-        attachment)
+    bin_file = ac_storage.data_objects["attachments"].get_bin_filename(attachment)
     result.append(ac.upload_attachment(attachment, bin_file))
 
     return result
@@ -211,8 +208,7 @@ def _login(config: configparser.ConfigParser) -> ActiveCollab:
     if is_cloud:
         account = config.get("LOGIN", "account", fallback="")
     ac = ActiveCollab(base_url, is_cloud)
-    ac.login(config.get("LOGIN", "username"),
-             config.get("LOGIN", "password"), account)
+    ac.login(config.get("LOGIN", "username"), config.get("LOGIN", "password"), account)
     return ac
 
 
@@ -265,8 +261,7 @@ def _verify_project_labels(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
     server_project_labels = ac.get_project_labels()
     for label_id in ac_storage.data_objects["project-labels"].list_ids():
         category = ac_storage.data_objects["project-labels"].load(label_id)
-        server_labels = list(
-            filter(lambda c: c.id == label_id, server_project_labels))
+        server_labels = list(filter(lambda c: c.id == label_id, server_project_labels))
         if len(server_labels) == 0:
             logging.error("Project Label %d not found!" % label_id)
             result = False
@@ -283,8 +278,7 @@ def _verify_project_categories(ac: ActiveCollab, ac_storage: AcFileStorage) -> b
     result = True
     server_project_categories = ac.get_project_categories()
     for category_id in ac_storage.data_objects["project-categories"].list_ids():
-        category = ac_storage.data_objects["project-categories"].load(
-            category_id)
+        category = ac_storage.data_objects["project-categories"].load(category_id)
         server_category = list(
             filter(lambda c: c.id == category_id, server_project_categories)
         )
@@ -353,8 +347,7 @@ def _verify_task_lists(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
         )
         if len(server_task_list) == 0:
             logging.error(
-                "Task list %d for project %d not found!" % (
-                    task_list.id, project_id)
+                "Task list %d for project %d not found!" % (task_list.id, project_id)
             )
             result = False
             continue
@@ -372,8 +365,7 @@ def _verify_projects(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
     server_projects = ac.get_all_projects()
     for project_id in ac_storage.data_objects["projects"].list_ids():
         company = ac_storage.data_objects["projects"].load(project_id)
-        server_project = list(
-            filter(lambda c: c.id == project_id, server_projects))
+        server_project = list(filter(lambda c: c.id == project_id, server_projects))
         if len(server_project) == 0:
             logging.error("Project %d not found!" % project_id)
             result = False
@@ -500,8 +492,7 @@ def _load_attachments(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
     cnt = 0
     for attachment_id in ac_storage.data_objects["attachments"].list_ids():
         attachment = ac_storage.data_objects["attachments"].load(attachment_id)
-        bin_file = ac_storage.data_objects["attachments"].get_bin_filename(
-            attachment)
+        bin_file = ac_storage.data_objects["attachments"].get_bin_filename(attachment)
         logging.debug("Uploading file %s" % bin_file)
         if ac.upload_attachment(attachment, bin_file):
             cnt += 1
@@ -558,7 +549,7 @@ def _load_task_lists(ac: ActiveCollab, ac_storage: AcFileStorage) -> list[AcTask
 
 
 def _load_projects(
-        config: configparser.ConfigParser, ac: ActiveCollab, ac_storage: AcFileStorage
+    config: configparser.ConfigParser, ac: ActiveCollab, ac_storage: AcFileStorage
 ) -> list[AcProject]:
     completed = []
     for project_id in ac_storage.data_objects["projects"].list_ids():
@@ -594,7 +585,7 @@ def _load_project_categories(ac: ActiveCollab, ac_storage: AcFileStorage) -> int
 
 
 def _load_users(
-        config: configparser.ConfigParser, ac: ActiveCollab, ac_storage: AcFileStorage
+    config: configparser.ConfigParser, ac: ActiveCollab, ac_storage: AcFileStorage
 ) -> list[AcUser]:
     archived = []
     for user_id in ac_storage.data_objects["users"].list_ids():
@@ -607,7 +598,6 @@ def _load_users(
             user.class_ = AC_CLASS_USER_MEMBER
         ac.create_user(user)
     return archived
-
 
 
 def _load_companies(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
@@ -656,8 +646,7 @@ def main():
     parser.add_argument(
         "--verbose", action="store_true", help="Enable some move verbose output"
     )
-    parser.add_argument("--debug", action="store_true",
-                        help="Enable debug output")
+    parser.add_argument("--debug", action="store_true", help="Enable debug output")
     parser.add_argument(
         "--http-debug", action="store_true", help="Enable HTTP debug output"
     )

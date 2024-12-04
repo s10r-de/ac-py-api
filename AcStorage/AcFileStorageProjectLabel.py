@@ -1,6 +1,6 @@
 from AcStorage.AcFileStorageBaseClass import AcFileStorageBaseClass
-from ActiveCollabAPI.AcProjectLabel import AcProjectLabel, project_label_from_json
-from ActiveCollabAPI import AC_CLASS_PROJECT_LABEL, AC_ERROR_WRONG_CLASS
+from active_collab_api.AcProjectLabel import AcProjectLabel, project_label_from_json
+from active_collab_api import AC_CLASS_PROJECT_LABEL, AC_ERROR_WRONG_CLASS
 
 
 class AcFileStorageProjectLabel(AcFileStorageBaseClass):

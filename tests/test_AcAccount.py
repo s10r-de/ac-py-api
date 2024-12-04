@@ -1,8 +1,8 @@
 import json
 from unittest import TestCase
 
-from ActiveCollabAPI import AC_ERROR_WRONG_CLASS, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
-from ActiveCollabAPI.AcAccount import AcAccount, account_from_json
+from active_collab_api import AC_ERROR_WRONG_CLASS, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
+from active_collab_api.AcAccount import AcAccount, account_from_json
 
 
 class TestAcAccount(TestCase):

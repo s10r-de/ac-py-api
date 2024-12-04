@@ -1,6 +1,6 @@
 from AcStorage.AcFileStorageBaseClass import AcFileStorageBaseClass
-from ActiveCollabAPI.AcProjectNote import AcProjectNote
-from ActiveCollabAPI import AC_CLASS_PROJECT_NOTE, AC_ERROR_WRONG_CLASS
+from active_collab_api.AcProjectNote import AcProjectNote
+from active_collab_api import AC_CLASS_PROJECT_NOTE, AC_ERROR_WRONG_CLASS
 
 
 class AcFileStorageProjectNote(AcFileStorageBaseClass):

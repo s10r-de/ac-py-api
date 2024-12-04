@@ -1,6 +1,6 @@
 from AcStorage.AcFileStorageBaseClass import AcFileStorageBaseClass
-from ActiveCollabAPI.AcUser import AcUser, user_from_json
-from ActiveCollabAPI import (
+from active_collab_api.AcUser import AcUser, user_from_json
+from active_collab_api import (
     AC_CLASS_USER_MEMBER,
     AC_CLASS_USER_OWNER,
     AC_ERROR_WRONG_CLASS,

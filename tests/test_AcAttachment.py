@@ -1,8 +1,8 @@
 import json
 from unittest import TestCase
 
-from ActiveCollabAPI.AcAttachment import attachment_from_json
-from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
+from active_collab_api.AcAttachment import attachment_from_json
+from active_collab_api import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 
 
 class TestAcAttachment(TestCase):

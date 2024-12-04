@@ -1,9 +1,9 @@
 import json
 from unittest import TestCase
 
-from ActiveCollabAPI.AcAttachment import attachment_from_json, AcAttachment
-from ActiveCollabAPI.AcComment import AcComment, comment_from_json
-from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_, AC_ERROR_WRONG_CLASS
+from active_collab_api.AcAttachment import attachment_from_json, AcAttachment
+from active_collab_api.AcComment import AcComment, comment_from_json
+from active_collab_api import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_, AC_ERROR_WRONG_CLASS
 
 
 class TestAcComment(TestCase):

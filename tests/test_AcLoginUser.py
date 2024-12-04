@@ -1,7 +1,7 @@
 import json
 from unittest import TestCase
 
-from ActiveCollabAPI.AcLoginUser import AcLoginUser
+from active_collab_api.AcLoginUser import AcLoginUser
 
 
 class TestAcLoginUser(TestCase):

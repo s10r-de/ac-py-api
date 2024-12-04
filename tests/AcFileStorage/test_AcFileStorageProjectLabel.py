@@ -4,8 +4,8 @@ import time
 from unittest import TestCase
 
 from AcStorage.AcFileStorageProjectLabel import AcFileStorageProjectLabel
-from ActiveCollabAPI.AcProjectLabel import project_label_from_json
-from ActiveCollabAPI import AC_ERROR_WRONG_CLASS
+from active_collab_api.AcProjectLabel import project_label_from_json
+from active_collab_api import AC_ERROR_WRONG_CLASS
 
 DATA_DIR = "./data-test/%s/" % __name__
 ACCOUNT_ID = 12345

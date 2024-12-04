@@ -1,9 +1,9 @@
 from AcStorage.AcFileStorageBaseClass import AcFileStorageBaseClass
-from ActiveCollabAPI.AcProjectCategory import (
+from active_collab_api.AcProjectCategory import (
     AcProjectCategory,
     project_category_from_json,
 )
-from ActiveCollabAPI import AC_CLASS_PROJECT_CATEGORY, AC_ERROR_WRONG_CLASS
+from active_collab_api import AC_CLASS_PROJECT_CATEGORY, AC_ERROR_WRONG_CLASS
 
 
 class AcFileStorageProjectCategory(AcFileStorageBaseClass):

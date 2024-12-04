@@ -2,8 +2,8 @@ import dataclasses
 import json
 from dataclasses import dataclass
 
-from ActiveCollabAPI.AcAttachment import AcAttachment, attachment_from_json
-from ActiveCollabAPI import (
+from active_collab_api.AcAttachment import AcAttachment, attachment_from_json
+from active_collab_api import (
     AC_CLASS_PROJECT_NOTE,
     AC_PROPERTY_CLASS,
     AC_PROPERTY_CLASS_,

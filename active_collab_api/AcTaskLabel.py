@@ -2,7 +2,7 @@ import dataclasses
 import json
 from dataclasses import dataclass
 
-from ActiveCollabAPI import AC_CLASS_TASK_LABEL, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
+from active_collab_api import AC_CLASS_TASK_LABEL, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 
 
 @dataclass

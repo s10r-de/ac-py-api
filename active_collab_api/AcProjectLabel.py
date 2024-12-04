@@ -3,7 +3,7 @@ import json
 import logging
 from dataclasses import dataclass
 
-from ActiveCollabAPI import AC_CLASS_PROJECT_LABEL, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
+from active_collab_api import AC_CLASS_PROJECT_LABEL, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 
 
 @dataclass

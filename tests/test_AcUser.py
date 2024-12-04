@@ -1,7 +1,7 @@
 import json
 from unittest import TestCase
 
-from ActiveCollabAPI.AcUser import (
+from active_collab_api.AcUser import (
     map_cloud_user_language_id,
     AC_CLOUD_LANG_ID_ENGLISH,
     AC_CLOUD_LANG_ID_GERMAN,
@@ -10,7 +10,7 @@ from ActiveCollabAPI.AcUser import (
     generate_random_password,
     user_from_json,
 )
-from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
+from active_collab_api import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 
 
 class TestAcUser(TestCase):

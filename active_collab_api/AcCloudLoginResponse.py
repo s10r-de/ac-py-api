@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from ActiveCollabAPI.AcAccount import AcAccount
-from ActiveCollabAPI.AcLoginUser import AcLoginUser
+from active_collab_api.AcAccount import AcAccount
+from active_collab_api.AcLoginUser import AcLoginUser
 
 
 @dataclass

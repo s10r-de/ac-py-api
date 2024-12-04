@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from ActiveCollabAPI.AcToken import AcToken
+from active_collab_api.AcToken import AcToken
 
 
 class TestAcToken(TestCase):

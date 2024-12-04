@@ -3,9 +3,9 @@ import os.path
 from tempfile import mkstemp
 from unittest import TestCase
 
-from ActiveCollabAPI.AcAttachment import attachment_from_json
+from active_collab_api.AcAttachment import attachment_from_json
 from AcStorage.AcFileStorageAttachment import AcFileStorageAttachment
-from ActiveCollabAPI import AC_ERROR_WRONG_CLASS
+from active_collab_api import AC_ERROR_WRONG_CLASS
 
 DATA_DIR = "./data"
 ACCOUNT_ID = 12345

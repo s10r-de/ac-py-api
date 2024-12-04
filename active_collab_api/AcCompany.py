@@ -3,8 +3,8 @@ import json
 import logging
 from dataclasses import dataclass
 
-from ActiveCollabAPI.AcDataObject import AcDataObject
-from ActiveCollabAPI import (
+from active_collab_api.AcDataObject import AcDataObject
+from active_collab_api import (
     AC_CLASS_COMPANY,
     AC_PROPERTY_CLASS,
     AC_PROPERTY_CLASS_,

@@ -1,9 +1,9 @@
-from ActiveCollabAPI import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
+from active_collab_api import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 import json
 import time
 from unittest import TestCase
 
-from ActiveCollabAPI.AcTaskLabel import (
+from active_collab_api.AcTaskLabel import (
     AcTaskLabel,
     task_label_from_json,
     task_label_from_task_json,

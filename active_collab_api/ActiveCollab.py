@@ -13,30 +13,30 @@ from AcProjectNote import AcProjectNote, project_note_from_json
 from AcTaskHistory import AcTaskHistory, task_history_from_json
 from AcTaskLabel import task_label_from_json, AcTaskLabel
 from AcTaskList import AcTaskList, task_list_from_json
-from ActiveCollabAPI import (
+from active_collab_api import (
     AC_API_VERSION,
     AC_CLASS_COMMENT,
     AC_CLASS_PROJECT_NOTE,
     AC_CLASS_TASK,
     AC_CLASS_USER_OWNER,
 )
-from ActiveCollabAPI.AcAccount import AcAccount, account_from_json
-from ActiveCollabAPI.AcAuthenticator import AcAuthenticator
-from ActiveCollabAPI.AcClient import AcClient
-from ActiveCollabAPI.AcCloudLoginResponse import AcCloudLoginResponse
-from ActiveCollabAPI.AcComment import AcComment, comment_from_json
-from ActiveCollabAPI.AcLoginUser import AcLoginUser
-from ActiveCollabAPI.AcProject import AcProject, project_from_json
-from ActiveCollabAPI.AcSession import AcSession
-from ActiveCollabAPI.AcSubtask import (
+from active_collab_api.AcAccount import AcAccount, account_from_json
+from active_collab_api.AcAuthenticator import AcAuthenticator
+from active_collab_api.AcClient import AcClient
+from active_collab_api.AcCloudLoginResponse import AcCloudLoginResponse
+from active_collab_api.AcComment import AcComment, comment_from_json
+from active_collab_api.AcLoginUser import AcLoginUser
+from active_collab_api.AcProject import AcProject, project_from_json
+from active_collab_api.AcSession import AcSession
+from active_collab_api.AcSubtask import (
     AcSubtask,
     subtask_from_json,
     subtask_map_name_to_text,
 )
-from ActiveCollabAPI.AcTask import AcTask, task_from_json
-from ActiveCollabAPI.AcToken import AcToken
-from ActiveCollabAPI.AcTokenAuthenticator import AcTokenAuthenticator
-from ActiveCollabAPI.AcUser import (
+from active_collab_api.AcTask import AcTask, task_from_json
+from active_collab_api.AcToken import AcToken
+from active_collab_api.AcTokenAuthenticator import AcTokenAuthenticator
+from active_collab_api.AcUser import (
     AcUser,
     user_from_json,
     map_cloud_user_language_id,

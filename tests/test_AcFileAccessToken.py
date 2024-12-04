@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from ActiveCollabAPI.AcFileAccessToken import fileaccesstoken_from_json
+from active_collab_api.AcFileAccessToken import fileaccesstoken_from_json
 
 
 class TestAcFileAccessToken(TestCase):

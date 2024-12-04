@@ -1,6 +1,6 @@
-from ActiveCollabAPI.AcCompany import AcCompany, company_from_json
+from active_collab_api.AcCompany import AcCompany, company_from_json
 from AcStorage.AcFileStorageBaseClass import AcFileStorageBaseClass
-from ActiveCollabAPI import AC_CLASS_COMPANY, AC_ERROR_WRONG_CLASS
+from active_collab_api import AC_CLASS_COMPANY, AC_ERROR_WRONG_CLASS
 
 
 class AcFileStorageCompany(AcFileStorageBaseClass):

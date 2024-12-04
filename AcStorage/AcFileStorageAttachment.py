@@ -2,12 +2,12 @@ import os
 import shutil
 
 from AcStorage.AcFileStorageBaseClass import AcFileStorageBaseClass
-from ActiveCollabAPI import (
+from active_collab_api import (
     AC_ERROR_WRONG_CLASS,
     AC_CLASS_ATTACHMENT_WAREHOUSE,
     AC_CLASS_ATTACHMENT_LOCAL,
 )
-from ActiveCollabAPI.AcAttachment import AcAttachment, attachment_from_json
+from active_collab_api.AcAttachment import AcAttachment, attachment_from_json
 
 
 class AcFileStorageAttachment(AcFileStorageBaseClass):

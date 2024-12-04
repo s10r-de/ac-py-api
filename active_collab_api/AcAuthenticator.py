@@ -5,7 +5,7 @@ import json
 import requests
 from requests import Response
 
-from ActiveCollabAPI import AC_USER_AGENT, AC_API_CLIENT_VENDOR, AC_API_CLIENT_NAME, AC_API_VERSION
+from active_collab_api import AC_USER_AGENT, AC_API_CLIENT_VENDOR, AC_API_CLIENT_NAME, AC_API_VERSION
 
 
 class AcAuthenticator:

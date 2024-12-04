@@ -2,6 +2,7 @@ import os
 import shutil
 import time
 
+from AcStorage import DEFAULT_MODE_DIRS
 from AcStorage.AcFileStorageAttachment import AcFileStorageAttachment
 from AcStorage.AcFileStorageComment import AcFileStorageComment
 from AcStorage.AcFileStorageCompany import AcFileStorageCompany
@@ -15,7 +16,6 @@ from AcStorage.AcFileStorageTaskHistory import AcFileStorageTaskHistory
 from AcStorage.AcFileStorageTaskLabel import AcFileStorageTaskLabel
 from AcStorage.AcFileStorageTaskList import AcFileStorageTaskList
 from AcStorage.AcFileStorageUser import AcFileStorageUser
-from AcStorage import DEFAULT_MODE_DIRS
 
 
 class AcFileStorage:

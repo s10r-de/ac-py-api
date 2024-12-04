@@ -3,7 +3,7 @@ import os.path
 import re
 from unittest import TestCase
 
-from ActiveCollabAPI.AcAttachment import AcAttachment, attachment_from_json
+from active_collab_api.AcAttachment import AcAttachment, attachment_from_json
 from AcStorage.AcFileStorage import AcFileStorage
 
 DATA_DIR = "./data"

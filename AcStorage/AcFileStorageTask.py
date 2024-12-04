@@ -1,6 +1,6 @@
 from AcStorage.AcFileStorageBaseClass import AcFileStorageBaseClass
-from ActiveCollabAPI.AcTask import AcTask, task_from_json
-from ActiveCollabAPI import AC_CLASS_TASK, AC_ERROR_WRONG_CLASS
+from active_collab_api.AcTask import AcTask, task_from_json
+from active_collab_api import AC_CLASS_TASK, AC_ERROR_WRONG_CLASS
 
 
 class AcFileStorageTask(AcFileStorageBaseClass):
