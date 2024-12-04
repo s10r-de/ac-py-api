@@ -91,3 +91,15 @@ class TestAcTaskLabel(TestCase):
         task_label = task_label_from_task_json(task_json)
         self.assertEqual(label_id, task_label.id)
         self.assertEqual("TaskLabel", task_label.class_)
+
+    def test_from_task_json_without_class_property(self):
+        data = {
+            "id": 33,
+            "name": "NEW",
+            "color": "#C3E799",
+            "lighter_text_color": "#80C333",
+            "darker_text_color": "#718658",
+        }
+        task_label = task_label_from_task_json(data)
+        self.assertEqual(33, task_label.id)
+        self.assertEqual("TaskLabel", task_label.class_)
