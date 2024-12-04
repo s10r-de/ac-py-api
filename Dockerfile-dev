@@ -24,6 +24,10 @@ RUN . .venv/bin/activate && pip3 install --no-cache-dir -r /app/requirements.txt
 COPY acdump.sh /app/acdump.sh
 RUN chmod +x /app/acdump.sh
 
+# dev
+COPY requirements-dev.txt /app/
+RUN . .venv/bin/activate && pip3 install -r /app/requirements-dev.txt
+
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 

@@ -1,4 +1,44 @@
 
+CONFIG=$(PWD)/config-docker.ini
+DATA=$(PWD)/../data-docker
+
+DEBUG=--debug
+
+IMAGE_NAME=active-collab-backup
+IMAGE_NAME_DEV=active-collab-backup-dev
+CONTAINER_NAME=active-collab-backup
+
+# docker based
+docker: Dockerfile
+	docker buildx build -t $(IMAGE_NAME) .
+
+docker-dev: Dockerfile-dev
+	docker buildx build -t $(IMAGE_NAME_DEV) .
+
+DOCKER_RUN_OPTS=run --rm -v $(CONFIG):/config.ini -v $(DATA):/data --name $(CONTAINER_NAME) $(IMAGE_NAME) 
+
+docker_run_info:
+	@echo "info for localhost"
+	docker $(DOCKER_RUN_OPTS) -c /config.ini $(DEBUG) info
+
+docker_run_dump:
+	@echo "dump for localhost"
+	docker $(DOCKER_RUN_OPTS) -c /config.ini $(DEBUG) dump
+
+docker_run_delete:
+	@echo "delete for localhost"
+	docker $(DOCKER_RUN_OPTS) -c /config.ini $(DEBUG) delete
+
+docker_run_empty:
+	@echo "empty for localhost"
+	docker $(DOCKER_RUN_OPTS) -c /config.ini $(DEBUG) empty
+
+docker_run_load:
+	@echo "load for localhost"
+	docker $(DOCKER_RUN_OPTS) -c /config.ini $(DEBUG) load
+
+
+# local venv
 .venv: .venv/touchfile
 
 .venv-dev: .venv/touchfile-dev
