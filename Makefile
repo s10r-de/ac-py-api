@@ -67,6 +67,10 @@ docker_lint: docker-dev
 test: .venv-dev
 	. .venv/bin/activate; python3 -m unittest -v
 
+test-report: .venv-dev
+	-mkdir test-reports
+	-python3 -m xmlrunner -v --output-file test-reports/report.xml
+
 lint: .venv-dev
 	. .venv/bin/activate; pylint active_collab_app/ active_collab_storage/ ActiveCollab/
 
