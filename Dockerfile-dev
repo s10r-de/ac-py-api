@@ -27,6 +27,8 @@ RUN chmod +x /app/acdump.sh
 # dev
 COPY requirements-dev.txt /app/
 RUN . .venv/bin/activate && pip3 install -r /app/requirements-dev.txt
+COPY .pylintrc /
+COPY tox.ini /
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh

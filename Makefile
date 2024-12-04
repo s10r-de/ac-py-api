@@ -43,6 +43,12 @@ run_verify: docker
 	@echo "verify for localhost"
 	docker $(DOCKER_RUN_OPTS) -c /config.ini $(DEBUG) verify
 
+docker_test: docker-dev
+	docker $(DOCKER_RUN_OPTS_DEV) /app/.venv/bin/python3 -m unittest -v
+
+docker_lint: docker-dev
+	docker $(DOCKER_RUN_OPTS_DEV) /app/.venv/bin/pylint AcDump/ AcStorage/ ActiveCollab/
+
 # local venv
 .venv: .venv/touchfile
 
@@ -57,19 +63,15 @@ run_verify: docker
 	@echo "build for DEVELOPMENT..."
 	. .venv/bin/activate; pip3 install -r requirements-dev.txt
 	touch .venv/touchfile-dev
-test: docker-dev
-	docker $(DOCKER_RUN_OPTS_DEV) /app/.venv/bin/python3 -m unittest -v
 
 test: .venv-dev
 	. .venv/bin/activate; python3 -m unittest -v
-lint: docker-dev
-	docker $(DOCKER_RUN_OPTS_DEV) /app/.venv/bin/pylint AcDump/ AcStorage/ ActiveCollab/
 
 lint: .venv-dev
 	. .venv/bin/activate; pylint AcDump/ AcStorage/ ActiveCollab/
 
 clean:
-	-rm -fr .venv
+	-rm -fr .venv .pytest_cache .ruff_cache
 	-find . -name "*.pyc" -delete
 	-find . -name "__py*__" -delete
 
