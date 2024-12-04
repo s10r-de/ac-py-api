@@ -14,8 +14,8 @@ class TestAcAccount(TestCase):
     def _generate_test_account(account_id: int) -> AcAccount:
         return AcAccount(
             name=account_id,
-            url="'https://app.activecollab.com/%d" % account_id,
-            display_name="#%d" % account_id,
+            url=f"https://app.activecollab.com/{account_id}",
+            display_name=f"#{account_id:#d}",
             user_display_name="Account display name",
             position=1,
             class_="ActiveCollab\\Shepherd\\Model\\Account\\ActiveCollab\\FeatherAccount",
@@ -42,8 +42,8 @@ class TestAcAccount(TestCase):
         account_id = 103
         account_json = {
             "name": account_id,
-            "url": "'https://app.activecollab.com/%d" % account_id,
-            "display_name": "#%d" % account_id,
+            "url": f"https://app.activecollab.com/{account_id}",
+            "display_name": f"#{account_id:#d}",
             "user_display_name": "Account display name",
             "position": 1,
             "class": "ActiveCollab\\Shepherd\\Model\\Account\\ActiveCollab\\FeatherAccount",
@@ -56,8 +56,8 @@ class TestAcAccount(TestCase):
         account_id = 103
         account_json = {
             "name": account_id,
-            "url": "'https://app.activecollab.com/%d" % account_id,
-            "display_name": "#%d" % account_id,
+            "url": f"https://app.activecollab.com/{account_id}",
+            "display_name": f"#{account_id:#d}",
             "user_display_name": "Account display name",
             "position": 1,
             "class": "dummy",

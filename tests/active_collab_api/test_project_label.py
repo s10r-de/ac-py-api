@@ -12,7 +12,7 @@ class TestAcProjectLabel(TestCase):
         return AcProjectLabel(
             id=label_id,
             class_="ProjectLabel",
-            url_path="/projects/label/%d" % label_id,
+            url_path=f"/projects/label/{label_id}",
             name="Test Project Label",
             updated_on=int(time.time()),
             color="#ff00ff",

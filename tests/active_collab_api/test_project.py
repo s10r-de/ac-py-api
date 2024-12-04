@@ -8,7 +8,9 @@ from active_collab_api.ac_project import AcProject, project_from_json
 class TestAcProject(TestCase):
     @staticmethod
     def _generate_test_project(project_id: int) -> AcProject:
-        with open("tests/example-data/example-project-611.json", "r") as fh:
+        with open(
+            "tests/example-data/example-project-611.json", "r", encoding="utf-8"
+        ) as fh:
             project = project_from_json(json.load(fh))
         project.id = project_id
         return project

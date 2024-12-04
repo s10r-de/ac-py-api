@@ -20,7 +20,7 @@ class TestAcProjectCategory(TestCase):
             parent_id=None,
             parent_type=None,
             updated_on=int(time.time()) + 2,
-            url_path="/categories/%d" % category_id,
+            url_path=f"/categories/{category_id}",
         )
 
     def test_constructor(self):

@@ -7,9 +7,7 @@ from active_collab_api.ac_task_history import AcTaskHistory, task_history_from_j
 
 class TestAcTaskHistory(TestCase):
     @staticmethod
-    def _generate_test_task_history(
-        timestamp: int, task_id: int = None
-    ) -> AcTaskHistory:
+    def _generate_test_task_history(timestamp: int, task_id: int = 0) -> AcTaskHistory:
         return AcTaskHistory(
             timestamp=timestamp,
             created_by_id=12,
@@ -101,7 +99,11 @@ class TestAcTaskHistory(TestCase):
         self.assertEqual(timestamp, json.loads(task_history_json)["timestamp"])
 
     def test_from_json(self):
-        with open("tests/example-data/example-task-history-1727425588.json", "r") as f:
+        with open(
+            "tests/example-data/example-task-history-1727425588.json",
+            "r",
+            encoding="utf-8",
+        ) as f:
             task_history_json = json.load(f)
         task_history = task_history_from_json(task_history_json, 8731)
         self.assertEqual(1727425588, task_history.timestamp)

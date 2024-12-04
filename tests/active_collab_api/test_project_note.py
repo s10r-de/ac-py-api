@@ -15,7 +15,9 @@ class TestAcProjectNote(TestCase):
     @staticmethod
     def _generate_test_project_note(note_id: int) -> dict:
         with open(
-            "tests/example-data/example-note-94-without-attachment.json", "r"
+            "tests/example-data/example-note-94-without-attachment.json",
+            "r",
+            encoding="utf-8",
         ) as f:
             project_note_json = json.load(f)
         project_note_json["id"] = note_id
@@ -24,7 +26,9 @@ class TestAcProjectNote(TestCase):
     @staticmethod
     def _generate_test_project_note_with_2_attachments(note_id: int) -> dict:
         with open(
-            "tests/example-data/example-note-87-with-2-attachments.json", "r"
+            "tests/example-data/example-note-87-with-2-attachments.json",
+            "r",
+            encoding="utf-8",
         ) as f:
             project_note_json = json.load(f)
         project_note_json["id"] = note_id

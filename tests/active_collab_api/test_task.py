@@ -10,14 +10,18 @@ from active_collab_api.ac_task_dependencies import AcTaskDependencies
 class TestAcTask(TestCase):
     @staticmethod
     def _generate_test_task(task_id: int) -> AcTask:
-        with open("tests/example-data/example-task-17614.json", "r") as fh:
+        with open(
+            "tests/example-data/example-task-17614.json", "r", encoding="utf-8"
+        ) as fh:
             task = task_from_json(json.load(fh))
         task.id = task_id
         return task
 
     @staticmethod
     def _generate_test_attachment(attachment_id: int) -> AcAttachment:
-        with open("tests/example-data/example-attachment-29703.json", "r") as fh:
+        with open(
+            "tests/example-data/example-attachment-29703.json", "r", encoding="utf-8"
+        ) as fh:
             attachment = attachment_from_json(json.load(fh))
         attachment.id = attachment_id
         return attachment
@@ -108,7 +112,9 @@ class TestAcTask(TestCase):
 
     @staticmethod
     def _generate_test_task_with_attachments(task_id: int) -> AcTask:
-        with open("tests/example-data/example-task-17614b.json", "r") as fh:
+        with open(
+            "tests/example-data/example-task-17614b.json", "r", encoding="utf-8"
+        ) as fh:
             task = task_from_json(json.load(fh))
         task.id = task_id
         return task

@@ -8,7 +8,9 @@ from active_collab_api.ac_company import company_from_json
 class TestAcCompany(TestCase):
     @staticmethod
     def _generate_test_company(company_id: int) -> dict:
-        with open("tests/example-data/example-company-5.json", "r") as fh:
+        with open(
+            "tests/example-data/example-company-5.json", "r", encoding="utf-8"
+        ) as fh:
             company_json = json.load(fh)
         company_json["id"] = company_id
         return company_json

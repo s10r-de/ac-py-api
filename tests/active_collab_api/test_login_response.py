@@ -21,8 +21,8 @@ class TestAcLoginResponse(TestCase):
 
         account = AcAccount(
             name=account_id,
-            url="'https://app.activecollab.com/%d" % account_id,
-            display_name="#%d" % account_id,
+            url=f"https://app.activecollab.com/{account_id}",
+            display_name=f"#{account_id:#d}",
             user_display_name="Account display name",
             position=1,
             class_="ActiveCollab\\Shepherd\\Model\\Account\\ActiveCollab\\FeatherAccount",
