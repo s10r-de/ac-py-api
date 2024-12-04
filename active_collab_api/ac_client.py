@@ -230,7 +230,9 @@ class AcClient:
 
     def get_file_access_token(self, retry=3, pause=5) -> Response:
         res = requests.get(
-            self.base_url + "/issue-file-access-token", headers=self.headers()
+            self.base_url + "/issue-file-access-token",
+            headers=self.headers(),
+            timeout=DEFAULT_TIMEOUT,
         )
         if res.status_code >= 500:
             if retry > 0:
@@ -250,7 +252,9 @@ class AcClient:
         download_url = download_url.replace(
             "i=--DOWNLOAD-TOKEN--", "i=%s" % file_access_token
         )
-        with requests.get(download_url, headers=self.headers(), stream=True) as r:
+        with requests.get(
+            download_url, headers=self.headers(), stream=True, timeout=DEFAULT_TIMEOUT
+        ) as r:
             r.raise_for_status()
             tmp_filename = os.path.join(gettempdir(), filename)
             tmp_filename_safe = hashlib.sha256(tmp_filename.encode("utf-8")).hexdigest()

@@ -3,6 +3,7 @@ import json
 import requests
 from requests import Response
 
+from active_collab_api.ac_client import DEFAULT_TIMEOUT
 from active_collab_api import AC_API_CLIENT_NAME, AC_API_CLIENT_VENDOR, AC_USER_AGENT
 
 
@@ -31,4 +32,5 @@ class AcTokenAuthenticator:
             self.base_url + "/issue-token-intent",
             headers=self.headers(),
             data=json.dumps(data),
+            timeout=DEFAULT_TIMEOUT,
         )

@@ -3,7 +3,7 @@ from unittest import TestCase
 from active_collab_app.statistics import Counter, Statistics
 
 
-class test_Counter(TestCase):
+class TestCounter(TestCase):
     def test_counter(self):
         cnt = Counter()
         self.assertEqual(0, cnt.get())
@@ -15,7 +15,7 @@ class test_Counter(TestCase):
         self.assertEqual(0, cnt.get())
 
 
-class test_Statistics(TestCase):
+class TestStatistics(TestCase):
     def test_projects(self):
         stats = Statistics()
         values = stats.get()

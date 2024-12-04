@@ -18,9 +18,10 @@ class AcFileStorageUser(AcFileStorageBaseClass):
         pass
 
     def save(self, user: AcUser) -> str:
-        assert (
-            user.class_ == AC_CLASS_USER_MEMBER or user.class_ == AC_CLASS_USER_OWNER
-        ), AC_ERROR_WRONG_CLASS
+        assert user.class_ in [
+            AC_CLASS_USER_MEMBER,
+            AC_CLASS_USER_OWNER,
+        ], AC_ERROR_WRONG_CLASS
         return super().save_with_id(user, user.id)
 
     def load(self, user_id: int) -> AcUser:

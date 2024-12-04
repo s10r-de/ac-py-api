@@ -21,10 +21,10 @@ class AcFileStorageAttachment(AcFileStorageBaseClass):
         pass
 
     def save(self, attachment: AcAttachment, tmp_download: str) -> str:
-        assert (
-            attachment.class_ == AC_CLASS_ATTACHMENT_WAREHOUSE
-            or attachment.class_ == AC_CLASS_ATTACHMENT_LOCAL
-        ), AC_ERROR_WRONG_CLASS
+        assert attachment.class_ in [
+            AC_CLASS_ATTACHMENT_WAREHOUSE,
+            AC_CLASS_ATTACHMENT_LOCAL,
+        ], AC_ERROR_WRONG_CLASS
         assert os.path.exists(tmp_download)
 
         attachment_full_filename = super().save_with_id(attachment, attachment.id)
