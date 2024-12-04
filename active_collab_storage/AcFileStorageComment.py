@@ -1,6 +1,7 @@
-from active_collab_api.AcComment import AcComment, comment_from_json
+from active_collab_api import AC_CLASS_COMMENT, AC_ERROR_WRONG_CLASS
+from active_collab_api.ac_comment import AcComment, comment_from_json
+
 from active_collab_storage.AcFileStorageBaseClass import AcFileStorageBaseClass
-from active_collab_api import AC_ERROR_WRONG_CLASS, AC_CLASS_COMMENT
 
 
 class AcFileStorageComment(AcFileStorageBaseClass):

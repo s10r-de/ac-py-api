@@ -2,7 +2,7 @@ import json
 from unittest import TestCase
 
 from active_collab_api import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
-from active_collab_api.AcSubtask import subtask_from_json, AcSubtask
+from active_collab_api.ac_subtask import AcSubtask, subtask_from_json
 
 
 class TestAcSubtask(TestCase):

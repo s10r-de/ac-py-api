@@ -1,13 +1,14 @@
 from unittest import TestCase
 
-from active_collab_api.AcAccount import AcAccount
-from active_collab_api.AcCloudLoginResponse import AcCloudLoginResponse
-from active_collab_api.AcLoginUser import AcLoginUser
+from active_collab_api.ac_account import AcAccount
+from active_collab_api.ac_cloud_login_response import AcCloudLoginResponse
+from active_collab_api.ac_login_user import AcLoginUser
 
 
 class TestAcLoginResponse(TestCase):
     def test_ac_login_response_constructor(self):
         first_name = "Carsten"
+        # noinspection SpellCheckingInspection
         intent = "alskdjflkadsjfkldsajfk"
         account_id = 4711
 

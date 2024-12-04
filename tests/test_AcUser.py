@@ -1,16 +1,16 @@
 import json
 from unittest import TestCase
 
-from active_collab_api.AcUser import (
-    map_cloud_user_language_id,
+from active_collab_api import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
+from active_collab_api.ac_user import (
     AC_CLOUD_LANG_ID_ENGLISH,
     AC_CLOUD_LANG_ID_GERMAN,
-    AC_SELFHOSTED_LANG_ID_GERMAN,
     AC_SELFHOSTED_LANG_ID_ENGLISH,
+    AC_SELFHOSTED_LANG_ID_GERMAN,
     generate_random_password,
+    map_cloud_user_language_id,
     user_from_json,
 )
-from active_collab_api import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
 
 
 class TestAcUser(TestCase):
@@ -44,24 +44,24 @@ class TestAcUser(TestCase):
         cloud_user_de_json = self._generate_test_user(user_id)
         cloud_user_de = user_from_json(cloud_user_de_json)
         cloud_user_de.language_id = AC_CLOUD_LANG_ID_GERMAN
-        selfhosted_user_de = map_cloud_user_language_id(cloud_user_de)
-        self.assertEqual(selfhosted_user_de.language_id, AC_SELFHOSTED_LANG_ID_GERMAN)
+        self_hosted_user_de = map_cloud_user_language_id(cloud_user_de)
+        self.assertEqual(self_hosted_user_de.language_id, AC_SELFHOSTED_LANG_ID_GERMAN)
 
     def test_map_cloud_user_language_id_en(self):
         user_id = 103
         cloud_user_de_json = self._generate_test_user(user_id)
         cloud_user_de = user_from_json(cloud_user_de_json)
         cloud_user_de.language_id = AC_CLOUD_LANG_ID_ENGLISH
-        selfhosted_user_de = map_cloud_user_language_id(cloud_user_de)
-        self.assertEqual(selfhosted_user_de.language_id, AC_SELFHOSTED_LANG_ID_ENGLISH)
+        self_hosted_user_de = map_cloud_user_language_id(cloud_user_de)
+        self.assertEqual(self_hosted_user_de.language_id, AC_SELFHOSTED_LANG_ID_ENGLISH)
 
     def test_map_cloud_user_language_id_other(self):
         user_id = 103
         cloud_user_de_json = self._generate_test_user(user_id)
         cloud_user_de = user_from_json(cloud_user_de_json)
         cloud_user_de.language_id = 18  # some random value not DE not EN
-        selfhosted_user_de = map_cloud_user_language_id(cloud_user_de)
-        self.assertEqual(selfhosted_user_de.language_id, AC_SELFHOSTED_LANG_ID_ENGLISH)
+        self_hosted_user_de = map_cloud_user_language_id(cloud_user_de)
+        self.assertEqual(self_hosted_user_de.language_id, AC_SELFHOSTED_LANG_ID_ENGLISH)
 
     def test_generate_random_password(self):
         user_id = 103

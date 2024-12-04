@@ -3,11 +3,11 @@ import json
 from dataclasses import dataclass
 
 from active_collab_api import (
+    AC_CLASS_ATTACHMENT_LOCAL,
     AC_CLASS_ATTACHMENT_WAREHOUSE,
+    AC_ERROR_WRONG_CLASS,
     AC_PROPERTY_CLASS,
     AC_PROPERTY_CLASS_,
-    AC_CLASS_ATTACHMENT_LOCAL,
-    AC_ERROR_WRONG_CLASS,
 )
 
 

@@ -3,9 +3,10 @@ import json
 from dataclasses import dataclass
 
 from active_collab_api import (
+    AC_CLASS_ATTACHMENT_UPLOAD_RESPONSE,
+    AC_ERROR_WRONG_CLASS,
     AC_PROPERTY_CLASS,
     AC_PROPERTY_CLASS_,
-    AC_ERROR_WRONG_CLASS, AC_CLASS_ATTACHMENT_UPLOAD_RESPONSE,
 )
 
 
@@ -29,8 +30,9 @@ class AcAttachmentUploadResponse:
 
 
 def attachment_upload_response_from_json(json_obj: dict) -> AcAttachmentUploadResponse:
-    assert json_obj[AC_PROPERTY_CLASS] == AC_CLASS_ATTACHMENT_UPLOAD_RESPONSE, AC_ERROR_WRONG_CLASS + " " + json_obj[
-        AC_PROPERTY_CLASS]
+    assert json_obj[AC_PROPERTY_CLASS] == AC_CLASS_ATTACHMENT_UPLOAD_RESPONSE, (
+        AC_ERROR_WRONG_CLASS + " " + json_obj[AC_PROPERTY_CLASS]
+    )
     json_obj[AC_PROPERTY_CLASS_] = json_obj[AC_PROPERTY_CLASS]
     del json_obj[AC_PROPERTY_CLASS]
     return AcAttachmentUploadResponse(**json_obj)

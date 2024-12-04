@@ -18,7 +18,7 @@ class AcFileStorageBaseClass:
 
     def reset(self):
         if os.path.exists(self.get_path()):
-            tmp_path = '%s_%d' % (self.get_path(), time.time())
+            tmp_path = "%s_%d" % (self.get_path(), time.time())
             os.rename(self.get_path(), tmp_path)
             shutil.rmtree(tmp_path)
 
@@ -51,11 +51,16 @@ class AcFileStorageBaseClass:
         n = len(self.filename_prefix)
 
         def extract_id(f: str) -> int:
-            return locale.atoi(os.path.basename(f)[n + 1:-5])
+            return locale.atoi(os.path.basename(f)[n + 1: -5])
 
-        ids = list(map(extract_id,
-                       glob.iglob(os.path.join(self.get_path(),
-                                               self.filename_prefix + "-*.json"))))
+        ids = list(
+            map(
+                extract_id,
+                glob.iglob(
+                    os.path.join(self.get_path(), self.filename_prefix + "-*.json")
+                ),
+            )
+        )
         ids.sort()
         return ids
 

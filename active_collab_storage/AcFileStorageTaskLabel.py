@@ -1,6 +1,7 @@
+from active_collab_api import AC_CLASS_TASK_LABEL, AC_ERROR_WRONG_CLASS
+from active_collab_api.ac_task_label import AcTaskLabel
+
 from active_collab_storage.AcFileStorageBaseClass import AcFileStorageBaseClass
-from active_collab_api.AcTaskLabel import AcTaskLabel
-from active_collab_api import AC_ERROR_WRONG_CLASS, AC_CLASS_TASK_LABEL
 
 
 class AcFileStorageTaskLabel(AcFileStorageBaseClass):

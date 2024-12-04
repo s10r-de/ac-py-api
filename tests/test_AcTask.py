@@ -1,10 +1,10 @@
 import json
 from unittest import TestCase
 
-from active_collab_api.AcAttachment import AcAttachment, attachment_from_json
-from active_collab_api.AcTaskDependencies import AcTaskDependencies
 from active_collab_api import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
-from active_collab_api.AcTask import AcTask, task_from_json
+from active_collab_api.ac_attachment import AcAttachment, attachment_from_json
+from active_collab_api.ac_task import AcTask, task_from_json
+from active_collab_api.ac_task_dependencies import AcTaskDependencies
 
 
 class TestAcTask(TestCase):

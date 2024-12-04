@@ -1,16 +1,16 @@
 import hashlib
 import json
+import logging
 import os
 import time
-import logging
 from tempfile import gettempdir
 
 import requests
 from requests import Response
 
 from active_collab_api import AC_API_VERSION, AC_USER_AGENT
-from active_collab_api.AcAccount import AcAccount
-from active_collab_api.AcToken import AcToken
+from active_collab_api.ac_account import AcAccount
+from active_collab_api.ac_token import AcToken
 
 
 class AcClient:
@@ -44,8 +44,8 @@ class AcClient:
         res = requests.get(self.base_url + "/" + url, headers=self.headers())
         if res.status_code >= 500:
             if retry > 0:
-                logging.warn("Got status code %d in GET %s" % (res.status_code, url))
-                logging.warn("+ Retry No.%d in %d seconds..." % (retry, pause))
+                logging.warning("Got status code %d in GET %s" % (res.status_code, url))
+                logging.warning("+ Retry No.%d in %d seconds..." % (retry, pause))
                 time.sleep(pause)
                 res = self._get(url, retry=retry - 1)
         return res
@@ -216,8 +216,8 @@ class AcClient:
         )
         if res.status_code >= 500:
             if retry > 0:
-                logging.warn("GET file_access_token got status %d" % res.status_code)
-                logging.warn("Retry No.%d in %d seconds..." % (retry, pause))
+                logging.warning("GET file_access_token got status %d" % res.status_code)
+                logging.warning("Retry No.%d in %d seconds..." % (retry, pause))
                 time.sleep(pause)
                 res = self.get_file_access_token(retry=retry - 1)
         return res

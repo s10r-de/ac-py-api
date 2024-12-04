@@ -1,9 +1,13 @@
 import json
 from unittest import TestCase
 
-from active_collab_api.AcAttachment import attachment_from_json, AcAttachment
-from active_collab_api.AcComment import AcComment, comment_from_json
-from active_collab_api import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_, AC_ERROR_WRONG_CLASS
+from active_collab_api import (
+    AC_ERROR_WRONG_CLASS,
+    AC_PROPERTY_CLASS,
+    AC_PROPERTY_CLASS_,
+)
+from active_collab_api.ac_attachment import AcAttachment, attachment_from_json
+from active_collab_api.ac_comment import AcComment, comment_from_json
 
 
 class TestAcComment(TestCase):
@@ -72,10 +76,8 @@ class TestAcComment(TestCase):
         comment_dict = comment.to_dict()
         self.assertEqual(comment_id, comment_dict["id"])
         self.assertEqual(2, len(comment_dict["attachments"]))
-        self.assertEqual("WarehouseAttachment",
-                         comment_dict["attachments"][0]["class"])
-        self.assertEqual("WarehouseAttachment",
-                         comment_dict["attachments"][1]["class"])
+        self.assertEqual("WarehouseAttachment", comment_dict["attachments"][0]["class"])
+        self.assertEqual("WarehouseAttachment", comment_dict["attachments"][1]["class"])
 
     def test_to_json_with_attachments(self):
         comment_id = 17614
@@ -88,10 +90,8 @@ class TestAcComment(TestCase):
         parsed_json = json.loads(comment_json)
         self.assertEqual(comment_id, parsed_json["id"])
         self.assertEqual(2, len(parsed_json["attachments"]))
-        self.assertEqual("WarehouseAttachment",
-                         parsed_json["attachments"][0]["class"])
-        self.assertEqual("WarehouseAttachment",
-                         parsed_json["attachments"][1]["class"])
+        self.assertEqual("WarehouseAttachment", parsed_json["attachments"][0]["class"])
+        self.assertEqual("WarehouseAttachment", parsed_json["attachments"][1]["class"])
 
     @staticmethod
     def _generate_test_comment_with_attachments(comment_id: int) -> dict:

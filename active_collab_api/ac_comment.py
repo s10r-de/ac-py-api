@@ -2,13 +2,13 @@ import dataclasses
 import json
 from dataclasses import dataclass
 
-from active_collab_api.AcAttachment import AcAttachment, attachment_from_json
 from active_collab_api import (
     AC_CLASS_COMMENT,
+    AC_ERROR_WRONG_CLASS,
     AC_PROPERTY_CLASS,
     AC_PROPERTY_CLASS_,
-    AC_ERROR_WRONG_CLASS,
 )
+from active_collab_api.ac_attachment import AcAttachment, attachment_from_json
 
 
 @dataclass
@@ -45,8 +45,7 @@ class AcComment:
         d[AC_PROPERTY_CLASS] = d[AC_PROPERTY_CLASS_]
         del d[AC_PROPERTY_CLASS_]
         if d["attachments"] is not None:
-            d["attachments"] = list(
-                map(lambda a: a.to_dict(), self.get_attachments()))
+            d["attachments"] = list(map(lambda a: a.to_dict(), self.get_attachments()))
         return d
 
     def to_json(self) -> str:

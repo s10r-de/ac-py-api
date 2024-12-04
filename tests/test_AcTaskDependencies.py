@@ -1,7 +1,7 @@
 import json
 from unittest import TestCase
 
-from active_collab_api.AcTaskDependencies import (
+from active_collab_api.ac_task_dependencies import (
     AcTaskDependencies,
     taskdependency_from_json,
 )

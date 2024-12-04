@@ -1,12 +1,13 @@
 import json
 from unittest import TestCase
 
-from active_collab_api.AcLoginUser import AcLoginUser
+from active_collab_api.ac_login_user import AcLoginUser
 
 
 class TestAcLoginUser(TestCase):
     def test_to_dict(self):
         first_name = "Carsten"
+        # noinspection SpellCheckingInspection
         intent = "alskdjflkadsjfkldsajfk"
         login_user = AcLoginUser(
             avatar_url="https://avatar.example.com",
@@ -19,6 +20,7 @@ class TestAcLoginUser(TestCase):
 
     def test_to_json(self):
         first_name = "Carsten"
+        # noinspection SpellCheckingInspection
         intent = "alskdjflkadsjfkldsajfk"
         login_user = AcLoginUser(
             avatar_url="https://avatar.example.com",

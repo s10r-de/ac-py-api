@@ -5,13 +5,13 @@ import random
 import string
 from dataclasses import dataclass
 
-from active_collab_api.AcDataObject import AcDataObject
 from active_collab_api import (
     AC_CLASS_USER_MEMBER,
     AC_CLASS_USER_OWNER,
     AC_PROPERTY_CLASS,
     AC_PROPERTY_CLASS_,
 )
+from active_collab_api.ac_data_object import AcDataObject
 
 AC_CLOUD_LANG_ID_GERMAN = 5
 AC_CLOUD_LANG_ID_ENGLISH = 26

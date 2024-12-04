@@ -1,8 +1,8 @@
 import json
 from unittest import TestCase
 
-from active_collab_api.AcAttachment import attachment_from_json
 from active_collab_api import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
+from active_collab_api.ac_attachment import attachment_from_json
 
 
 class TestAcAttachment(TestCase):
@@ -29,5 +29,4 @@ class TestAcAttachment(TestCase):
         attachment_json = attachment.to_json()
         self.assertEqual(attachment_id, json.loads(attachment_json)["id"])
         self.assertIn(AC_PROPERTY_CLASS, json.loads(attachment_json).keys())
-        self.assertNotIn(AC_PROPERTY_CLASS_,
-                         json.loads(attachment_json).keys())
+        self.assertNotIn(AC_PROPERTY_CLASS_, json.loads(attachment_json).keys())

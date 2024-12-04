@@ -1,6 +1,7 @@
+from active_collab_api import AC_CLASS_SUBTASK, AC_ERROR_WRONG_CLASS
+from active_collab_api.ac_subtask import AcSubtask, subtask_from_json
+
 from active_collab_storage.AcFileStorageBaseClass import AcFileStorageBaseClass
-from active_collab_api.AcSubtask import AcSubtask, subtask_from_json
-from active_collab_api import AC_ERROR_WRONG_CLASS, AC_CLASS_SUBTASK
 
 
 class AcFileStorageSubtask(AcFileStorageBaseClass):

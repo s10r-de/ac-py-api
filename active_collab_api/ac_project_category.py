@@ -3,7 +3,11 @@ import json
 import logging
 from dataclasses import dataclass
 
-from active_collab_api import AC_CLASS_PROJECT_CATEGORY, AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
+from active_collab_api import (
+    AC_CLASS_PROJECT_CATEGORY,
+    AC_PROPERTY_CLASS,
+    AC_PROPERTY_CLASS_,
+)
 
 
 @dataclass
@@ -33,12 +37,15 @@ class AcProjectCategory:
             other_value = other_data[key]
             if this_value != other_value:
                 logging.error(
-                    "AcProjectCategory[%d]: %s '%s'!='%s' - does not match -> FAIL" % (
-                        self.id, key, this_value, other_value))
+                    "AcProjectCategory[%d]: %s '%s'!='%s' - does not match -> FAIL"
+                    % (self.id, key, this_value, other_value)
+                )
                 result = False
             else:
                 logging.debug(
-                    "AcProjectCategory[%d]: %s '%s' - matches -> OK" % (self.id, key, this_value))
+                    "AcProjectCategory[%d]: %s '%s' - matches -> OK"
+                    % (self.id, key, this_value)
+                )
         return result
 
     def to_dict(self) -> dict:

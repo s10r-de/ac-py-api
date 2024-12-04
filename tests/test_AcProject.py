@@ -2,7 +2,7 @@ import json
 from unittest import TestCase
 
 from active_collab_api import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
-from active_collab_api.AcProject import AcProject, project_from_json
+from active_collab_api.ac_project import AcProject, project_from_json
 
 
 class TestAcProject(TestCase):

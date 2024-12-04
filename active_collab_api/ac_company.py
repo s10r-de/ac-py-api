@@ -3,13 +3,13 @@ import json
 import logging
 from dataclasses import dataclass
 
-from active_collab_api.AcDataObject import AcDataObject
 from active_collab_api import (
     AC_CLASS_COMPANY,
+    AC_ERROR_WRONG_CLASS,
     AC_PROPERTY_CLASS,
     AC_PROPERTY_CLASS_,
-    AC_ERROR_WRONG_CLASS,
 )
+from active_collab_api.ac_data_object import AcDataObject
 
 
 @dataclass

@@ -1,8 +1,8 @@
 import json
 from unittest import TestCase
 
-from active_collab_api.AcCompany import company_from_json
 from active_collab_api import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
+from active_collab_api.ac_company import company_from_json
 
 
 class TestAcCompany(TestCase):

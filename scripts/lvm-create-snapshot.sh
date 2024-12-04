@@ -5,7 +5,7 @@ set -e
 
 TODAY=$(date +%Y%m%d)
 SNAP_SIZE=${SNAP_SIZE:-"25G"}
-LOCK_FILE=/tmp/$(basename $0).lock
+LOCK_FILE=/tmp/$(basename "$0").lock
 
 SERVICE_NAME=${SERVICE_NAME:-"activecollab"}
 

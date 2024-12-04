@@ -2,13 +2,13 @@ import dataclasses
 import json
 from dataclasses import dataclass
 
-from active_collab_api.AcAttachment import AcAttachment, attachment_from_json
 from active_collab_api import (
     AC_CLASS_PROJECT_NOTE,
+    AC_ERROR_WRONG_CLASS,
     AC_PROPERTY_CLASS,
     AC_PROPERTY_CLASS_,
-    AC_ERROR_WRONG_CLASS,
 )
+from active_collab_api.ac_attachment import AcAttachment, attachment_from_json
 
 
 @dataclass

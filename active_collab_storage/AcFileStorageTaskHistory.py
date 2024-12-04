@@ -1,5 +1,6 @@
+from active_collab_api.ac_task_history import AcTaskHistory
+
 from active_collab_storage.AcFileStorageBaseClass import AcFileStorageBaseClass
-from active_collab_api.AcTaskHistory import AcTaskHistory
 
 
 class AcFileStorageTaskHistory(AcFileStorageBaseClass):

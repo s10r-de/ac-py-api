@@ -1,8 +1,8 @@
 import json
 from unittest import TestCase
 
-from active_collab_api.AcTaskList import task_list_from_json, AcTaskList
 from active_collab_api import AC_PROPERTY_CLASS, AC_PROPERTY_CLASS_
+from active_collab_api.ac_task_list import AcTaskList, task_list_from_json
 
 
 class TestAcTaskList(TestCase):

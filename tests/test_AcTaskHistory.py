@@ -2,7 +2,7 @@ import json
 import time
 from unittest import TestCase
 
-from active_collab_api.AcTaskHistory import AcTaskHistory, task_history_from_json
+from active_collab_api.ac_task_history import AcTaskHistory, task_history_from_json
 
 
 class TestAcTaskHistory(TestCase):

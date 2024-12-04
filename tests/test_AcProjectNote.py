@@ -1,14 +1,14 @@
 import json
 from unittest import TestCase
 
-from active_collab_api.AcAttachment import AcAttachment
-from active_collab_api.AcProjectNote import project_note_from_json
 from active_collab_api import (
-    AC_PROPERTY_CLASS,
-    AC_PROPERTY_CLASS_,
     AC_CLASS_PROJECT_NOTE,
     AC_ERROR_WRONG_CLASS,
+    AC_PROPERTY_CLASS,
+    AC_PROPERTY_CLASS_,
 )
+from active_collab_api.ac_attachment import AcAttachment
+from active_collab_api.ac_project_note import project_note_from_json
 
 
 class TestAcProjectNote(TestCase):
@@ -22,7 +22,7 @@ class TestAcProjectNote(TestCase):
         return project_note_json
 
     @staticmethod
-    def _generate_test_project_note_with_2_attachements(note_id: int) -> dict:
+    def _generate_test_project_note_with_2_attachments(note_id: int) -> dict:
         with open(
             "tests/example-data/example-note-87-with-2-attachments.json", "r"
         ) as f:
@@ -45,15 +45,13 @@ class TestAcProjectNote(TestCase):
 
     def test_from_json_with_attachments(self):
         note_id = 735
-        project_note_json = self._generate_test_project_note_with_2_attachements(
-            note_id
-        )
+        project_note_json = self._generate_test_project_note_with_2_attachments(note_id)
         project_note = project_note_from_json(project_note_json)
         self.assertEqual(note_id, project_note.id)
         self.assertEqual(2, len(project_note.attachments))
         self.assertIsInstance(project_note.attachments[0], AcAttachment)
         #
-        project_note_json = self._generate_test_project_note_with_2_attachements(
+        project_note_json = self._generate_test_project_note_with_2_attachments(
             note_id + 2
         )
         project_note_json[AC_PROPERTY_CLASS] = "dummy"
@@ -77,9 +75,7 @@ class TestAcProjectNote(TestCase):
 
     def test_to_dict_with_2_attachments(self):
         note_id = 736
-        project_note_json = self._generate_test_project_note_with_2_attachements(
-            note_id
-        )
+        project_note_json = self._generate_test_project_note_with_2_attachments(note_id)
         project_note = project_note_from_json(project_note_json)
         project_note = project_note.to_dict()
         self.assertEqual(note_id, project_note["id"])

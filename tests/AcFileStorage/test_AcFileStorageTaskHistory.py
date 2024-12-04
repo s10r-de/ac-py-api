@@ -3,8 +3,8 @@ import os.path
 import time
 from unittest import TestCase
 
+from active_collab_api.ac_task_history import task_history_from_json
 from active_collab_storage.AcFileStorageTaskHistory import AcFileStorageTaskHistory
-from active_collab_api.AcTaskHistory import task_history_from_json
 
 DATA_DIR = "./data-test/%s/" % __name__
 ACCOUNT_ID = 12345

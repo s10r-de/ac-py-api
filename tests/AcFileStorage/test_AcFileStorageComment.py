@@ -3,9 +3,9 @@ import json
 import os.path
 from unittest import TestCase
 
-from active_collab_api.AcComment import comment_from_json
-from active_collab_storage.AcFileStorageComment import AcFileStorageComment
 from active_collab_api import AC_ERROR_WRONG_CLASS
+from active_collab_api.ac_comment import comment_from_json
+from active_collab_storage.AcFileStorageComment import AcFileStorageComment
 
 DATA_DIR = "./data-test/%s/" % __name__
 ACCOUNT_ID = 12345
