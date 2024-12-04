@@ -47,7 +47,7 @@ docker_test: docker-dev
 	docker $(DOCKER_RUN_OPTS_DEV) /app/.venv/bin/python3 -m unittest -v
 
 docker_lint: docker-dev
-	docker $(DOCKER_RUN_OPTS_DEV) /app/.venv/bin/pylint AcDump/ active_collab_storage/ ActiveCollab/
+	docker $(DOCKER_RUN_OPTS_DEV) /app/.venv/bin/pylint active_collab_app/ active_collab_storage/ ActiveCollab/
 
 # local venv
 .venv: .venv/touchfile
@@ -68,7 +68,7 @@ test: .venv-dev
 	. .venv/bin/activate; python3 -m unittest -v
 
 lint: .venv-dev
-	. .venv/bin/activate; pylint AcDump/ active_collab_storage/ ActiveCollab/
+	. .venv/bin/activate; pylint active_collab_app/ active_collab_storage/ ActiveCollab/
 
 clean:
 	-rm -fr .venv .pytest_cache .ruff_cache
