@@ -12,6 +12,8 @@ from active_collab_api import AC_API_VERSION, AC_USER_AGENT
 from active_collab_api.ac_account import AcAccount
 from active_collab_api.ac_token import AcToken
 
+DEFAULT_TIMEOUT = 15
+
 
 class AcClient:
     """
@@ -41,7 +43,9 @@ class AcClient:
         }
 
     def _get(self, url: str, retry=3, pause=5) -> Response:
-        res = requests.get(self.base_url + "/" + url, headers=self.headers())
+        res = requests.get(
+            self.base_url + "/" + url, headers=self.headers(), timeout=DEFAULT_TIMEOUT
+        )
         if res.status_code >= 500:
             if retry > 0:
                 logging.warning("Got status code %d in GET %s" % (res.status_code, url))
@@ -51,21 +55,35 @@ class AcClient:
         return res
 
     def _delete(self, url: str) -> Response:
-        return requests.delete(self.base_url + "/" + url, headers=self.headers())
+        return requests.delete(
+            self.base_url + "/" + url, headers=self.headers(), timeout=DEFAULT_TIMEOUT
+        )
 
     def _post(self, url: str, data: str, files=None) -> Response:
         return requests.post(
-            self.base_url + "/" + url, headers=self.headers(), data=data, files=files
+            self.base_url + "/" + url,
+            headers=self.headers(),
+            data=data,
+            files=files,
+            timeout=DEFAULT_TIMEOUT,
         )
 
     def _upload(self, url: str, files: dict) -> Response:
         headers = self.headers()
         del headers["Content-Type"]
-        return requests.post(self.base_url + "/" + url, headers=headers, files=files)
+        return requests.post(
+            self.base_url + "/" + url,
+            headers=headers,
+            files=files,
+            timeout=DEFAULT_TIMEOUT,
+        )
 
     def _put(self, url: str, data: str) -> Response:
         return requests.put(
-            self.base_url + "/" + url, headers=self.headers(), data=data
+            self.base_url + "/" + url,
+            headers=self.headers(),
+            data=data,
+            timeout=DEFAULT_TIMEOUT,
         )
 
     def get_info(self):
@@ -84,7 +102,7 @@ class AcClient:
 
     def post_task(self, data: dict) -> Response:
         project_id = data["project_id"]
-        data["labels"] = list(map(lambda l: l["name"], data["labels"]))
+        data["labels"] = list(map(lambda task: task["name"], data["labels"]))
         return self._post("projects/%d/tasks" % project_id, json.dumps(data))
 
     def complete_task(self, task_id: int) -> Response:

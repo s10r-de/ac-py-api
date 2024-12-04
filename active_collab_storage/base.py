@@ -9,7 +9,6 @@ from active_collab_storage import DEFAULT_MODE_DIRS, AC_ERROR_ID_MUST_BE_INT
 
 
 class AcFileStorageBaseClass:
-
     def __init__(self, root_path: str, account_id: int):
         self.dir_name = ""
         self.filename_prefix = ""
@@ -18,7 +17,7 @@ class AcFileStorageBaseClass:
 
     def reset(self):
         if os.path.exists(self.get_path()):
-            tmp_path = "%s_%d" % (self.get_path(), time.time())
+            tmp_path = f"{0}_{1:#d}".format(self.get_path(), time.time())
             os.rename(self.get_path(), tmp_path)
             shutil.rmtree(tmp_path)
 
@@ -27,22 +26,22 @@ class AcFileStorageBaseClass:
             os.makedirs(self.get_path(), DEFAULT_MODE_DIRS)
 
     def get_account_path(self) -> str:
-        return os.path.join(self.root_path, "account-%08d" % self.account_id)
+        return os.path.join(self.root_path, f"account-{self.account_id:#08d}")
 
     def get_path(self) -> str:
         return os.path.join(self.get_account_path(), self.dir_name)
 
-    def filename_with_id(self, id: int) -> str:
-        assert isinstance(id, int), AC_ERROR_ID_MUST_BE_INT
-        return "%s-%018d.json" % (self.filename_prefix, id)
+    def filename_with_id(self, id_: int) -> str:
+        assert isinstance(id_, int), AC_ERROR_ID_MUST_BE_INT
+        return f"{self.filename_prefix}-{id_:#018d}.json"
 
     def get_full_filename(self, task_filename: str) -> str:
         return os.path.join(self.get_path(), task_filename)
 
-    def save_with_id(self, obj, id) -> str:
-        filename = self.filename_with_id(id)
+    def save_with_id(self, obj, id_) -> str:
+        filename = self.filename_with_id(id_)
         full_filename = self.get_full_filename(filename)
-        with open(full_filename, "w") as f:
+        with open(full_filename, "w", encoding="utf-8") as f:
             json.dump(obj.to_dict(), f, sort_keys=True, indent=2)
         return full_filename
 
@@ -51,7 +50,7 @@ class AcFileStorageBaseClass:
         n = len(self.filename_prefix)
 
         def extract_id(f: str) -> int:
-            return locale.atoi(os.path.basename(f)[n + 1 : -5])
+            return locale.atoi(os.path.basename(f)[n + 1: -5])
 
         ids = list(
             map(
@@ -64,9 +63,9 @@ class AcFileStorageBaseClass:
         ids.sort()
         return ids
 
-    def load_by_id(self, id: int) -> dict:
-        filename = self.filename_with_id(id)
+    def load_by_id(self, id_: int) -> dict:
+        filename = self.filename_with_id(id_)
         full_filename = self.get_full_filename(filename)
-        with open(full_filename, "r") as f:
+        with open(full_filename, "r", encoding="utf-8") as f:
             data = json.load(f)
         return data

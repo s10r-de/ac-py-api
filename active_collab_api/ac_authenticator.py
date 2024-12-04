@@ -11,6 +11,7 @@ from active_collab_api import (
     AC_API_VERSION,
     AC_USER_AGENT,
 )
+from active_collab_api.ac_client import DEFAULT_TIMEOUT
 
 
 class AcAuthenticator:
@@ -33,6 +34,7 @@ class AcAuthenticator:
             self.base_url + "/external/login",
             data=json.dumps(login_data),
             headers=self.headers(),
+            timeout=DEFAULT_TIMEOUT,
         )
 
     def login_self_hosted(self, email: str, password: str) -> Response:
@@ -46,4 +48,5 @@ class AcAuthenticator:
             self.base_url + "/issue-token",
             data=json.dumps(login_data),
             headers=self.headers(),
+            timeout=DEFAULT_TIMEOUT,
         )

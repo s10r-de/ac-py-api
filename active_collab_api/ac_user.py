@@ -134,9 +134,12 @@ def generate_random_password(user: AcUser) -> AcUser:
     """
     Generates a random password for the user.
 
-    Because we don't know the password for the user we will generate a new random password. The User then needs to
-    use the "forget password" function to reset his or her password.  For this process the "Send Email" must be
-    configured and the CRON jobs need to run.
+    Because we don't know the password for the user we will generate
+    a new random password. The User then needs to use the
+    "forget password" function to reset his or her password.
+
+    For this process the "Send Email" must be configured and the
+    CRON jobs need to run.
 
     :param user: original AcUser Object
     :return: modified AcUser Object

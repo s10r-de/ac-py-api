@@ -496,7 +496,9 @@ class ActiveCollab:
         if res.status_code != 200:
             raise Exception("Error %d" % res.status_code)
         res_data = res.json()
-        project_labels = list(map(lambda l: project_label_from_json(l), res_data))
+        project_labels = list(
+            map(lambda label: project_label_from_json(label), res_data)
+        )
         return project_labels
 
     def create_project_label(self, project_label: AcProjectLabel) -> dict | None:
