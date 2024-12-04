@@ -13,9 +13,10 @@ pipelines:
           caches:
             - pip
           script:
-            - if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+            - pip install -r requirements.txt
             - pip install -r requirements-dev.txt
-            - python3 -m unittests -v tests/* --junitxml=test-reports/report.xml
+            - pip install unittest-xml-reporting
+            - python -m xmlrunner -v --output-file test-reports/report.xml
       - step:
           name: Lint code
           script:
