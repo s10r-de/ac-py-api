@@ -3,11 +3,11 @@
 A tool to dump and later import Active Collab data over JSON Files.
 
 Concept can be found in
-Confluence: https://[example].atlassian.net/wiki/x/AYBXBw
+Confluence: <https://[example].atlassian.net/wiki/x/AYBXBw>
 
 ## Setup
 
-Requires Linux or a Macbook with [Homebrew](https://brew.sh) installed.
+Requires Linux or a Macbook with Docker and [Homebrew](https://brew.sh) installed.
 
 On the Mac install the **python3.12** via homebrew, the build-in python3
 will not
@@ -222,11 +222,11 @@ by the vendor ov AC).
 
 We only have the following information regarding our API:
 
-We have resources available regarding our API - first the documentation page: https://developers.activecollab.com/api-documentation/index.html
+We have resources available regarding our API - first the documentation page: <https://developers.activecollab.com/api-documentation/index.html>
 
-The second is the GitHub repo with examples here: https://github.com/activecollab/activecollab-feather-sdk
+The second is the GitHub repo with examples here: <https://github.com/activecollab/activecollab-feather-sdk>
 
-And the third and most valuable one is the StackOverflow here: https://stackoverflow.com/questions/tagged/activecollab
+And the third and most valuable one is the StackOverflow here: <https://stackoverflow.com/questions/tagged/activecollab>
 
 If you need some further assistance on this, I encourage you to post all the questions about the API on Stack Overflow so that our developers can take a look and answer.
 
@@ -234,9 +234,9 @@ You can find [ER-Diagram](AcObjects.md)
 
 ## API Problems
 
-- no paging: https://github.com/activecollab/activecollab-feather-sdk/issues/29
-  - https://stackoverflow.com/questions/40020003/get-pagination-results-in-active-collab-api/40020858#40020858
-- no filter: https://github.com/activecollab/activecollab-feather-sdk/issues/36
+- no paging: <https://github.com/activecollab/activecollab-feather-sdk/issues/29>
+  - <https://stackoverflow.com/questions/40020003/get-pagination-results-in-active-collab-api/40020858#40020858>
+- no filter: <https://github.com/activecollab/activecollab-feather-sdk/issues/36>
 
 ## License
 
