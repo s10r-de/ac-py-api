@@ -16,6 +16,7 @@ pipelines:
             - pip install -r requirements.txt
             - pip install -r requirements-dev.txt
             - pip install unittest-xml-reporting
+            - if [ ! -d ] ; then mkdir test-reports ; fi
             - python -m xmlrunner -v --output-file test-reports/report.xml
       - step:
           name: Lint code
