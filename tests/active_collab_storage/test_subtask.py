@@ -7,14 +7,16 @@ from active_collab_api import AC_ERROR_WRONG_CLASS
 from active_collab_api.ac_subtask import subtask_from_json
 from active_collab_storage.subtask import AcFileStorageSubtask
 
-DATA_DIR = "./data-test/%s/" % __name__
+DATA_DIR = f"./data-test/{__name__}/"
 ACCOUNT_ID = 12345
 
 
-class TestAcFileStorageSubtask(TestCase):
+class TestSubtask(TestCase):
     @staticmethod
     def _generate_test_subtask(task_id: int, subtask_id: int) -> dict:
-        with open("tests/example-data/example-subtask-00041071.json", "r") as fh:
+        with open(
+            "tests/example-data/example-subtask-00041071.json", "r", encoding="utf-8"
+        ) as fh:
             subtask = json.load(fh)
         subtask["task_id"] = task_id
         subtask["id"] = subtask_id

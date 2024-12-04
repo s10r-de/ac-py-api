@@ -7,14 +7,16 @@ from active_collab_api import AC_ERROR_WRONG_CLASS
 from active_collab_api.ac_company import company_from_json
 from active_collab_storage.company import AcFileStorageCompany
 
-DATA_DIR = "./data-test/%s/" % __name__
+DATA_DIR = f"./data-test/{__name__}/"
 ACCOUNT_ID = 12345
 
 
-class TestAcFileStorageCompany(TestCase):
+class TestCompany(TestCase):
     @staticmethod
     def _generate_test_company(company_id: int) -> dict:
-        with open("tests/example-data/example-company-5.json", "r") as fh:
+        with open(
+            "tests/example-data/example-company-5.json", "r", encoding="utf-8"
+        ) as fh:
             company_json = json.load(fh)
         company_json["id"] = company_id
         return company_json

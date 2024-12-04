@@ -11,10 +11,12 @@ DATA_DIR = "./data"
 ACCOUNT_ID = 12345
 
 
-class TestAcFileStorageAttachment(TestCase):
+class TestAttachment(TestCase):
     @staticmethod
     def _generate_test_attachment(attachment_id: int) -> dict:
-        with open("tests/example-data/example-attachment-29703.json", "r") as fh:
+        with open(
+            "tests/example-data/example-attachment-29703.json", "r", encoding="utf-8"
+        ) as fh:
             attachment = json.load(fh)
         attachment["id"] = attachment_id
         return attachment
@@ -27,7 +29,7 @@ class TestAcFileStorageAttachment(TestCase):
         task = attachment_from_json(self._generate_test_attachment(57))
         tmp_filename = mkstemp()[1]
         full_filename = storage.save(task, tmp_filename)
-        # FIXME test attachment
+        # FIXME test for attachment
         self.assertGreater(len(full_filename), 0)
         self.assertTrue(os.path.isfile(full_filename))
 

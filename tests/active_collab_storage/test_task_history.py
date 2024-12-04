@@ -6,13 +6,13 @@ from unittest import TestCase
 from active_collab_api.ac_task_history import task_history_from_json
 from active_collab_storage.task_history import AcFileStorageTaskHistory
 
-DATA_DIR = "./data-test/%s/" % __name__
+DATA_DIR = f"./data-test/{__name__}/"
 ACCOUNT_ID = 12345
 
 
-class TestAcFileStorageTaskHistory(TestCase):
+class TestTaskHistory(TestCase):
     @staticmethod
-    def _generate_test_task_history(timestamp: int, task_id: int = None) -> dict:
+    def _generate_test_task_history(timestamp: int) -> dict:
         return {
             "timestamp": timestamp,
             "created_by_id": 12,

@@ -9,14 +9,16 @@ from active_collab_storage.project_category import (
     AcFileStorageProjectCategory,
 )
 
-DATA_DIR = "./data-test/%s/" % __name__
+DATA_DIR = f"./data-test/{__name__}/"
 ACCOUNT_ID = 12345
 
 
-class TestAcFileStorageProjectCategory(TestCase):
+class TestProjectCategory(TestCase):
     @staticmethod
     def _generate_test_project_category(project_id: int) -> dict:
-        with open("tests/example-data/example-project-category-2.json", "r") as fh:
+        with open(
+            "tests/example-data/example-project-category-2.json", "r", encoding="utf-8"
+        ) as fh:
             project_category_json = json.load(fh)
         project_category_json["id"] = project_id
         return project_category_json

@@ -16,11 +16,12 @@ TEST_FILENAME_PREFIX = "test-file-prefix"
 TEST_DIR_NAME = "test-dir"
 
 
-class TestAcFileStorageBaseClass(TestCase):
+class TestBase(TestCase):
     @classmethod
     def setUpClass(cls):
         if os.path.exists(DATA_DIR):
-            tmp = DATA_DIR.rstrip("/") + ".%f0.6" % random.random()
+            rand = random.random()
+            tmp = DATA_DIR.rstrip("/") + f"{rand:#0.6f}"
             os.rename(DATA_DIR, tmp)
             shutil.rmtree(tmp)
 
@@ -96,7 +97,9 @@ class TestAcFileStorageBaseClass(TestCase):
         storage.dir_name = TEST_DIR_NAME
         storage.reset()
         storage.ensure_dirs()
-        with open("tests/example-data/example-company-5.json", "r") as fh:
+        with open(
+            "tests/example-data/example-company-5.json", "r", encoding="utf-8"
+        ) as fh:
             company_json = json.load(fh)
             company = company_from_json(company_json)
         filename = storage.save_with_id(company, company.id)
@@ -112,7 +115,9 @@ class TestAcFileStorageBaseClass(TestCase):
         storage.dir_name = TEST_DIR_NAME
         storage.reset()
         storage.ensure_dirs()
-        with open("tests/example-data/example-company-5.json", "r") as fh:
+        with open(
+            "tests/example-data/example-company-5.json", "r", encoding="utf-8"
+        ) as fh:
             company_json = json.load(fh)
             company = company_from_json(company_json)
         company77 = copy.copy(company)
@@ -133,7 +138,9 @@ class TestAcFileStorageBaseClass(TestCase):
         storage.dir_name = TEST_DIR_NAME
         storage.reset()
         storage.ensure_dirs()
-        with open("tests/example-data/example-company-5.json", "r") as fh:
+        with open(
+            "tests/example-data/example-company-5.json", "r", encoding="utf-8"
+        ) as fh:
             company_json = json.load(fh)
             company = company_from_json(company_json)
         company.id = 44

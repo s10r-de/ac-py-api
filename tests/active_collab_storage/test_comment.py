@@ -11,10 +11,12 @@ DATA_DIR = "./data-test/%s/" % __name__
 ACCOUNT_ID = 12345
 
 
-class TestAcFileStorageComment(TestCase):
+class TestComment(TestCase):
     @staticmethod
     def _generate_test_comment(comment_id: int) -> dict:
-        with open("tests/example-data/example-comment-95993.json", "r") as fh:
+        with open(
+            "tests/example-data/example-comment-95993.json", "r", encoding="utf-8"
+        ) as fh:
             comment = json.load(fh)
         comment["id"] = comment_id
         return comment

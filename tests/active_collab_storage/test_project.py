@@ -11,7 +11,7 @@ DATA_DIR = f"./data-test/{__name__}/"
 ACCOUNT_ID = 12345
 
 
-class TestStorageProject(TestCase):
+class TestStorage(TestCase):
     @staticmethod
     def _generate_test_project(project_id: int) -> dict:
         with open(

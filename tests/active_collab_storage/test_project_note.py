@@ -7,15 +7,17 @@ from active_collab_api import AC_ERROR_WRONG_CLASS
 from active_collab_api.ac_project_note import project_note_from_json
 from active_collab_storage.project_note import AcFileStorageProjectNote
 
-DATA_DIR = "./data-test/%s/" % __name__
+DATA_DIR = f"./data-test/{__name__}/"
 ACCOUNT_ID = 12345
 
 
-class TestAcFileStorageProjectNote(TestCase):
+class TestProjectNote(TestCase):
     @staticmethod
     def _generate_test_project_note(note_id: int) -> dict:
         with open(
-            "tests/example-data/example-note-94-without-attachment.json", "r"
+            "tests/example-data/example-note-94-without-attachment.json",
+            "r",
+            encoding="utf-8",
         ) as f:
             project_note_json = json.load(f)
         project_note_json["id"] = note_id
@@ -24,7 +26,9 @@ class TestAcFileStorageProjectNote(TestCase):
     @staticmethod
     def _generate_test_project_note_with_2_attachments(note_id: int) -> dict:
         with open(
-            "tests/example-data/example-note-87-with-2-attachments.json", "r"
+            "tests/example-data/example-note-87-with-2-attachments.json",
+            "r",
+            encoding="utf-8",
         ) as f:
             project_note_json = json.load(f)
         project_note_json["id"] = note_id

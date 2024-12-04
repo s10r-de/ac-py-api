@@ -7,17 +7,17 @@ from active_collab_api import AC_ERROR_WRONG_CLASS
 from active_collab_api.ac_project_label import project_label_from_json
 from active_collab_storage.project_label import AcFileStorageProjectLabel
 
-DATA_DIR = "./data-test/%s/" % __name__
+DATA_DIR = f"./data-test/{__name__}/"
 ACCOUNT_ID = 12345
 
 
-class TestAcFileStorageProjectLabel(TestCase):
+class TestProjectLabel(TestCase):
     @staticmethod
     def _generate_test_project_label(label_id: int) -> dict:
         return {
             "id": label_id,
             "class": "ProjectLabel",
-            "url_path": "/projects/label/%d" % label_id,
+            "url_path": f"/projects/label/{label_id}",
             "name": "Test Project Label",
             "updated_on": int(time.time()),
             "color": "#ff00ff",

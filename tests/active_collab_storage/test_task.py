@@ -7,14 +7,16 @@ from active_collab_api import AC_ERROR_WRONG_CLASS
 from active_collab_api.ac_task import task_from_json
 from active_collab_storage.task import AcFileStorageTask
 
-DATA_DIR = "./data-test/%s/" % __name__
+DATA_DIR = f"./data-test/{__name__}/"
 ACCOUNT_ID = 12345
 
 
-class TestAcFileStorageTask(TestCase):
+class TestTask(TestCase):
     @staticmethod
     def _generate_test_task(task_id: int) -> dict:
-        with open("tests/example-data/example-task-17614.json", "r") as fh:
+        with open(
+            "tests/example-data/example-task-17614.json", "r", encoding="utf-8"
+        ) as fh:
             task_json = json.load(fh)
         task_json["id"] = task_id
         return task_json

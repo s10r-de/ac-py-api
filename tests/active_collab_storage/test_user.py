@@ -7,14 +7,16 @@ from active_collab_api import AC_ERROR_WRONG_CLASS
 from active_collab_api.ac_user import user_from_json
 from active_collab_storage.user import AcFileStorageUser
 
-DATA_DIR = "./data-test/%s/" % __name__
+DATA_DIR = f"./data-test/{__name__}/"
 ACCOUNT_ID = 12345
 
 
-class TestAcFileStorageUser(TestCase):
+class TestUser(TestCase):
     @staticmethod
     def _generate_test_user(user_id: int) -> dict:
-        with open("tests/example-data/example-user-00000240.json", "r") as fh:
+        with open(
+            "tests/example-data/example-user-00000240.json", "r", encoding="utf-8"
+        ) as fh:
             user_json = json.load(fh)
         user_json["id"] = user_id
         return user_json

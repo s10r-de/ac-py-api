@@ -7,17 +7,17 @@ from active_collab_api import AC_ERROR_WRONG_CLASS
 from active_collab_api.ac_task_label import task_label_from_json
 from active_collab_storage.task_label import AcFileStorageTaskLabel
 
-DATA_DIR = "./data-test/%s/" % __name__
+DATA_DIR = f"./data-test/{__name__}/"
 ACCOUNT_ID = 12345
 
 
-class TestAcFileStorageTaskLabel(TestCase):
+class TestTaskLabel(TestCase):
     @staticmethod
     def _generate_test_task_label(label_id: int) -> dict:
         return {
             "id": label_id,
             "class": "TaskLabel",
-            "url_path": "/task/label/%d" % label_id,
+            "url_path": f"/task/label/{label_id}",
             "name": "Test Task Label",
             "updated_on": int(time.time()),
             "color": "#ff00ff",
