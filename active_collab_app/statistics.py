@@ -1,5 +1,4 @@
 class Counter:
-
     def __init__(self, initial=0):
         self.initial = initial
         self.counter = initial
@@ -28,6 +27,21 @@ class Statistics:
     task_lists = Counter()
     tasks = Counter()
     users = Counter()
+
+    def reset_all(self):
+        self.attachments.reset()
+        self.companies.reset()
+        self.project_categories.reset()
+        self.project_labels.reset()
+        self.project_notes.reset()
+        self.projects.reset()
+        self.subtasks.reset()
+        self.task_comments.reset()
+        self.task_history.reset()
+        self.task_labels.reset()
+        self.task_lists.reset()
+        self.tasks.reset()
+        self.users.reset()
 
     def get(self) -> dict:
         return {

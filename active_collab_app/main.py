@@ -16,7 +16,7 @@ from active_collab_api.AcTask import AcTask
 from active_collab_api.AcTaskList import AcTaskList
 from active_collab_api.AcUser import AcUser
 from active_collab_api.ActiveCollab import ActiveCollab
-from Statistics import Statistics
+from statistics import Statistics
 
 overall_statistics = Statistics()
 
