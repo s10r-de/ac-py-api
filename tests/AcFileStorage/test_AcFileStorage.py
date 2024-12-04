@@ -4,7 +4,7 @@ import re
 from unittest import TestCase
 
 from active_collab_api.ac_attachment import AcAttachment, attachment_from_json
-from active_collab_storage.AcFileStorage import AcFileStorage
+from active_collab_storage.storage import AcFileStorage
 
 DATA_DIR = "./data"
 

@@ -3,21 +3,22 @@ import shutil
 import time
 
 from active_collab_storage import DEFAULT_MODE_DIRS
-from active_collab_storage.AcFileStorageAttachment import AcFileStorageAttachment
-from active_collab_storage.AcFileStorageComment import AcFileStorageComment
-from active_collab_storage.AcFileStorageCompany import AcFileStorageCompany
-from active_collab_storage.AcFileStorageProject import AcFileStorageProject
-from active_collab_storage.AcFileStorageProjectCategory import (
+
+from .attachment import AcFileStorageAttachment
+from .comment import AcFileStorageComment
+from .company import AcFileStorageCompany
+from .project import AcFileStorageProject
+from .project_category import (
     AcFileStorageProjectCategory,
 )
-from active_collab_storage.AcFileStorageProjectLabel import AcFileStorageProjectLabel
-from active_collab_storage.AcFileStorageProjectNote import AcFileStorageProjectNote
-from active_collab_storage.AcFileStorageSubtask import AcFileStorageSubtask
-from active_collab_storage.AcFileStorageTask import AcFileStorageTask
-from active_collab_storage.AcFileStorageTaskHistory import AcFileStorageTaskHistory
-from active_collab_storage.AcFileStorageTaskLabel import AcFileStorageTaskLabel
-from active_collab_storage.AcFileStorageTaskList import AcFileStorageTaskList
-from active_collab_storage.AcFileStorageUser import AcFileStorageUser
+from .project_label import AcFileStorageProjectLabel
+from .project_note import AcFileStorageProjectNote
+from .subtask import AcFileStorageSubtask
+from .task import AcFileStorageTask
+from .task_history import AcFileStorageTaskHistory
+from .task_label import AcFileStorageTaskLabel
+from .task_list import AcFileStorageTaskList
+from .user import AcFileStorageUser
 
 
 class AcFileStorage:

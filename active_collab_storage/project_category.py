@@ -4,7 +4,7 @@ from active_collab_api.ac_project_category import (
     project_category_from_json,
 )
 
-from active_collab_storage.AcFileStorageBaseClass import AcFileStorageBaseClass
+from .base import AcFileStorageBaseClass
 
 
 class AcFileStorageProjectCategory(AcFileStorageBaseClass):

@@ -5,7 +5,7 @@ from unittest import TestCase
 
 from active_collab_api import AC_ERROR_WRONG_CLASS
 from active_collab_api.ac_task_list import task_list_from_json
-from active_collab_storage.AcFileStorageTaskList import AcFileStorageTaskList
+from active_collab_storage.task_list import AcFileStorageTaskList
 
 DATA_DIR = "./data-test/%s/" % __name__
 ACCOUNT_ID = 12345

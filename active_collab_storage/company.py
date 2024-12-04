@@ -1,7 +1,7 @@
 from active_collab_api import AC_CLASS_COMPANY, AC_ERROR_WRONG_CLASS
 from active_collab_api.ac_company import AcCompany, company_from_json
 
-from active_collab_storage.AcFileStorageBaseClass import AcFileStorageBaseClass
+from .base import AcFileStorageBaseClass
 
 
 class AcFileStorageCompany(AcFileStorageBaseClass):

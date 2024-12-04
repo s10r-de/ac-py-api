@@ -1,7 +1,7 @@
 from active_collab_api import AC_CLASS_PROJECT, AC_ERROR_WRONG_CLASS
 from active_collab_api.ac_project import AcProject, project_from_json
 
-from active_collab_storage.AcFileStorageBaseClass import AcFileStorageBaseClass
+from .base import AcFileStorageBaseClass
 
 
 class AcFileStorageProject(AcFileStorageBaseClass):

@@ -15,7 +15,7 @@ from active_collab_api.ac_task import AcTask
 from active_collab_api.ac_task_list import AcTaskList
 from active_collab_api.ac_user import AcUser
 from active_collab_api.active_collab import ActiveCollab
-from active_collab_storage.AcFileStorage import AcFileStorage
+from active_collab_storage.storage import AcFileStorage
 from active_collab_app.statistics import Statistics
 
 overall_statistics = Statistics()

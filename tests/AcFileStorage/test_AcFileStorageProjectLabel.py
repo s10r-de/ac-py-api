@@ -5,7 +5,7 @@ from unittest import TestCase
 
 from active_collab_api import AC_ERROR_WRONG_CLASS
 from active_collab_api.ac_project_label import project_label_from_json
-from active_collab_storage.AcFileStorageProjectLabel import AcFileStorageProjectLabel
+from active_collab_storage.project_label import AcFileStorageProjectLabel
 
 DATA_DIR = "./data-test/%s/" % __name__
 ACCOUNT_ID = 12345

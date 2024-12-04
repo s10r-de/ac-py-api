@@ -5,7 +5,7 @@ from active_collab_api import (
 )
 from active_collab_api.ac_user import AcUser, user_from_json
 
-from active_collab_storage.AcFileStorageBaseClass import AcFileStorageBaseClass
+from .base import AcFileStorageBaseClass
 
 
 class AcFileStorageUser(AcFileStorageBaseClass):

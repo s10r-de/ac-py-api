@@ -8,7 +8,7 @@ from active_collab_api import (
 )
 from active_collab_api.ac_attachment import AcAttachment, attachment_from_json
 
-from active_collab_storage.AcFileStorageBaseClass import AcFileStorageBaseClass
+from .base import AcFileStorageBaseClass
 
 
 class AcFileStorageAttachment(AcFileStorageBaseClass):

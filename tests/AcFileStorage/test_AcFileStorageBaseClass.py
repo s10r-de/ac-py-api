@@ -7,7 +7,7 @@ import shutil
 from unittest import TestCase
 
 from active_collab_api.ac_company import company_from_json
-from active_collab_storage.AcFileStorageBaseClass import AcFileStorageBaseClass
+from active_collab_storage.base import AcFileStorageBaseClass
 
 DATA_DIR = "./data-test/TestAcFileStorageBaseClass/"
 ACCOUNT_ID = 98765

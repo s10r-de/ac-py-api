@@ -5,7 +5,7 @@ from unittest import TestCase
 
 from active_collab_api import AC_ERROR_WRONG_CLASS
 from active_collab_api.ac_project_category import project_category_from_json
-from active_collab_storage.AcFileStorageProjectCategory import (
+from active_collab_storage.project_category import (
     AcFileStorageProjectCategory,
 )
 

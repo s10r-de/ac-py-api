@@ -51,7 +51,7 @@ class AcFileStorageBaseClass:
         n = len(self.filename_prefix)
 
         def extract_id(f: str) -> int:
-            return locale.atoi(os.path.basename(f)[n + 1: -5])
+            return locale.atoi(os.path.basename(f)[n + 1 : -5])
 
         ids = list(
             map(

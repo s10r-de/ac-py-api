@@ -5,7 +5,7 @@ from unittest import TestCase
 
 from active_collab_api import AC_ERROR_WRONG_CLASS
 from active_collab_api.ac_attachment import attachment_from_json
-from active_collab_storage.AcFileStorageAttachment import AcFileStorageAttachment
+from active_collab_storage.attachment import AcFileStorageAttachment
 
 DATA_DIR = "./data"
 ACCOUNT_ID = 12345
