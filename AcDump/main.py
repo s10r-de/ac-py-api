@@ -10,11 +10,12 @@ from collections.abc import Iterator
 
 from AcProject import AcProject
 from AcStorage.AcFileStorage import AcFileStorage
-from AcSubtask import AcSubtask
-from AcTask import AcTask
-from AcTaskList import AcTaskList
-from AcUser import AcUser
-from ActiveCollabAPI import AC_CLASS_USER_OWNER, AC_CLASS_USER_MEMBER
+from ActiveCollabAPI import AC_CLASS_USER_MEMBER, AC_CLASS_USER_OWNER
+from ActiveCollabAPI.AcProject import AcProject
+from ActiveCollabAPI.AcSubtask import AcSubtask
+from ActiveCollabAPI.AcTask import AcTask
+from ActiveCollabAPI.AcTaskList import AcTaskList
+from ActiveCollabAPI.AcUser import AcUser
 from ActiveCollabAPI.ActiveCollab import ActiveCollab
 from Statistics import Statistics
 
