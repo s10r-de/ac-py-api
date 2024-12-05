@@ -3,7 +3,6 @@ import shutil
 import time
 
 from active_collab_storage import DEFAULT_MODE_DIRS
-
 from .attachment import AcFileStorageAttachment
 from .comment import AcFileStorageComment
 from .company import AcFileStorageCompany
@@ -42,8 +41,8 @@ class AcFileStorage:
         }
 
     def reset(self):
-        for obj in self.data_objects.keys():
-            self.data_objects[obj].reset()
+        for _k, obj in self.data_objects.items():
+            obj.reset()
         if os.path.exists(self.root_path):
             tmp_path = "%s_%d" % (self.root_path, time.time())
             os.rename(self.root_path, tmp_path)
@@ -52,8 +51,8 @@ class AcFileStorage:
     def ensure_dirs(self):
         if not os.path.exists(self.get_account_path()):
             os.makedirs(self.get_account_path(), DEFAULT_MODE_DIRS)
-        for obj in self.data_objects.keys():
-            self.data_objects[obj].ensure_dirs()
+        for _k, obj in self.data_objects.items():
+            obj.ensure_dirs()
 
     def get_account_path(self) -> str:
         return os.path.join(self.root_path, "account-%08d" % self.account_id)

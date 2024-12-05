@@ -156,7 +156,6 @@ class AcClient:
     def update_note_assign_file(
         self,
         project_id: int,
-        parent_type: str,
         parent_id: int,
         disposition: str,
         code: str,

@@ -6,6 +6,10 @@ disable =
 	C0209,  # consider-using-f-string
 	R0801,  # Similar lines
 	R0902,  # too-many-instance-attributes
+  R0904,  # too-many-public-methods
+  R0913,  # too-many-arguments
+  R0917,  # too-many-positional-arguments
+  W0511,  # fixme
 	W1201,  # logging-not-lazy
 
 

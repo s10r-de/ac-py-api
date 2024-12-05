@@ -277,17 +277,17 @@ class ActiveCollab:
         res_data = res.json()
         return res_data
 
-    def delete_all_projects(self):
+    def delete_all_projects(self) -> None:
         client = AcClient(self.session.cur_account, self.session.token)
         for project in self.get_all_projects():
             client.delete_project(project.id)
 
-    def delete_all_project_categories(self):
+    def delete_all_project_categories(self) -> None:
         client = AcClient(self.session.cur_account, self.session.token)
         for project_category in self.get_project_categories():
             client.delete_project_category(project_category.id)
 
-    def delete_all_project_labels(self):
+    def delete_all_project_labels(self) -> None:
         client = AcClient(self.session.cur_account, self.session.token)
         for project_label in self.get_project_labels():
             client.delete_project_label(project_label.id)
@@ -301,11 +301,11 @@ class ActiveCollab:
         users = list(map(user_from_json, res_data))
         return users
 
-    def create_user(self, user: AcUser) -> dict | None:
+    def create_user(self, user: AcUser) -> bool:
         logging.debug("create user: " + user.to_json())
         if user.class_ == AC_CLASS_USER_OWNER:
             print("can not create owner user %d" % user.id)
-            return
+            return False
         user = _workaround_user_fix_type_from_class(user)
         user = map_cloud_user_language_id(user)
         user = generate_random_password(user)
@@ -314,9 +314,8 @@ class ActiveCollab:
         if res.status_code != 200:
             logging.error(user.to_dict())
             logging.error("Error %d - %s" % (res.status_code, str(res.text)))
-            return None
-        res_data = res.json()
-        return res_data
+            return False
+        return True
 
     def archive_user(self, user: AcUser) -> dict | None:
         client = AcClient(self.session.cur_account, self.session.token)
@@ -423,82 +422,56 @@ class ActiveCollab:
         """
         client = AcClient(self.session.cur_account, self.session.token)
 
-        # 1. upload file
-        files = {
-            "file": (
-                attachment.name,
-                open(bin_file, "rb"),
-                attachment.mime_type,
-            )
-        }
-        res = client.upload_files(files)
-        if res.status_code != 200:
-            msg = "Error %d - %s" % (res.status_code, str(res.text))
-            logging.error(msg)
-            raise AcApiError(msg)
-        logging.debug("Upload file response: %s" % res.text)
-        res_data = res.json()
-        attachment_upload_response = attachment_upload_response_from_json(res_data[0])
-
-        # assign file to the parent
-        if attachment.parent_type == AC_CLASS_TASK:
-            res = client.update_task_assign_file(
-                project_id=attachment.project_id,
-                task_id=attachment.parent_id,
-                disposition=attachment.disposition,
-                code=attachment_upload_response.code,
-            )
-        if attachment.parent_type == AC_CLASS_COMMENT:
-            res = client.update_comment_assign_file(
-                comment_id=attachment.parent_id,
-                disposition=attachment.disposition,
-                name=attachment.name,
-                code=attachment_upload_response.code,
-            )
-        if attachment.parent_type == AC_CLASS_PROJECT_NOTE:
-            logging.info("Attachments for notes not yet implemented!")
-            return {}
-            res = client.update_note_assign_file(
-                project_id=attachment.folder_id,
-                parent_type=attachment.parent_type,
-                parent_id=attachment.parent_id,
-                disposition=attachment.disposition,
-                code=attachment_upload_response.code,
+        with open(bin_file, "rb") as fh:
+            # 1. upload file
+            files = {
+                "file": (
+                    attachment.name,
+                    fh,
+                    attachment.mime_type,
+                )
+            }
+            res = client.upload_files(files)
+            if res.status_code != 200:
+                msg = "Error %d - %s" % (res.status_code, str(res.text))
+                logging.error(msg)
+                raise AcApiError(msg)
+            logging.debug("Upload file response: %s" % res.text)
+            res_data = res.json()
+            attachment_upload_response = attachment_upload_response_from_json(
+                res_data[0]
             )
 
-        if res.status_code == 404:
-            logging.error(
-                "Parent %s/%d not found! Can not create attachment!"
-                % (attachment.parent_type, attachment.parent_id)
-            )
-            return {}
-        if res.status_code != 200:
-            msg = "Error %d - %s" % (res.status_code, str(res.text))
-            raise AcApiError(msg)
-        res_data = res.json()
-        return res_data
+            # assign file to the parent
+            if attachment.parent_type == AC_CLASS_TASK:
+                res = client.update_task_assign_file(
+                    project_id=attachment.project_id,
+                    task_id=attachment.parent_id,
+                    disposition=attachment.disposition,
+                    code=attachment_upload_response.code,
+                )
+            if attachment.parent_type == AC_CLASS_COMMENT:
+                res = client.update_comment_assign_file(
+                    comment_id=attachment.parent_id,
+                    disposition=attachment.disposition,
+                    name=attachment.name,
+                    code=attachment_upload_response.code,
+                )
+            if attachment.parent_type == AC_CLASS_PROJECT_NOTE:
+                logging.info("Attachments for notes not yet implemented!")
+                return {}
 
-    # def create_attachment(self, attachment: AcAttachment) -> dict | None:
-    #     logging.debug("Create attachment: " + attachment.to_json())
-    #     client = AcClient(self.session.cur_account, self.session.token)
-    #     attachment.type = attachment.class_  # FIXME
-    #     attachment.parent_type = attachment.parent_type.lower()
-    #     res = client.post_attachment(
-    #         attachment.parent_type,
-    #         attachment.parent_id,
-    #         attachment.to_dict(),
-    #     )
-    #     if res.status_code == 404:
-    #         logging.error(
-    #             "Parent %s/%d not found! Can not create attachment!"
-    #             % (attachment.parent_type, attachment.parent_id)
-    #         )
-    #         return None
-    #     if res.status_code != 200:
-    #         logging.error("Error %d - %s" % (res.status_code, str(res.text)))
-    #         return None
-    #     res_data = res.json()
-    #     return res_data
+            if res.status_code == 404:
+                logging.error(
+                    "Parent %s/%d not found! Can not create attachment!"
+                    % (attachment.parent_type, attachment.parent_id)
+                )
+                return {}
+            if res.status_code != 200:
+                msg = "Error %d - %s" % (res.status_code, str(res.text))
+                raise AcApiError(msg)
+            res_data = res.json()
+            return res_data
 
     def get_project_labels(self) -> list[AcProjectLabel]:
         client = AcClient(self.session.cur_account, self.session.token)
@@ -537,32 +510,31 @@ class ActiveCollab:
         companies = list(map(company_from_json, res_data))
         return companies
 
-    def create_company(self, company: AcCompany) -> dict | None:
+    def create_company(self, company: AcCompany) -> bool:
         logging.debug("create company: " + company.to_json())
         if company.is_owner is True:
             print("skip owner company %d" % company.id)
-            return
+            return False
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.post_company(company.to_dict())
         if res.status_code != 200:
             raise AcApiError("Error %d - %s" % (res.status_code, str(res.text)))
-        res_data = res.json()
-        return res_data
+        return True
 
-    def empty_trash(self):
+    def empty_trash(self) -> dict:
         client = AcClient(self.session.cur_account, self.session.token)
         # FIXME loop until empty
         trash = client.get_trash()
-        res = client.delete_trash()
+        client.delete_trash()
         return trash.json()
 
-    def delete_all_users(self):
+    def delete_all_users(self) -> None:
         client = AcClient(self.session.cur_account, self.session.token)
         for user in self.get_all_users():
             if user.class_ != AC_CLASS_USER_OWNER:
                 client.delete_user(user.id)
 
-    def delete_all_companies(self):
+    def delete_all_companies(self) -> None:
         client = AcClient(self.session.cur_account, self.session.token)
         for company in self.get_all_companies():
             if company.is_owner is False:
