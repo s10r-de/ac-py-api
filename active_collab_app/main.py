@@ -49,9 +49,9 @@ def load_config(args):
 
 
 def map_company_id(config: configparser.ConfigParser, from_company_id: int):
-    property = f"map_company_id_{from_company_id}"
-    if config.has_option("DEFAULLT", property):
-        return config.getint("DEFAULT", property)
+    option_name = f"map_company_id_{from_company_id}"
+    if config.has_option("DEFAULLT", option_name):
+        return config.getint("DEFAULT", option_name)
     return from_company_id
 
 
