@@ -44,7 +44,7 @@ class AcFileStorage:
         for _k, obj in self.data_objects.items():
             obj.reset()
         if os.path.exists(self.root_path):
-            tmp_path = f"{self.root_path}_{time.time():#d}"
+            tmp_path = f"{self.root_path}_{int(time.time()):#d}"
             os.rename(self.root_path, tmp_path)
             shutil.rmtree(tmp_path)
 
