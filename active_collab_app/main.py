@@ -49,7 +49,10 @@ def load_config(args):
 
 
 def map_company_id(config: configparser.ConfigParser, from_company_id: int):
-    return config.getint("DEFAULT", f"map_company_id_{from_company_id}")
+    property = f"map_company_id_{from_company_id}"
+    if config.has_option("DEFAULLT", property):
+        return config.getint("DEFAULT", property)
+    return from_company_id
 
 
 def serialize_output(output):
