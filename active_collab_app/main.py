@@ -14,7 +14,7 @@ from active_collab_api.ac_subtask import AcSubtask
 from active_collab_api.ac_task import AcTask
 from active_collab_api.ac_task_list import AcTaskList
 from active_collab_api.ac_user import AcUser
-from active_collab_api.active_collab import ActiveCollab
+from active_collab_api.active_collab import AcApiError, ActiveCollab
 from active_collab_storage.storage import AcFileStorage
 
 from active_collab_app.statistics import Statistics
@@ -42,14 +42,14 @@ def setup_logging(log_level=logging.ERROR, http_debugging=False):
 
 def load_config(args):
     if not os.path.exists(args.config):
-        raise FileNotFoundError("Configfile '%s' not found!" % args.config)
+        raise FileNotFoundError(f"Configfile '{args.config}' not found!")
     config = configparser.ConfigParser(interpolation=None)
     config.read(args.config)
     return config
 
 
 def map_company_id(config: configparser.ConfigParser, from_company_id: int):
-    return config.getint("DEFAULT", "map_company_id_%d" % from_company_id)
+    return config.getint("DEFAULT", f"map_company_id_{from_company_id}")
 
 
 def serialize_output(output):
@@ -257,7 +257,7 @@ def run_verify_all(ac: ActiveCollab, config: configparser.ConfigParser):
     _verify_projects(ac, ac_storage)
     _verify_task_lists(ac, ac_storage)
     _verify_tasks(ac, ac_storage)
-    _verify_comments(ac, ac_storage)
+    # _verify_comments(ac, ac_storage)
 
 
 def _verify_project_labels(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
@@ -330,14 +330,13 @@ def _verify_tasks(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
 
     return result
 
-
-def _verify_comments(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
-    result = True
+    # def _verify_comments(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
+    # result = True
     # load all comments from dump_task_history
     # if comment parentType = "Task"
     # get all comments from task from server
     # compare
-    return result
+    # return result
 
 
 def _verify_task_lists(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
@@ -348,7 +347,7 @@ def _verify_task_lists(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
         server_all_project_task_lists = []
         try:
             server_all_project_task_lists = ac.get_project_task_lists(project_id)
-        except Exception:
+        except AcApiError:
             pass  # ignore exception here
         if len(server_all_project_task_lists) == 0:
             logging.error("No task lists for project %d found!" % project_id)
@@ -628,7 +627,7 @@ def _load_companies(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
     return cnt
 
 
-def run(args, parser, config: configparser.ConfigParser):
+def run(args, parser, config: configparser.ConfigParser):  # pylint: disable=R0911
     # run the commands
     if args.command == "version":
         return run_version()

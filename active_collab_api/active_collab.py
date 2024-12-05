@@ -171,7 +171,7 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_project_active_tasks(project_id)
         if res.status_code != 200:
-            raise AcApiError("Error %d" % res.status_code)
+            raise AcApiError(f"Error {res.status_code}")
         res_data = res.json()
         tasks = list(map(task_from_json, res_data["tasks"]))
         return tasks
@@ -180,7 +180,7 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_project_completed_tasks(project_id)
         if res.status_code != 200:
-            raise AcApiError("Error %d" % res.status_code)
+            raise AcApiError(f"Error {res.status_code}")
         res_data = res.json()
         tasks = list(map(task_from_json, res_data))
         return tasks
@@ -241,7 +241,7 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_active_projects()
         if res.status_code != 200:
-            raise AcApiError("Error %d" % res.status_code)
+            raise AcApiError(f"Error {res.status_code}")
         res_data = res.json()
         projects = list(map(project_from_json, res_data))
         return projects
@@ -250,7 +250,7 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_archived_projects()
         if res.status_code != 200:
-            raise AcApiError("Error %d" % res.status_code)
+            raise AcApiError(f"Error {res.status_code}")
         res_data = res.json()
         projects = list(map(project_from_json, res_data))
         return projects
@@ -259,7 +259,7 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.complete_project(project.id)
         if res.status_code != 200:
-            raise AcApiError("Error %d" % res.status_code)
+            raise AcApiError(f"Error {res.status_code}")
         res_data = res.json()
         return res_data
 
@@ -296,7 +296,7 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_all_users()
         if res.status_code != 200:
-            raise AcApiError("Error %d" % res.status_code)
+            raise AcApiError(f"Error {res.status_code}")
         res_data = res.json()
         users = list(map(user_from_json, res_data))
         return users
@@ -304,7 +304,7 @@ class ActiveCollab:
     def create_user(self, user: AcUser) -> bool:
         logging.debug("create user: " + user.to_json())
         if user.class_ == AC_CLASS_USER_OWNER:
-            print("can not create owner user %d" % user.id)
+            logging.warning("can not create owner user %d" % user.id)
             return False
         user = _workaround_user_fix_type_from_class(user)
         user = map_cloud_user_language_id(user)
@@ -321,7 +321,7 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.archive_user(user.id)
         if res.status_code != 200:
-            raise AcApiError("Error %d" % res.status_code)
+            raise AcApiError(f"Error {res.status_code}")
         res_data = res.json()
         return res_data
 
@@ -329,7 +329,7 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_subtasks(task.project_id, task.id)
         if res.status_code != 200:
-            raise AcApiError("Error %d" % res.status_code)
+            raise AcApiError(f"Error {res.status_code}")
         res_data = res.json()
         subtasks = list(map(subtask_from_json, res_data))
         return subtasks
@@ -368,7 +368,7 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_comments(task.id)
         if res.status_code != 200:
-            raise AcApiError("Error %d" % res.status_code)
+            raise AcApiError(f"Error {res.status_code}")
         res_data = res.json()
         comments = list(map(comment_from_json, res_data))
         return comments
@@ -398,7 +398,7 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_file_access_token()
         if res.status_code != 200:
-            raise AcApiError("Error %d" % res.status_code)
+            raise AcApiError(f"Error {res.status_code}")
         res_data = res.json()
         file_access_token = fileaccesstoken_from_json(res_data)
         return file_access_token
@@ -477,7 +477,7 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_project_labels()
         if res.status_code != 200:
-            raise AcApiError("Error %d" % res.status_code)
+            raise AcApiError(f"Error {res.status_code}")
         res_data = res.json()
         project_labels = list(map(project_label_from_json, res_data))
         return project_labels
@@ -488,7 +488,7 @@ class ActiveCollab:
         project_label.type = project_label.class_  # FIXME
         res = client.post_project_label(project_label.to_dict())
         if res.status_code != 200:
-            raise AcApiError("Error %d - %s" % (res.status_code, str(res.text)))
+            raise AcApiError(f"Error {res.status_code} {res.text}")
         res_data = res.json()
         return res_data
 
@@ -496,7 +496,7 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_task_labels()
         if res.status_code != 200:
-            raise AcApiError("Error %d" % res.status_code)
+            raise AcApiError(f"Error {res.status_code}")
         res_data = res.json()
         task_labels = list(map(task_label_from_json, res_data))
         return task_labels
@@ -505,7 +505,7 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_all_companies()
         if res.status_code != 200:
-            raise AcApiError("Error %d" % res.status_code)
+            raise AcApiError(f"Error {res.status_code}")
         res_data = res.json()
         companies = list(map(company_from_json, res_data))
         return companies
@@ -513,12 +513,12 @@ class ActiveCollab:
     def create_company(self, company: AcCompany) -> bool:
         logging.debug("create company: " + company.to_json())
         if company.is_owner is True:
-            print("skip owner company %d" % company.id)
+            logging.warning("skip owner company %d" % company.id)
             return False
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.post_company(company.to_dict())
         if res.status_code != 200:
-            raise AcApiError("Error %d - %s" % (res.status_code, str(res.text)))
+            raise AcApiError(f"Error {res.status_code} {res.text}")
         return True
 
     def empty_trash(self) -> dict:
@@ -544,7 +544,7 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_task_lists(project_id)
         if res.status_code != 200:
-            raise AcApiError("Error %d" % res.status_code)
+            raise AcApiError(f"Error {res.status_code}")
         res_data = res.json()
         task_lists = list(map(task_list_from_json, res_data))
         return task_lists
@@ -553,7 +553,7 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_archived_task_lists(project_id)
         if res.status_code != 200:
-            raise AcApiError("Error %d" % res.status_code)
+            raise AcApiError(f"Error {res.status_code}")
         res_data = res.json()
         task_lists = list(map(task_list_from_json, res_data))
         return task_lists
@@ -584,7 +584,6 @@ class ActiveCollab:
                 "Project %d not found! Can not create task list!" % task_list.project_id
             )
             return None
-            # raise AcApiError("Project %d not found!" % task_list.project_id)
         if res.status_code != 200:
             logging.error(task_list.to_dict())
             logging.error("Error %d - %s" % (res.status_code, str(res.text)))
@@ -596,7 +595,7 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_task_history(task.id)
         if res.status_code != 200:
-            raise AcApiError("Error %d" % res.status_code)
+            raise AcApiError(f"Error {res.status_code}")
         res_data = res.json()
         task_history = list(
             map(lambda u: task_history_from_json(u, task_id=task.id), res_data)
@@ -607,7 +606,7 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_project_categories()
         if res.status_code != 200:
-            raise AcApiError("Error %d" % res.status_code)
+            raise AcApiError(f"Error {res.status_code}")
         res_data = res.json()
         project_categories = list(map(project_category_from_json, res_data))
         return project_categories
@@ -621,7 +620,7 @@ class ActiveCollab:
         res = client.post_project_category(project_category.to_dict())
         if res.status_code != 200:
             logging.error(project_category.to_dict())
-            raise AcApiError("Error %d - %s" % (res.status_code, str(res.text)))
+            raise AcApiError(f"Error {res.status_code}")
         res_data = res.json()
         return res_data
 
@@ -629,7 +628,7 @@ class ActiveCollab:
         client = AcClient(self.session.cur_account, self.session.token)
         res = client.get_project_notes(project.id)
         if res.status_code != 200:
-            raise AcApiError("Error %d" % res.status_code)
+            raise AcApiError(f"Error {res.status_code}")
         res_data = res.json()
         project_notes = list(map(project_note_from_json, res_data))
         return project_notes

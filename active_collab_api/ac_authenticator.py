@@ -18,7 +18,7 @@ class AcAuthenticator:
     base_url: str = ""
 
     def __init__(self, base_url: str):
-        self.base_url = base_url.rstrip("/") + "/api/v%d" % AC_API_VERSION
+        self.base_url = base_url.rstrip("/") + f"/api/v{AC_API_VERSION}"
 
     @staticmethod
     def headers():

@@ -56,7 +56,7 @@ class TestAcTaskLabel(TestCase):
         task_json = {
             "id": label_id,
             "class": "TaskLabel",
-            "url_path": "/task/label/%d" % label_id,
+            "url_path": f"/task/label/{label_id}",
             "name": "Test Task Label",
             "updated_on": int(time.time()),
             "color": "#ff00ff",
