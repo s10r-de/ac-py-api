@@ -1,4 +1,4 @@
 #!/bin/bash
 . ./.venv/bin/activate
-export PYTHONPATH=$PWD/AcDump:$PWD/AcStorage:$PWD/ActiveCollabAPI:$PYTHONPATH
-exec python3 AcDump/main.py "$@"
+export PYTHONPATH=$PWD/active_collab_app:$PWD/active_collab_storage:$PWD/active_collab_api:$PYTHONPATH
+exec python3 active_collab_app/main.py "$@"
