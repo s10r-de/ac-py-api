@@ -9,6 +9,7 @@ __pycache__
 .venv2/
 
 # ignore logfiles
+nohup.out
 *.log
 *.log.gz
 

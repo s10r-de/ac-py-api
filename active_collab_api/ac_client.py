@@ -12,7 +12,8 @@ from active_collab_api import AC_API_VERSION, AC_USER_AGENT
 from active_collab_api.ac_account import AcAccount
 from active_collab_api.ac_token import AcToken
 
-DEFAULT_TIMEOUT = 15
+# max timeout = 1GB at 40 MBit/s = 200s
+DEFAULT_TIMEOUT = 300
 
 
 class AcClient:
