@@ -8,7 +8,7 @@ import sys
 import time
 from collections.abc import Iterator
 
-from active_collab_api import AC_CLASS_USER_MEMBER, AC_CLASS_USER_OWNER
+from active_collab_api import AC_CLASS_USER_MEMBER, AC_CLASS_USER_OWNER, AC_CLASS_TASK
 from active_collab_api.ac_project import AcProject
 from active_collab_api.ac_subtask import AcSubtask
 from active_collab_api.ac_task import AcTask
@@ -67,17 +67,54 @@ def run_testing(ac: ActiveCollab, config: configparser.ConfigParser):
 
     result = []
 
-    attachment = ac_storage.data_objects["attachments"].load(32609)
-    bin_file = ac_storage.data_objects["attachments"].get_bin_filename(attachment)
-    result.append(ac.upload_attachment(attachment, bin_file))
+    # https://ac-backup.[example].de/projects/745?modal=Task-37180-745
+    project_id = 745
+    task_id = 37180
+    task_number = 1629
 
-    attachment = ac_storage.data_objects["attachments"].load(29717)
-    bin_file = ac_storage.data_objects["attachments"].get_bin_filename(attachment)
-    result.append(ac.upload_attachment(attachment, bin_file))
-
-    attachment = ac_storage.data_objects["attachments"].load(29703)
-    bin_file = ac_storage.data_objects["attachments"].get_bin_filename(attachment)
-    result.append(ac.upload_attachment(attachment, bin_file))
+    task = AcTask(project_id=project_id,
+                  id=task_id,
+                  task_number=task_number,
+                  assignee_id=0,
+                  attachments=[],
+                  body="",
+                  body_formatted="",
+                  body_mode=None,
+                  class_=AC_CLASS_TASK,
+                  comments_count=0,
+                  completed_by_id=0,
+                  completed_on=0,
+                  completed_subtasks=0,
+                  created_by_email="",
+                  created_by_id=0,
+                  created_by_name="",
+                  created_from_recurring_task_id=None,
+                  created_on=0,
+                  delegated_by_id=0,
+                  due_on=0,
+                  estimate=0,
+                  fake_assignee_email="",
+                  fake_assignee_name="",
+                  is_billable=False,
+                  is_completed=False,
+                  is_hidden_from_clients=False,
+                  is_important=False,
+                  is_trashed=False,
+                  job_type_id=0,
+                  labels=[],
+                  name="",
+                  open_dependencies=None,
+                  open_subtasks=None,
+                  position=0,
+                  start_on=0,
+                  task_list_id=0,
+                  total_subtasks=0,
+                  trashed_by_id=0,
+                  trashed_on=0,
+                  updated_by_id=0,
+                  updated_on=0, 
+                  url_path="")
+    result = ac.update_task_set_task_number(task)
 
     return result
     # return map(lambda r: r.to_dict(), result)
@@ -552,7 +589,20 @@ def _load_tasks(ac: ActiveCollab, ac_storage: AcFileStorage) -> list[AcTask]:
             task.completed_by_id = None
             task.completed_on = None
         ac.create_task(task)
+    _fix_task_number(ac, ac_storage, 10000)
+    _fix_task_number(ac, ac_storage)
     return completed
+
+
+def _fix_task_number(ac: ActiveCollab, ac_storage: AcFileStorage, offset: int = 0) -> None:
+    tasks = ac_storage.data_objects["tasks"].list_ids()
+    if tasks is None:
+        return
+    tasks.reverse()
+    for task_id in tasks:
+        task = ac_storage.data_objects["tasks"].load(task_id)
+        task.task_number = task.task_number + offset
+        ac.update_task_set_task_number(task)
 
 
 def _load_task_lists(ac: ActiveCollab, ac_storage: AcFileStorage) -> list[AcTaskList]:
@@ -582,7 +632,20 @@ def _load_projects(
             project.completed_on = None
             project.completed_by_id = None
         ac.create_project(project)
+    _fix_project_number(ac, ac_storage, 10000)
+    _fix_project_number(ac, ac_storage)
     return completed
+
+
+def _fix_project_number(ac: ActiveCollab, ac_storage: AcFileStorage, offset: int = 0) -> None:
+    projects = ac_storage.data_objects["projects"].list_ids()
+    if projects is None:
+        return
+    projects.reverse()
+    for project_id in projects:
+        project = ac_storage.data_objects["projects"].load(project_id)
+        project.project_number = project.project_number + offset
+        ac.update_project_set_project_number(project)
 
 
 def _load_project_labels(ac: ActiveCollab, ac_storage: AcFileStorage) -> int:
