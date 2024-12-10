@@ -27,6 +27,13 @@ RUN chmod +x /app/acdump.sh
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
+VOLUME /data
+VOLUME /var/www/html/cache
+VOLUME /var/www/html/logs
+VOLUME /var/www/html/thumbnails
+VOLUME /var/www/html/uploads
+VOLUME /var/www/html/work
+
 # docker run --rm -it active-collab-backup --help
 ENTRYPOINT ["/app/acdump.sh"]
 
