@@ -418,7 +418,7 @@ def _verify_projects(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
     result = True
     server_projects = ac.get_all_projects()
     for project_id in ac_storage.data_objects["projects"].list_ids():
-        company = ac_storage.data_objects["projects"].load(project_id)
+        project = ac_storage.data_objects["projects"].load(project_id)
         server_project = list(
             filter(lambda c, pj_id=project_id: c.id == pj_id, server_projects)
         )
@@ -426,7 +426,7 @@ def _verify_projects(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
             logging.error("Project %d not found!" % project_id)
             result = False
             continue
-        if company != server_project[0]:
+        if project != server_project[0]:
             logging.error("Project %d does not match!" % project_id)
             result = False
             continue

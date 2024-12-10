@@ -80,6 +80,15 @@ class AcProject:
                 continue
             this_value = this_data[key]
             other_value = other_data[key]
+            if key == "members":
+                if this_value is not None:
+                    this_value.append(self.created_by_id)
+                    this_value=list(set(this_value))
+                    this_value.sort()
+                if other_value is not None:
+                    other_value.append(other.created_by_id)
+                    other_value=list(set(other_value))
+                    other_value.sort()
             if this_value != other_value:
                 logging.error(
                     "AcProject[%d]: %s '%s'!='%s' - does not match -> FAIL"
@@ -106,5 +115,7 @@ class AcProject:
 def project_from_json(json_obj: dict) -> AcProject:
     assert json_obj[AC_PROPERTY_CLASS] == AC_CLASS_PROJECT
     json_obj[AC_PROPERTY_CLASS_] = json_obj[AC_PROPERTY_CLASS]
+    if json_obj["members"] is None:
+        json_obj["members"] = []
     del json_obj[AC_PROPERTY_CLASS]
     return AcProject(**json_obj)
