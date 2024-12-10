@@ -1,0 +1,2 @@
+class DoNotDeleteCloud(Exception):
+    pass

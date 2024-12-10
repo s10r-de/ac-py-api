@@ -1,0 +1,2 @@
+class AcApiError(Exception):
+    pass

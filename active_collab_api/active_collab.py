@@ -8,6 +8,7 @@ from active_collab_api import (
     AC_CLASS_USER_OWNER,
 )
 from active_collab_api.ac_account import AcAccount, account_from_json
+from active_collab_api.ac_api_error import AcApiError
 from active_collab_api.ac_attachment import AcAttachment
 from active_collab_api.ac_attachment_upload_response import (
     attachment_upload_response_from_json,
@@ -58,10 +59,6 @@ def _workaround_user_fix_type_from_class(user: AcUser) -> AcUser:
 def _workaround_project_fix_type_from_class(project: AcProject) -> AcProject:
     project.type = project.class_
     return project
-
-
-class AcApiError(Exception):
-    pass
 
 
 class ActiveCollab:
@@ -214,7 +211,7 @@ class ActiveCollab:
         return res_data
 
     def update_task_set_task_number(self, task: AcTask) -> dict | None:
-        logging.debug("Update task set task number: " + task.to_json())
+        logging.debug("Set the task number %s", task.to_json())
         client = AcClient(self.session.cur_account, self.session.token)
         task_dict = {
             "task_number": task.task_number
@@ -284,7 +281,7 @@ class ActiveCollab:
         return res_data
 
     def create_project(self, project: AcProject) -> dict | None:
-        logging.debug("Creating project: " + project.to_json())
+        logging.debug("Creating project %s", project.to_json())
         client = AcClient(self.session.cur_account, self.session.token)
         project = _workaround_project_fix_type_from_class(project)
         res = client.post_project(project.to_dict())
@@ -298,7 +295,7 @@ class ActiveCollab:
         return res_data
 
     def update_project_set_project_number(self, project: AcProject) -> dict | None:
-        logging.debug("Update project set project number: " + project.to_json())
+        logging.debug("Set the project_number %s", project.to_json())
         client = AcClient(self.session.cur_account, self.session.token)
         project = _workaround_project_fix_type_from_class(project)
         project_dict = {
@@ -553,7 +550,7 @@ class ActiveCollab:
         companies = list(map(company_from_json, res_data))
         return companies
 
-    def create_company(self, company: AcCompany) -> bool:
+    def create_company(self, company: AcCompany) -> AcCompany:
         logging.debug("create company: " + company.to_json())
         if company.is_owner is True:
             logging.warning("skip owner company %d" % company.id)
@@ -562,7 +559,7 @@ class ActiveCollab:
         res = client.post_company(company.to_dict())
         if res.status_code != 200:
             raise AcApiError(f"Error {res.status_code} {res.text}")
-        return True
+        return company_from_json(res.json())
 
     def empty_trash(self) -> dict:
         client = AcClient(self.session.cur_account, self.session.token)

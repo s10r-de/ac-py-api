@@ -90,7 +90,7 @@ STORAGE.path") and previous data in this folder will be removed!
 ## Noteable
 
 - ⚠️ Warning: The current implementation will always erase the existing
-  data in the storage.path directory on disk and re-download everything
+  data in the `storage.path` directory on disk and re-download everything
   from scratch!
 - ⚠️ Limitation: Completed projects, tasks, and related data will not be
   deleted or backed up!
@@ -111,7 +111,7 @@ repository.
 Create another config file for the self-hosted server (here we run it in
 a linux VM under IP 192.168.64.14):
 
-Example config-selfhosted.ini (use credentials you have used to setup
+Example `config-selfhosted.ini` (use credentials you have used to setup
 the self-hosted ac owner):
 
 ```ini

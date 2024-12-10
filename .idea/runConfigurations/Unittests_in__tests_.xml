@@ -6,7 +6,7 @@
     <option name="PARENT_ENVS" value="true" />
     <option name="SDK_HOME" value="/app/.venv/bin/python" />
     <option name="SDK_NAME" value="Remote Python 3.12.3 Docker (active-collab-backup-dev-pycharms)" />
-    <option name="WORKING_DIRECTORY" value="" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
     <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />

@@ -1,6 +1,7 @@
 
 CONFIG=$(PWD)/config-docker.ini
 DATA=$(PWD)/../data-docker
+DATA_DUMP=$(PWD)/../data-docker-dump
 
 DEBUG=--debug
 
@@ -16,7 +17,8 @@ docker: clean Dockerfile
 docker-dev: clean Dockerfile Dockerfile-dev
 	docker buildx build -f Dockerfile-dev -t $(IMAGE_NAME_DEV) .
 
-DOCKER_RUN_OPTS=run --rm -v $(CONFIG):/config.ini -v $(DATA):/data --name $(CONTAINER_NAME) $(IMAGE_NAME)
+DOCKER_RUN_OPTS     =run --rm -v $(CONFIG):/config.ini      -v $(DATA):/data --name $(CONTAINER_NAME) $(IMAGE_NAME)
+DOCKER_RUN_OPTS_DUMP=run --rm -v $(CONFIG):/config.ini -v $(DATA_DUMP):/data --name $(CONTAINER_NAME) $(IMAGE_NAME)
 DOCKER_RUN_OPTS_DEV=run --rm -v $(CONFIG):/config.ini -v $(DATA):/data --name $(CONTAINER_NAME_DEV) $(IMAGE_NAME_DEV)
 
 run_info: docker
@@ -25,7 +27,7 @@ run_info: docker
 
 run_dump: docker
 	@echo "dump for localhost"
-	docker $(DOCKER_RUN_OPTS) -c /config.ini $(DEBUG) dump
+	docker $(DOCKER_RUN_OPTS_DUMP) -c /config.ini $(DEBUG) dump
 
 run_delete: docker
 	@echo "delete for localhost"
