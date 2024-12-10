@@ -19,6 +19,7 @@ from active_collab_storage.storage import AcFileStorage
 
 from active_collab_app.statistics import Statistics
 from active_collab_app.version import VERSION
+from active_collab_app.helper import map_user_id
 
 overall_statistics = Statistics()
 
@@ -48,7 +49,7 @@ def load_config(args):
     return config
 
 
-def map_company_id(config: configparser.ConfigParser, from_company_id: int):
+def map_company_id(config: configparser.ConfigParser, from_company_id: int) -> int:
     option_name = f"map_company_id_{from_company_id}"
     if config.has_option("DEFAULLT", option_name):
         return config.getint("DEFAULT", option_name)
@@ -626,6 +627,7 @@ def _load_projects(
     for project_id in ac_storage.data_objects["projects"].list_ids():
         project = ac_storage.data_objects["projects"].load(project_id)
         project.company_id = map_company_id(config, project.company_id)
+        project.members = map(lambda uid, cfg=config: map_user_id(cfg, uid), project.members)
         if project.is_completed:
             completed.append(project)
             project.is_completed = False
