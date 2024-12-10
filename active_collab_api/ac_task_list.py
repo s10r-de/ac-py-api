@@ -40,6 +40,9 @@ class AcTaskList:
             "updated_by_id",
             "completed_on",
             "completed_by_id",
+            "completed_by_name",
+            "completed_by_email",
+            "completed_tasks",
         ]
         result = True
         this_data = self.to_dict()

@@ -53,8 +53,8 @@ class AcProject:
     updated_by_id: int | None
     updated_on: int | None
     url_path: str
-    completed_by_name: str | None = dataclasses.field(default="")
-    completed_by_email: str | None = dataclasses.field(default="")
+    completed_by_name: str | None = dataclasses.field(default=None)
+    completed_by_email: str | None = dataclasses.field(default=None)
     type: str | None = dataclasses.field(default=None)
 
     def __eq__(self, other) -> bool:
@@ -65,6 +65,12 @@ class AcProject:
             "updated_by_id",
             "company_id",
             "based_on_id",
+            "completed_on",
+            "completed_by_id",
+            "completed_by_name",
+            "completed_by_email",
+            "count_discussions",
+            "count_notes",
         ]
         result = True
         this_data = self.to_dict()

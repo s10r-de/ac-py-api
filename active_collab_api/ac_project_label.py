@@ -22,7 +22,7 @@ class AcProjectLabel:
     darker_text_color: str
     is_default: bool
     position: int
-    project_id: int | None
+    project_id: int = dataclasses.field(default=0)
     type: str | None = dataclasses.field(default=None)
 
     def __eq__(self, other) -> bool:

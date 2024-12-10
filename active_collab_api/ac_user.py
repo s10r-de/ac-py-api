@@ -67,6 +67,10 @@ class AcUser(AcDataObject):
             "has_custom_avatar",
             "company_id",
             "language_id",
+            "updated_on",
+            "archived_on",
+            "workspace_count",
+            "class",
         ]
         result = True
         this_data = self.to_dict()

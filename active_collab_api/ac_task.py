@@ -71,6 +71,8 @@ class AcTask:
             "updated_by_id",
             "completed_on",
             "completed_by_id",
+            "completed_by_name",
+            "completed_by_email",
         ]
         result = True
         this_data = self.to_dict()
