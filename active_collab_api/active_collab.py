@@ -203,7 +203,27 @@ class ActiveCollab:
         if res.status_code == 404:
             logging.error(task.to_dict())
             logging.error(
-                "Project %d not found! Can not create task list!" % task.project_id
+                "Project %d not found! Can not create task!" % task.project_id
+            )
+            return None
+        if res.status_code != 200:
+            logging.error(task.to_dict())
+            logging.error("Error %d - %s" % (res.status_code, str(res.text)))
+            return None
+        res_data = res.json()
+        return res_data
+
+    def update_task_set_task_number(self, task: AcTask) -> dict | None:
+        logging.debug("Update task set task number: " + task.to_json())
+        client = AcClient(self.session.cur_account, self.session.token)
+        task_dict = {
+            "task_number": task.task_number
+        }
+        res = client.put_task(task.project_id, task.id, task_dict)
+        if res.status_code == 404:
+            logging.error(task.to_dict())
+            logging.error(
+                "Project %d or Task %d not found! Can not update task!" % (task.project_id, task.id)
             )
             return None
         if res.status_code != 200:
@@ -271,7 +291,30 @@ class ActiveCollab:
         if res.status_code != 200:
             logging.error(project.to_dict())
             logging.error(
-                "cant creeate project! (%d - %s)" % (res.status_code, res.text)
+                "cant create project! (%d - %s)" % (res.status_code, res.text)
+            )
+            return None
+        res_data = res.json()
+        return res_data
+
+    def update_project_set_project_number(self, project: AcProject) -> dict | None:
+        logging.debug("Update project set project number: " + project.to_json())
+        client = AcClient(self.session.cur_account, self.session.token)
+        project = _workaround_project_fix_type_from_class(project)
+        project_dict = {
+            "project_number": project.project_number
+        }
+        res = client.put_project(project.id, project_dict)
+        if res.status_code == 404:
+            logging.error(project.to_dict())
+            logging.error(
+                "Project %d not found! Can not update project!" % project.id
+            )
+            return None
+        if res.status_code != 200:
+            logging.error(project.to_dict())
+            logging.error(
+                "cant update project! (%d - %s)" % (res.status_code, res.text)
             )
             return None
         res_data = res.json()

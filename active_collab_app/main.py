@@ -60,10 +60,10 @@ def serialize_output(output):
     return json.dumps(output, indent=4)
 
 
-def run_testing(ac: ActiveCollab, config: configparser.ConfigParser):
-    account_id = config.getint("LOGIN", "account")
-    storage_path = config.get("STORAGE", "path")
-    ac_storage = AcFileStorage(storage_path, account_id)
+def run_testing(ac: ActiveCollab, config: configparser.ConfigParser):  # pylint: disable=unused-argument
+    # account_id = config.getint("LOGIN", "account")
+    # storage_path = config.get("STORAGE", "path")
+    # ac_storage = AcFileStorage(storage_path, account_id)
 
     result = []
 
@@ -112,7 +112,7 @@ def run_testing(ac: ActiveCollab, config: configparser.ConfigParser):
                   trashed_by_id=0,
                   trashed_on=0,
                   updated_by_id=0,
-                  updated_on=0, 
+                  updated_on=0,
                   url_path="")
     result = ac.update_task_set_task_number(task)
 

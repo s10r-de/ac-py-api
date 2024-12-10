@@ -106,6 +106,11 @@ class AcClient:
         data["labels"] = list(map(lambda task: task["name"], data["labels"]))
         return self._post("projects/%d/tasks" % project_id, json.dumps(data))
 
+    def put_task(self, project_id: int, task_id: int, data: dict) -> Response:
+        if "labels" in data.keys():
+            data["labels"] = list(map(lambda task: task["name"], data["labels"]))
+        return self._put("projects/%d/tasks/%d" % (project_id, task_id), json.dumps(data))
+
     def complete_task(self, task_id: int) -> Response:
         return self._put("complete/task/%d" % task_id, "")
 
@@ -142,6 +147,9 @@ class AcClient:
 
     def post_project(self, data: dict) -> Response:
         return self._post("projects", json.dumps(data))
+
+    def put_project(self, project_id: int, data: dict) -> Response:
+        return self._put(f"projects/{project_id}", json.dumps(data))
 
     def complete_project(self, project_id: int) -> Response:
         return self._put("complete/project/%d" % project_id, "")
