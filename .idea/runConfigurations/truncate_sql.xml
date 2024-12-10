@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="truncate.sql" type="DatabaseScript" editBeforeRun="true" nameIsGenerated="true">
+    <script-file value="$PROJECT_DIR$/truncate.sql" />
+    <script-mode>FILE</script-mode>
+    <data-source id="666c1eba-fde1-4e47-abc3-27d3c1452559" namespace="schema/&quot;acdb&quot;" />
+    <method v="2" />
+  </configuration>
+</component>
