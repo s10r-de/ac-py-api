@@ -15,10 +15,10 @@ from active_collab_api.ac_task import AcTask
 from active_collab_api.ac_task_list import AcTaskList
 from active_collab_api.ac_user import AcUser
 from active_collab_api.active_collab import AcApiError, ActiveCollab
-from active_collab_storage.storage import AcFileStorage
-
+from active_collab_app.helper import map_user_id
 from active_collab_app.statistics import Statistics
 from active_collab_app.version import VERSION
+from active_collab_storage.storage import AcFileStorage
 
 overall_statistics = Statistics()
 
@@ -48,7 +48,7 @@ def load_config(args):
     return config
 
 
-def map_company_id(config: configparser.ConfigParser, from_company_id: int):
+def map_company_id(config: configparser.ConfigParser, from_company_id: int) -> int:
     option_name = f"map_company_id_{from_company_id}"
     if config.has_option("DEFAULLT", option_name):
         return config.getint("DEFAULT", option_name)
@@ -79,7 +79,7 @@ def run_testing(ac: ActiveCollab, config: configparser.ConfigParser):  # pylint:
                   attachments=[],
                   body="",
                   body_formatted="",
-                  body_mode=None,
+                  body_mode="",
                   class_=AC_CLASS_TASK,
                   comments_count=0,
                   completed_by_id=0,
@@ -88,7 +88,7 @@ def run_testing(ac: ActiveCollab, config: configparser.ConfigParser):  # pylint:
                   created_by_email="",
                   created_by_id=0,
                   created_by_name="",
-                  created_from_recurring_task_id=None,
+                  created_from_recurring_task_id=0,
                   created_on=0,
                   delegated_by_id=0,
                   due_on=0,
@@ -104,7 +104,7 @@ def run_testing(ac: ActiveCollab, config: configparser.ConfigParser):  # pylint:
                   labels=[],
                   name="",
                   open_dependencies=None,
-                  open_subtasks=None,
+                  open_subtasks=0,
                   position=0,
                   start_on=0,
                   task_list_id=0,
@@ -626,6 +626,7 @@ def _load_projects(
     for project_id in ac_storage.data_objects["projects"].list_ids():
         project = ac_storage.data_objects["projects"].load(project_id)
         project.company_id = map_company_id(config, project.company_id)
+        project.members = map(lambda uid, cfg=config: map_user_id(cfg, uid), project.members)
         if project.is_completed:
             completed.append(project)
             project.is_completed = False
