@@ -34,6 +34,7 @@ class AcClient:
         self.token = token
         #
         self.base_url = self.account.url + "/api/v%d" % AC_API_VERSION
+        self.session = requests.Session()
 
     def headers(self):
         return {
@@ -44,7 +45,7 @@ class AcClient:
         }
 
     def _get(self, url: str, retry=3, pause=5) -> Response:
-        res = requests.get(
+        res = self.session.get(
             self.base_url + "/" + url, headers=self.headers(), timeout=DEFAULT_TIMEOUT
         )
         if res.status_code >= 500:
@@ -56,12 +57,12 @@ class AcClient:
         return res
 
     def _delete(self, url: str) -> Response:
-        return requests.delete(
+        return self.session.delete(
             self.base_url + "/" + url, headers=self.headers(), timeout=DEFAULT_TIMEOUT
         )
 
     def _post(self, url: str, data: str, files=None) -> Response:
-        return requests.post(
+        return self.session.post(
             self.base_url + "/" + url,
             headers=self.headers(),
             data=data,
@@ -72,7 +73,7 @@ class AcClient:
     def _upload(self, url: str, files: dict) -> Response:
         headers = self.headers()
         del headers["Content-Type"]
-        return requests.post(
+        return self.session.post(
             self.base_url + "/" + url,
             headers=headers,
             files=files,
@@ -80,7 +81,7 @@ class AcClient:
         )
 
     def _put(self, url: str, data: str) -> Response:
-        return requests.put(
+        return self.session.put(
             self.base_url + "/" + url,
             headers=self.headers(),
             data=data,
@@ -237,7 +238,7 @@ class AcClient:
         return self._get("attachments/%d" % attachment_id)
 
     def get_file_access_token(self, retry=3, pause=5) -> Response:
-        res = requests.get(
+        res = self.session.get(
             self.base_url + "/issue-file-access-token",
             headers=self.headers(),
             timeout=DEFAULT_TIMEOUT,
@@ -260,7 +261,7 @@ class AcClient:
         download_url = download_url.replace(
             "i=--DOWNLOAD-TOKEN--", "i=%s" % file_access_token
         )
-        with requests.get(
+        with self.session.get(
             download_url, headers=self.headers(), stream=True, timeout=DEFAULT_TIMEOUT
         ) as r:
             r.raise_for_status()

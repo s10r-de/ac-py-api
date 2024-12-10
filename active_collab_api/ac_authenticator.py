@@ -19,6 +19,7 @@ class AcAuthenticator:
 
     def __init__(self, base_url: str):
         self.base_url = base_url.rstrip("/") + f"/api/v{AC_API_VERSION}"
+        self.session = requests.Session()
 
     @staticmethod
     def headers():
@@ -30,7 +31,7 @@ class AcAuthenticator:
 
     def login_cloud(self, email: str, password: str) -> Response:
         login_data = {"email": email, "password": password}
-        return requests.post(
+        return self.session.post(
             self.base_url + "/external/login",
             data=json.dumps(login_data),
             headers=self.headers(),
@@ -44,7 +45,7 @@ class AcAuthenticator:
             "client_name": AC_API_CLIENT_NAME,
             "client_vendor": AC_API_CLIENT_VENDOR,
         }
-        return requests.post(
+        return self.session.post(
             self.base_url + "/issue-token",
             data=json.dumps(login_data),
             headers=self.headers(),
