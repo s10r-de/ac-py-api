@@ -42,6 +42,9 @@ class TestStorage(TestCase):
         self.assertFalse(
             os.path.isdir(ac_storage.data_objects["project-notes"].get_path())
         )
+        ac_storage.reset()  # reset again should not throw any error
+        self.assertEqual(True, True)
+
 
     def test_020_ensure_dirs(self):
         account_id = 12341234

@@ -42,7 +42,8 @@ class AcFileStorage:
     def reset(self):
         for _k, obj in self.data_objects.items():
             obj.reset()
-        shutil.rmtree(self.get_account_path())
+        if os.path.exists(self.get_account_path()):
+            shutil.rmtree(self.get_account_path())
 
     def ensure_dirs(self):
         if not os.path.exists(self.get_account_path()):
