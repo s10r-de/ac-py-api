@@ -14,19 +14,21 @@ class Counter:
 
 
 class Statistics:
-    attachments = Counter()
-    companies = Counter()
-    project_categories = Counter()
-    project_labels = Counter()
-    project_notes = Counter()
-    projects = Counter()
-    subtasks = Counter()
-    task_comments = Counter()
-    task_history = Counter()
-    task_labels = Counter()
-    task_lists = Counter()
-    tasks = Counter()
-    users = Counter()
+
+    def __init__(self):
+        self.attachments = Counter()
+        self.companies = Counter()
+        self.project_categories = Counter()
+        self.project_labels = Counter()
+        self.project_notes = Counter()
+        self.projects = Counter()
+        self.subtasks = Counter()
+        self.task_comments = Counter()
+        self.task_history = Counter()
+        self.task_labels = Counter()
+        self.task_lists = Counter()
+        self.tasks = Counter()
+        self.users = Counter()
 
     def reset_all(self):
         self.attachments.reset()
