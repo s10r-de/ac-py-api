@@ -570,6 +570,11 @@ class ActiveCollab:
         task_lists.extend(self.get_project_archived_task_lists(project.id))
         return task_lists
 
+    def get_project_all_task_lists_by_project_id(self, project_id: int) -> list[AcTaskList]:
+        task_lists = self.get_project_task_lists(project_id)
+        task_lists.extend(self.get_project_archived_task_lists(project_id))
+        return task_lists
+
     def complete_task_list(self, task_list: AcTaskList) -> dict | None:
         logging.debug("create task list: " + task_list.to_json())
         res = self.client.complete_task_list(task_list.id)

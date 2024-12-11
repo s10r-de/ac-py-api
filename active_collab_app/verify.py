@@ -108,7 +108,7 @@ def verify_task_lists(ac: ActiveCollab, ac_storage: AcFileStorage) -> bool:
         project_id = task_list.project_id
         server_all_project_task_lists = []
         try:
-            server_all_project_task_lists = ac.get_project_all_task_lists(project_id)
+            server_all_project_task_lists = ac.get_project_all_task_lists_by_project_id(project_id)
         except AcApiError:
             pass  # ignore exception here
         if len(server_all_project_task_lists) == 0:
