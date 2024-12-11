@@ -8,4 +8,3 @@ def run_info(ac: ActiveCollab, config: configparser.ConfigParser):
     info = ac.get_info()
     info["is_cloud"] = check_is_cloud(config)
     return info
-

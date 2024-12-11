@@ -18,7 +18,6 @@ load_completed_statistics = Statistics()
 
 
 def run_load_all(ac: ActiveCollab, config: configparser.ConfigParser):
-    global load_statistics, load_completed_statistics, load_success_statistics
     account_id = config.getint("LOGIN", "account")
     storage_path = config.get("STORAGE", "path")
     ac_storage = AcFileStorage(storage_path, account_id)
@@ -61,7 +60,6 @@ def run_load_all(ac: ActiveCollab, config: configparser.ConfigParser):
 
 
 def load_project_labels(ac: ActiveCollab, ac_storage: AcFileStorage) -> None:
-    global load_statistics, load_success_statistics
     for project_label_id in ac_storage.data_objects["project-labels"].list_ids():
         project_label = ac_storage.data_objects["project-labels"].load(project_label_id)
         load_statistics.project_labels.increment()
@@ -70,7 +68,6 @@ def load_project_labels(ac: ActiveCollab, ac_storage: AcFileStorage) -> None:
 
 
 def load_project_categories(ac: ActiveCollab, ac_storage: AcFileStorage) -> None:
-    global load_statistics, load_success_statistics
     for project_category_id in ac_storage.data_objects["project-categories"].list_ids():
         project_category = ac_storage.data_objects["project-categories"].load(
             project_category_id
@@ -83,7 +80,6 @@ def load_project_categories(ac: ActiveCollab, ac_storage: AcFileStorage) -> None
 def load_users(
     config: configparser.ConfigParser, ac: ActiveCollab, ac_storage: AcFileStorage
 ) -> list[AcUser]:
-    global load_statistics, load_success_statistics
     archived = []
     for user_id in ac_storage.data_objects["users"].list_ids():
         archived_user = None
@@ -103,7 +99,6 @@ def load_users(
 
 
 def load_companies(ac: ActiveCollab, ac_storage: AcFileStorage) -> None:
-    global load_statistics, load_success_statistics
     for company_id in ac_storage.data_objects["companies"].list_ids():
         company = ac_storage.data_objects["companies"].load(company_id)
         load_statistics.companies.increment()
@@ -112,7 +107,6 @@ def load_companies(ac: ActiveCollab, ac_storage: AcFileStorage) -> None:
 
 
 def load_attachments(ac: ActiveCollab, ac_storage: AcFileStorage) -> None:
-    global load_statistics, load_success_statistics
     for attachment_id in ac_storage.data_objects["attachments"].list_ids():
         attachment = ac_storage.data_objects["attachments"].load(attachment_id)
         load_statistics.attachments.increment()
@@ -123,7 +117,6 @@ def load_attachments(ac: ActiveCollab, ac_storage: AcFileStorage) -> None:
 
 
 def load_comments(ac: ActiveCollab, ac_storage: AcFileStorage) -> None:
-    global load_statistics, load_success_statistics
     for comment_id in ac_storage.data_objects["comments"].list_ids():
         comment = ac_storage.data_objects["comments"].load(comment_id)
         load_statistics.task_comments.increment()
@@ -132,7 +125,6 @@ def load_comments(ac: ActiveCollab, ac_storage: AcFileStorage) -> None:
 
 
 def load_subtasks(ac: ActiveCollab, ac_storage: AcFileStorage) -> list[AcSubtask]:
-    global load_statistics, load_success_statistics
     completed = []
     for subtask_id in ac_storage.data_objects["subtasks"].list_ids():
         add_to_completed = None
@@ -151,7 +143,6 @@ def load_subtasks(ac: ActiveCollab, ac_storage: AcFileStorage) -> list[AcSubtask
 
 
 def load_tasks(ac: ActiveCollab, ac_storage: AcFileStorage) -> list[AcTask]:
-    global load_statistics, load_success_statistics
     completed = []
     for task_id in ac_storage.data_objects["tasks"].list_ids():
         add_to_completed = None
@@ -171,7 +162,9 @@ def load_tasks(ac: ActiveCollab, ac_storage: AcFileStorage) -> list[AcTask]:
     return completed
 
 
-def fix_task_number(ac: ActiveCollab, ac_storage: AcFileStorage, offset: int = 0) -> None:
+def fix_task_number(
+    ac: ActiveCollab, ac_storage: AcFileStorage, offset: int = 0
+) -> None:
     tasks = ac_storage.data_objects["tasks"].list_ids()
     if tasks is None:
         return
@@ -183,7 +176,6 @@ def fix_task_number(ac: ActiveCollab, ac_storage: AcFileStorage, offset: int = 0
 
 
 def load_task_lists(ac: ActiveCollab, ac_storage: AcFileStorage) -> list[AcTaskList]:
-    global load_statistics, load_success_statistics
     completed = []
     for task_list_id in ac_storage.data_objects["task-lists"].list_ids():
         add_to_completed = None
@@ -205,14 +197,15 @@ def load_task_lists(ac: ActiveCollab, ac_storage: AcFileStorage) -> list[AcTaskL
 def load_projects(
     config: configparser.ConfigParser, ac: ActiveCollab, ac_storage: AcFileStorage
 ) -> list[AcProject]:
-    global load_statistics, load_success_statistics
     completed = []
     for project_id in ac_storage.data_objects["projects"].list_ids():
         add_to_completed = None
         project = ac_storage.data_objects["projects"].load(project_id)
         load_statistics.projects.increment()
         project.company_id = map_company_id(config, project.company_id)
-        project.members = list(map(lambda uid, cfg=config: map_user_id(cfg, uid), project.members))
+        project.members = list(
+            map(lambda uid, cfg=config: map_user_id(cfg, uid), project.members)
+        )
         if project.is_completed:
             add_to_completed = project
             project.is_completed = False
@@ -227,7 +220,9 @@ def load_projects(
     return completed
 
 
-def fix_project_number(ac: ActiveCollab, ac_storage: AcFileStorage, offset: int = 0) -> None:
+def fix_project_number(
+    ac: ActiveCollab, ac_storage: AcFileStorage, offset: int = 0
+) -> None:
     projects = ac_storage.data_objects["projects"].list_ids()
     if projects is None:
         return

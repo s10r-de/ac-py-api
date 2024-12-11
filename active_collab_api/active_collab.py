@@ -78,6 +78,7 @@ class ActiveCollab:
     def __init__(self, base_url: str, is_cloud: bool = False):
         self.base_url = base_url.rstrip("/")
         self.is_cloud = is_cloud
+        self.client = None
 
     def login(self, email: str, password: str, account: str) -> AcSession:
         if self.is_cloud is True:

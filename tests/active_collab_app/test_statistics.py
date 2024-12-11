@@ -16,7 +16,7 @@ class TestCounter(TestCase):
 
 
 class TestStatistics(TestCase):
-    def test_projects(self):
+    def test_projects(self):  # pylint: disable=too-many-statements)
         stats = Statistics()
         values = stats.get()
         self.assertEqual(0, values["attachments"])

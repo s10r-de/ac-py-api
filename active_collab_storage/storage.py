@@ -1,6 +1,4 @@
 import os
-import shutil
-import time
 
 from active_collab_storage import DEFAULT_MODE_DIRS
 from .attachment import AcFileStorageAttachment
@@ -43,10 +41,6 @@ class AcFileStorage:
     def reset(self):
         for _k, obj in self.data_objects.items():
             obj.reset()
-        # if os.path.exists(self.root_path):
-            # tmp_path = f"{self.root_path}_{int(time.time()):#d}"
-            # os.rename(self.root_path, tmp_path)
-            # shutil.rmtree(self.root_path)
 
     def ensure_dirs(self):
         if not os.path.exists(self.get_account_path()):
