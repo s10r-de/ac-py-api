@@ -78,7 +78,7 @@ def run(args, config: configparser.ConfigParser):  # pylint: disable=R0911
     if args.command == "testing":
         return run_testing(login(config), config)
     if args.command == "html":
-        return run_html(login(config), config)
+        return run_html(config)
     return None
 
 
@@ -110,7 +110,7 @@ def arg_parser() -> (dict, argparse.ArgumentParser):
             "verify",
             "load",
             "testing",
-            "html"
+            "html",
         ],
         help="The command to run",
     )
