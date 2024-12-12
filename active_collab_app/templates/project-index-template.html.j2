@@ -1,0 +1,22 @@
+<html>
+<head>
+    <title>Project Index</title>
+    <link rel="stylesheet" href="print.css" media="all">
+</head>
+<body>
+<h1>Project Index</h1>
+
+<ul>
+    {% for p in projects %}
+        <li>
+            <div>
+                <a href="{{ p.html_filename }}">
+                    {{ p.project_number }} -
+                    {{ p.name }}
+                </a>
+            </div>
+        </li>
+    {% endfor %}
+</ul>
+</body>
+</html>

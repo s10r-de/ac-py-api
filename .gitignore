@@ -18,7 +18,7 @@ nohup.out
 
 # ignore data
 /data*/
+/www/
 /tests/data-test/
-
 /test-reports/
 
