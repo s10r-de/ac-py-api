@@ -13,6 +13,7 @@ from active_collab_app import CFG_SECTION_DEFAULT
 from active_collab_app.delete import run_delete_all
 from active_collab_app.dump import run_dump_all
 from active_collab_app.empty import run_empty_trash
+from active_collab_app.html import run_html
 from active_collab_app.info import run_info
 from active_collab_app.load import run_load_all
 from active_collab_app.testing import run_testing
@@ -76,6 +77,8 @@ def run(args, config: configparser.ConfigParser):  # pylint: disable=R0911
         return run_load_all(login(config), config)
     if args.command == "testing":
         return run_testing(login(config), config)
+    if args.command == "html":
+        return run_html(login(config), config)
     return None
 
 
@@ -107,6 +110,7 @@ def arg_parser() -> (dict, argparse.ArgumentParser):
             "verify",
             "load",
             "testing",
+            "html"
         ],
         help="The command to run",
     )
