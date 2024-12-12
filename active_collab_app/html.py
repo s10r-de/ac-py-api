@@ -1,5 +1,6 @@
 import configparser
 import os
+import shutil
 import time
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -18,6 +19,8 @@ def run_html(config: configparser.ConfigParser):
         autoescape=select_autoescape(),
     )
     output_path = config.get("WWW", "path")
+    shutil.rmtree(os.path.join(output_path, "*"), ignore_errors=True)
+    shutil.copy("css/print.css", output_path)
     render_all_projects(ac_storage, j2env, output_path)
 
 
