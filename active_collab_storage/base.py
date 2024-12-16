@@ -42,7 +42,7 @@ class AcFileStorageBaseClass:
         filename = self.filename_with_id(id_)
         full_filename = self.get_full_filename(filename)
         with open(full_filename, "w", encoding="utf-8") as f:
-            json.dump(obj.to_dict(), f, sort_keys=True, indent=2)
+            json.dump(obj.to_dict(), f, ensure_ascii=False, sort_keys=True, indent=2)
         return full_filename
 
     def list_ids(self) -> list[int]:

@@ -175,11 +175,17 @@ class ActiveCollab:
         return tasks
 
     def get_completed_tasks(self, project_id: int) -> list[AcTask]:
-        res = self.client.get_project_completed_tasks(project_id)
-        if res.status_code != 200:
-            raise AcApiError(f"Error {res.status_code}")
-        res_data = res.json()
-        tasks = list(map(task_from_json, res_data))
+        tasks = []
+        page = 1
+        while True:
+            res = self.client.get_project_completed_tasks(project_id, page)
+            if res.status_code != 200:
+                raise AcApiError(f"Error {res.status_code}")
+            res_data = res.json()
+            if len(res_data) == 0:
+                break
+            tasks.extend(list(map(task_from_json, res_data)))
+            page = page + 1
         return tasks
 
     def complete_task(self, task: AcTask) -> dict | None:

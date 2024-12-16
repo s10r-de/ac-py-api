@@ -30,6 +30,10 @@ run_info: docker
 	@echo "info for localhost"
 	docker $(DOCKER_RUN_OPTS) -c /config.ini $(DEBUG) info
 
+run_testing: docker
+	@echo "info for localhost"
+	docker $(DOCKER_RUN_OPTS) -c /config.ini $(DEBUG) testing
+
 run_dump: docker
 	@echo "dump for localhost"
 	docker $(DOCKER_RUN_OPTS_DUMP) -c /config.ini $(DEBUG) dump
@@ -69,6 +73,16 @@ docker_lint: docker-dev
 	test -d .venv || python3 -m venv .venv
 	. .venv/bin/activate; pip3 install -r requirements.txt
 	touch .venv/touchfile
+
+
+info: .venv
+	./acdump.sh -c config-localhost.ini --debug info
+
+
+dump_cloud: .venv
+	./acdump.sh -c ../config-cloud-full-account.ini --debug dump
+
+
 
 .venv/touchfile-dev: .venv requirements-dev.txt
 	@echo "build for DEVELOPMENT..."

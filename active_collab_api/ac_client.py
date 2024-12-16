@@ -88,8 +88,12 @@ class AcClient:
             timeout=DEFAULT_TIMEOUT,
         )
 
+    # info
+
     def get_info(self):
         return self._get("info")
+
+    # trash
 
     def get_trash(self) -> Response:
         return self._get("trash")
@@ -118,8 +122,8 @@ class AcClient:
     def delete_task(self, project_id: int, task_id: int) -> Response:
         return self._delete("projects/%d/tasks/%d" % (project_id, task_id))
 
-    def get_project_completed_tasks(self, project_id: int):
-        return self._get("projects/%d/tasks/archive" % project_id)
+    def get_project_completed_tasks(self, project_id: int, page: int = 1):
+        return self._get(f"projects/{project_id}/tasks/archive?page={page}")
 
     def update_task_assign_file(
         self,
