@@ -25,34 +25,42 @@ def run_html(config: configparser.ConfigParser):
     render_all_projects(ac_storage, j2env, output_path)
     return {"path": output_path}
 
+def load_all_companies(ac_storage: AcFileStorage) -> dict:
+    companies = {}
+    for company_id in ac_storage.data_objects["companies"].list_ids():
+        companies[company_id] = ac_storage.data_objects["companies"].load(company_id)
+    return companies
+
+def load_all_project_labels(ac_storage: AcFileStorage) -> dict:
+    labels = {}
+    for label_id in ac_storage.data_objects["project-labels"].list_ids():
+        labels[label_id] = ac_storage.data_objects["project-labels"].load(label_id)
+    return labels
+
+def load_all_project_categories(ac_storage: AcFileStorage) -> dict:
+    categories = {}
+    for category_id in ac_storage.data_objects["project-categories"].list_ids():
+        categories[category_id] = ac_storage.data_objects["project-categories"].load(category_id)
+    return categories
 
 def render_all_projects(
     ac_storage: AcFileStorage, j2env: Environment, output_path: str
 ):
-    companies = {}
-    categories = {}
-    labels = {}
+    companies = load_all_companies(ac_storage)
+    categories = load_all_project_categories(ac_storage)
+    labels = load_all_project_labels(ac_storage)
     project_list = []
     for project_id in ac_storage.data_objects["projects"].list_ids():
         project = ac_storage.data_objects["projects"].load(project_id)
-        if project.company_id not in companies.keys():
-            companies[project.company_id] = ac_storage.data_objects["companies"].load(
-                project.company_id
-            )
         project_d = project.to_dict()
+
+        # add lookup data
         if project.category_id > 0:
-            if project.category_id not in categories.keys():
-                categories[project.category_id] = ac_storage.data_objects[
-                    "project-categories"
-                ].load(project.category_id)
             project_d["category"] = categories[project.category_id]
         if project.label_id > 0:
-            if project.label_id not in labels.keys():
-                labels[project.label_id] = ac_storage.data_objects[
-                    "project-labels"
-                ].load(project.label_id)
             project_d["label"] = labels[project.label_id]
         project_d["client_company"] = companies[project.company_id].to_dict()
+
         # prepare some variables to be used in template
         project_d["html_filename"] = f"project-{project.id:06d}.html"
         time_format = "%Y-%m-%d"
