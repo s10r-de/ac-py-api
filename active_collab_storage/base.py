@@ -1,6 +1,5 @@
-import glob
+import re
 import json
-import locale
 import os
 import shutil
 import time
@@ -46,20 +45,13 @@ class AcFileStorageBaseClass:
         return full_filename
 
     def list_ids(self) -> list[int]:
-        # strip path and "${filename_prefix}-" and ".json" to get the ID for the object
-        n = len(self.filename_prefix)
-
-        def extract_id(f: str) -> int:
-            return locale.atoi(os.path.basename(f)[n + 1: -5])
-
-        ids = list(
-            map(
-                extract_id,
-                glob.iglob(
-                    os.path.join(self.get_path(), self.filename_prefix + "-*.json")
-                ),
-            )
-        )
+        ids = []
+        r = re.compile(r".*[-]([0-9]{18})\.json$")
+        with os.scandir(self.get_path()) as files:
+            for f in files:
+                m = r.match(f.name)
+                if m:
+                    ids.append(int(m.groups()[0]))
         ids.sort()
         return ids
 
