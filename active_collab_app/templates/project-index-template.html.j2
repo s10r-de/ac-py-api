@@ -14,6 +14,8 @@
                 <a href="{{ p.html_filename }}">
                     {{ p.project_number }} -
                     {{ p.name }}
+                    {% if p.completed_on %} - Completed on: {{ p.completed_on }} {% endif %}
+                    {% if p.label %} // <b>#{{ p.label.name }}</b> {% endif %}
                 </a>
             </div>
         </li>

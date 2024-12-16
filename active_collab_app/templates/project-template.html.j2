@@ -6,7 +6,7 @@
 
 </head>
 <body>
-<h1>Project No. {{ project_number }}</h1>
+<h1>Project No. {{ project_number }} {% if completed_on %} - Completed on: {{ completed_on }} {% endif %}</h1>
 <h2>{{ name }}</h2>
 <p>{{ body_formatted|safe }}</p>
 <table>
@@ -15,12 +15,16 @@
         <td>{{ id }}</td>
     </tr>
     <tr>
+        <td>Client Company</td>
+        <td>{{ company_id }} - {{ client_company.name }} (is owner: {{ client_company.is_owner }})</td>
+    </tr>
+    <tr>
         <td>category_id</td>
-        <td>{{ category_id }}</td>
+        <td>{{ category_id }} {% if category %} - {{ category.name }} {% endif %}</td>
     </tr>
     <tr>
         <td>label_id</td>
-        <td>{{ label_id }}</td>
+        <td>{{ label_id }} {% if label %} - {{ label.name }} {% endif %}</td>
     </tr>
     <tr>
         <td>updated_on</td>
