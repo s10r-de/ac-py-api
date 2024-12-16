@@ -31,6 +31,7 @@ def render_all_projects(
 ):
     companies = {}
     categories = {}
+    labels = {}
     project_list = []
     for project_id in ac_storage.data_objects["projects"].list_ids():
         project = ac_storage.data_objects["projects"].load(project_id)
@@ -45,6 +46,12 @@ def render_all_projects(
                     "project-categories"
                 ].load(project.category_id)
             project_d["category"] = categories[project.category_id]
+        if project.label_id > 0:
+            if project.label_id not in labels.keys():
+                labels[project.label_id] = ac_storage.data_objects[
+                    "project-labels"
+                ].load(project.label_id)
+            project_d["label"] = labels[project.label_id]
         project_d["client_company"] = companies[project.company_id].to_dict()
         # prepare some variables to be used in template
         project_d["html_filename"] = f"project-{project.id:06d}.html"

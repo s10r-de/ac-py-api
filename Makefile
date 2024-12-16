@@ -11,10 +11,10 @@ CONTAINER_NAME=active-collab-backup
 CONTAINER_NAME_DEV=active-collab-backup-dev
 
 # docker based
-docker: clean Dockerfile
+docker: Dockerfile
 	docker buildx build -f Dockerfile -t $(IMAGE_NAME) .
 
-docker-dev: clean Dockerfile Dockerfile-dev
+docker-dev: Dockerfile Dockerfile-dev
 	docker buildx build -f Dockerfile-dev -t $(IMAGE_NAME_DEV) .
 
 
