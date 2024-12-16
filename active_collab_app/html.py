@@ -29,10 +29,16 @@ def run_html(config: configparser.ConfigParser):
 def render_all_projects(
     ac_storage: AcFileStorage, j2env: Environment, output_path: str
 ):
+    companies = {}
     project_list = []
     for project_id in ac_storage.data_objects["projects"].list_ids():
         project = ac_storage.data_objects["projects"].load(project_id)
+        if project.company_id not in companies.keys():
+            companies[project.company_id] = ac_storage.data_objects["companies"].load(
+                project.company_id
+            )
         project_d = project.to_dict()
+        project_d["client_company"] = companies[project.company_id].to_dict()
         # prepare some variables to be used in template
         project_d["html_filename"] = f"project-{project.id:06d}.html"
         time_format = "%Y-%m-%d"
