@@ -2,6 +2,7 @@ import configparser
 import os
 import shutil
 import time
+import logging
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
@@ -22,6 +23,7 @@ def run_html(config: configparser.ConfigParser):
     shutil.rmtree(os.path.join(output_path, "*"), ignore_errors=True)
     shutil.copy("css/print.css", output_path)
     render_all_projects(ac_storage, j2env, output_path)
+    return {"path": output_path}
 
 
 def render_all_projects(
@@ -33,8 +35,7 @@ def render_all_projects(
         project_d = project.to_dict()
         # prepare some variables to be used in template
         project_d["html_filename"] = f"project-{project.id:06d}.html"
-        # FIXME: gmtime() or localtime() ??
-        time_format = "%Y-%m-%d %H:%M:%S"
+        time_format = "%Y-%m-%d"
         if project_d["completed_on"]:
             project_d["completed_on"] = time.strftime(
                 time_format, time.gmtime(project_d["completed_on"])
@@ -57,12 +58,14 @@ def render_all_projects(
 
 def save_project_index_html(j2env, output_path, project_list):
     index_file = os.path.join(output_path, "index.html")
+    logging.debug("write %s" % index_file)
     with open(index_file, "w", encoding="utf-8") as f1:
         f1.write(render_project_index(j2env, project_list))
         f1.close()
 
 
 def save_html(out_file, html):
+    logging.debug("write %s" % out_file)
     with open(out_file, "wb") as fp:
         fp.write(html)
         fp.close()
