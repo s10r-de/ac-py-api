@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="acdump empty" type="PythonConfigurationType" factoryName="Python">
+  <configuration default="false" name="docker load" type="PythonConfigurationType" factoryName="Python">
     <module name="BackupActiveCollab" />
     <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
@@ -39,12 +39,18 @@
             <option name="hostPath" value="$PROJECT_DIR$" />
             <option name="readOnly" value="false" />
           </DockerVolumeBindingImpl>
+          <DockerVolumeBindingImpl>
+            <option name="containerPath" value="/data" />
+            <option name="editable" value="true" />
+            <option name="hostPath" value="$PROJECT_DIR$/../data-docker" />
+            <option name="readOnly" value="true" />
+          </DockerVolumeBindingImpl>
         </list>
       </option>
     </EXTENSION>
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/active_collab_app/main.py" />
-    <option name="PARAMETERS" value="--config config-docker.ini --debug empty" />
+    <option name="PARAMETERS" value="--config config-docker.ini --debug load" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="false" />

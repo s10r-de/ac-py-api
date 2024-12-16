@@ -44,7 +44,7 @@ def load_config(args) -> configparser.ConfigParser:
 
 def serialize_output(output) -> str:
     # serialize the output
-    return json.dumps(output, indent=4)
+    return json.dumps(output, indent=4, ensure_ascii=False)
 
 
 def login(config: configparser.ConfigParser) -> ActiveCollab:

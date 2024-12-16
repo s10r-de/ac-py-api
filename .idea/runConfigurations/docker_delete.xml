@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="acdump info" type="PythonConfigurationType" factoryName="Python">
+  <configuration default="false" name="docker delete" type="PythonConfigurationType" factoryName="Python">
     <module name="BackupActiveCollab" />
     <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
@@ -44,7 +44,7 @@
     </EXTENSION>
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/active_collab_app/main.py" />
-    <option name="PARAMETERS" value="--config config-docker.ini --debug info" />
+    <option name="PARAMETERS" value="--config config-docker.ini --debug delete" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="false" />
