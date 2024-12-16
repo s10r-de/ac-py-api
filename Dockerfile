@@ -12,7 +12,7 @@ WORKDIR /app
 COPY active_collab_app /app/active_collab_app
 COPY active_collab_storage /app/active_collab_storage
 COPY active_collab_api /app/active_collab_api
-COPY tests /app/tests
+COPY css /app/css
 
 # create virtual environment
 RUN python3 -m venv .venv
@@ -33,6 +33,7 @@ VOLUME /var/www/html/logs
 VOLUME /var/www/html/thumbnails
 VOLUME /var/www/html/uploads
 VOLUME /var/www/html/work
+VOLUME /var/www/html/static-html
 
 # docker run --rm -it active-collab-backup --help
 ENTRYPOINT ["/app/acdump.sh"]

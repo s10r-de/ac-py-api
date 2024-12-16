@@ -17,9 +17,14 @@ docker: clean Dockerfile
 docker-dev: clean Dockerfile Dockerfile-dev
 	docker buildx build -f Dockerfile-dev -t $(IMAGE_NAME_DEV) .
 
-DOCKER_RUN_OPTS     =run --rm -v $(CONFIG):/config.ini      -v $(DATA):/data --name $(CONTAINER_NAME) $(IMAGE_NAME)
-DOCKER_RUN_OPTS_DUMP=run --rm -v $(CONFIG):/config.ini -v $(DATA_DUMP):/data --name $(CONTAINER_NAME) $(IMAGE_NAME)
-DOCKER_RUN_OPTS_DEV=run --rm -v $(CONFIG):/config.ini -v $(DATA):/data --name $(CONTAINER_NAME_DEV) $(IMAGE_NAME_DEV)
+
+CONFIG_VOLUME=-v $(CONFIG):/config.ini 
+WWW_VOLUME=-v $(PWD)/www:/var/www/html/static-html
+DATA_VOLUME=-v $(DATA):/data
+DATA_DUMP_VOLUME=-v $(DATA_DUMP):/data
+DOCKER_RUN_OPTS     	=run --rm $(CONFIG_VOLUME) $(DATA_VOLUME) $(WWW_VOLUME) --name $(CONTAINER_NAME) $(IMAGE_NAME)
+DOCKER_RUN_OPTS_DUMP	=run --rm $(CONFIG_VOLUME) $(DATA_DUMP_VOLUME) --name $(CONTAINER_NAME) $(IMAGE_NAME)
+DOCKER_RUN_OPTS_DEV		=run --rm $(CONFIG_VOLUME) $(DATA_VOLUME) --name $(CONTAINER_NAME_DEV) $(IMAGE_NAME_DEV)
 
 run_info: docker
 	@echo "info for localhost"
@@ -44,6 +49,10 @@ run_load: docker
 run_verify: docker
 	@echo "verify for localhost"
 	docker $(DOCKER_RUN_OPTS) -c /config.ini $(DEBUG) verify
+
+run_html: docker
+	@echo "html for localhost"
+	docker $(DOCKER_RUN_OPTS) -c /config.ini $(DEBUG) html
 
 docker_test: docker-dev
 	docker $(DOCKER_RUN_OPTS_DEV) /app/.venv/bin/python3 -m unittest -v
