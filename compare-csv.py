@@ -42,8 +42,6 @@ def item_is_equal(a, b):
         return False
     if a["Task List ID"] != b["Task List ID"]:
         return False
-    if a["Completed By ID"] != b["Completed By ID"]:
-        return False
     if a["Assignee"] != b["Assignee"]:
         return False
     if a["Completed On"] != b["Completed On"]:
@@ -113,7 +111,6 @@ def main(args: list) -> None:
         "Assignee ID",
         "Is Important",
         "Task List ID",
-        "Completed By ID",
         "Assignee",
         "Completed On",
         "Completed By",
@@ -140,7 +137,6 @@ def main(args: list) -> None:
             item_a["Assignee ID"] = item[0]["Assignee ID"]
             item_a["Is Important"] = item[0]["Is Important"]
             item_a["Task List ID"] = item[0]["Task List ID"]
-            item_a["Completed By ID"] = item[0]["Completed By ID"]
             item_a["Assignee"] = item[0]["Assignee"]
             item_a["Completed On"] = item[0]["Completed On"]
             item_a["Completed By"] = item[0]["Completed By"]
@@ -161,7 +157,6 @@ def main(args: list) -> None:
             item_b["Assignee ID"] = item[1]["Assignee ID"]
             item_b["Is Important"] = item[1]["Is Important"]
             item_b["Task List ID"] = item[1]["Task List ID"]
-            item_b["Completed By ID"] = item[1]["Completed By ID"]
             item_b["Assignee"] = item[1]["Assignee"]
             item_b["Completed On"] = item[1]["Completed On"]
             item_b["Completed By"] = item[1]["Completed By"]
