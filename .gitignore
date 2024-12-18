@@ -21,4 +21,5 @@ nohup.out
 /www/
 /tests/data-test/
 /test-reports/
+*.csv
 
