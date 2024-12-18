@@ -14,43 +14,32 @@ import csv
 
 
 def item_is_equal(a, b):
-    if a["Project ID"] != b["Project ID"]:
-        return False
-    if a["Project"] != b["Project"]:
-        return False
-    if a["Task Number"] != b["Task Number"]:
-        return False
-    if a["Name"] != b["Name"]:
-        return False
-    if a["Task List"] != b["Task List"]:
-        return False
-    if a["Created On"] != b["Created On"]:
-        return False
-    if a["Created By"] != b["Created By"]:
-        return False
-    if a["Due On"] != b["Due On"]:
-        return False
-    if a["Start On"] != b["Start On"]:
-        return False
-    if a["Created By ID"] != b["Created By ID"]:
-        return False
-    if a["Labels"] != b["Labels"]:
-        return False
-    if a["Assignee ID"] != b["Assignee ID"]:
-        return False
-    if a["Is Important"] != b["Is Important"]:
-        return False
-    if a["Task List ID"] != b["Task List ID"]:
-        return False
-    if a["Assignee"] != b["Assignee"]:
-        return False
-    if a["Completed On"] != b["Completed On"]:
-        return False
-    if a["Completed By"] != b["Completed By"]:
-        return False
-    if a["Type"] != b["Type"]:
-        return False
-    return True
+    fieldnames = [
+        "Project ID",
+        "Project",
+        "Task Number",
+        "Name",
+        "Task List",
+        "Created On",
+        "Created By",
+        "Due On",
+        "Start On",
+        "Created By ID",
+        "Labels",
+        "Assignee ID",
+        "Is Important",
+        "Task List ID",
+        "Assignee",
+        # "Completed On",
+        # "Completed By",
+        "Type",
+    ]
+    result = True
+    for field in fieldnames:
+        if a[field] != b[field]:
+            result = False
+            break
+    return result
 
 
 def main(args: list) -> None:
