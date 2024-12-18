@@ -1,4 +1,5 @@
 import logging
+import time
 
 from active_collab_api import (
     AC_API_VERSION,
@@ -71,6 +72,8 @@ class ActiveCollab:
     For local persistence we use the AcFileStorage* classes.
     """
 
+    client: None
+
     base_url: str = ""
 
     session: AcSession
@@ -79,6 +82,8 @@ class ActiveCollab:
         self.base_url = base_url.rstrip("/")
         self.is_cloud = is_cloud
         self.client = None
+        self.file_access_token = None  # for caching the token
+        self.file_access_token_expires_at = 0
 
     def login(self, email: str, password: str, account: str) -> AcSession:
         if self.is_cloud is True:
@@ -216,14 +221,13 @@ class ActiveCollab:
 
     def update_task_set_task_number(self, task: AcTask) -> dict | None:
         logging.debug("Set the task number %s", task.to_json())
-        task_dict = {
-            "task_number": task.task_number
-        }
+        task_dict = {"task_number": task.task_number}
         res = self.client.put_task(task.project_id, task.id, task_dict)
         if res.status_code == 404:
             logging.error(task.to_dict())
             logging.error(
-                "Project %d or Task %d not found! Can not update task!" % (task.project_id, task.id)
+                "Project %d or Task %d not found! Can not update task!"
+                % (task.project_id, task.id)
             )
             return None
         if res.status_code != 200:
@@ -294,15 +298,11 @@ class ActiveCollab:
     def update_project_set_project_number(self, project: AcProject) -> dict | None:
         logging.debug("Set the project_number %s", project.to_json())
         project = _workaround_project_fix_type_from_class(project)
-        project_dict = {
-            "project_number": project.project_number
-        }
+        project_dict = {"project_number": project.project_number}
         res = self.client.put_project(project.id, project_dict)
         if res.status_code == 404:
             logging.error(project.to_dict())
-            logging.error(
-                "Project %d not found! Can not update project!" % project.id
-            )
+            logging.error("Project %d not found! Can not update project!" % project.id)
             return None
         if res.status_code != 200:
             logging.error(project.to_dict())
@@ -419,12 +419,19 @@ class ActiveCollab:
         return res_data
 
     def get_file_access_token(self) -> AcFileAccessToken:
-        # Task#35: use TTL to limit amount of requests
+        # Task#35: use TTL !!
+        if self.file_access_token:
+            if time.time() < self.file_access_token_expires_at:
+                return self.file_access_token
+            self.file_access_token = None
+            self.file_access_token_expires_at = 0
         res = self.client.get_file_access_token()
         if res.status_code != 200:
             raise AcApiError(f"Error {res.status_code}")
         res_data = res.json()
         file_access_token = fileaccesstoken_from_json(res_data)
+        self.file_access_token = file_access_token
+        self.file_access_token_expires_at = time.time() + file_access_token.ttl
         return file_access_token
 
     def download_attachment(self, attachment: AcAttachment) -> str:
@@ -576,7 +583,9 @@ class ActiveCollab:
         task_lists.extend(self.get_project_archived_task_lists(project.id))
         return task_lists
 
-    def get_project_all_task_lists_by_project_id(self, project_id: int) -> list[AcTaskList]:
+    def get_project_all_task_lists_by_project_id(
+        self, project_id: int
+    ) -> list[AcTaskList]:
         task_lists = self.get_project_task_lists(project_id)
         task_lists.extend(self.get_project_archived_task_lists(project_id))
         return task_lists
