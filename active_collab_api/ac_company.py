@@ -39,6 +39,12 @@ class AcCompany(AcDataObject):
     tax_number: str | None = dataclasses.field(default=None)
     default_invoice_due_after: int | None = dataclasses.field(default=None)
     default_invoice_recipients: str | None = dataclasses.field(default=None)
+    address_line_1: str | None = dataclasses.field(default=None)
+    address_line_2: str | None = dataclasses.field(default=None)
+    city: str | None = dataclasses.field(default=None)
+    zip_code: str | None = dataclasses.field(default=None)
+    region: str | None = dataclasses.field(default=None)
+    country: str | None = dataclasses.field(default=None)
 
     def __eq__(self, other) -> bool:
         ignored_fields = ["members"]
