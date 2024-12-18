@@ -7,6 +7,8 @@
 # - items-different.csv
 # - items-missing.csv
 #
+# this script is currently "quick-and-dirty"
+# pylint: disable-all
 
 import sys
 import re
