@@ -1,6 +1,8 @@
 import logging
 import time
 
+import requests
+
 from active_collab_api import (
     AC_API_VERSION,
     AC_CLASS_COMMENT,
@@ -72,8 +74,6 @@ class ActiveCollab:
     For local persistence we use the AcFileStorage* classes.
     """
 
-    client: None
-
     base_url: str = ""
 
     session: AcSession
@@ -81,7 +81,6 @@ class ActiveCollab:
     def __init__(self, base_url: str, is_cloud: bool = False):
         self.base_url = base_url.rstrip("/")
         self.is_cloud = is_cloud
-        self.client = None
         self.file_access_token = None  # for caching the token
         self.file_access_token_expires_at = 0
 
@@ -181,8 +180,9 @@ class ActiveCollab:
 
     def get_completed_tasks(self, project_id: int) -> list[AcTask]:
         tasks = []
-        page = 1
+        page = 0
         while True:
+            page = page + 1
             res = self.client.get_project_completed_tasks(project_id, page)
             if res.status_code != 200:
                 raise AcApiError(f"Error {res.status_code}")
@@ -190,7 +190,6 @@ class ActiveCollab:
             if len(res_data) == 0:
                 break
             tasks.extend(list(map(task_from_json, res_data)))
-            page = page + 1
         return tasks
 
     def complete_task(self, task: AcTask) -> dict | None:
@@ -356,11 +355,17 @@ class ActiveCollab:
         return res_data
 
     def get_subtasks(self, task: AcTask) -> list[AcSubtask]:
-        res = self.client.get_subtasks(task.project_id, task.id)
-        if res.status_code != 200:
-            raise AcApiError(f"Error {res.status_code}")
-        res_data = res.json()
-        subtasks = list(map(subtask_from_json, res_data))
+        subtasks = []
+        page = 0
+        while True:
+            page = page + 1
+            res = self.client.get_subtasks(task.project_id, task.id, page)
+            if res.status_code != 200:
+                raise AcApiError(f"Error {res.status_code}")
+            res_data = res.json()
+            if page > 1:
+                break
+            subtasks.extend(list(map(subtask_from_json, res_data)))
         return subtasks
 
     def complete_subtask(self, subtask: AcSubtask) -> dict | None:
@@ -392,11 +397,17 @@ class ActiveCollab:
         return res_data
 
     def get_comments(self, task: AcTask) -> list[AcComment]:
-        res = self.client.get_comments(task.id)
-        if res.status_code != 200:
-            raise AcApiError(f"Error {res.status_code}")
-        res_data = res.json()
-        comments = list(map(comment_from_json, res_data))
+        comments = []
+        page = 0
+        while True:
+            page = page + 1
+            res = self.client.get_comments(task.id, page)
+            if res.status_code != 200:
+                raise AcApiError(f"Error {res.status_code}")
+            res_data = res.json()
+            if len(res_data) == 0:
+                break
+            comments.extend(list(map(comment_from_json, res_data)))
         return comments
 
     def create_comment(self, comment: AcComment) -> dict | None:
@@ -545,10 +556,9 @@ class ActiveCollab:
         return company_from_json(res.json())
 
     def empty_trash(self) -> dict:
-        client = AcClient(self.session.cur_account, self.session.token)
         # FIXME loop until empty
-        trash = client.get_trash()
-        client.delete_trash()
+        trash = self.client.get_trash()
+        self.client.delete_trash()
         return trash.json()
 
     def delete_all_users(self) -> None:
@@ -562,20 +572,31 @@ class ActiveCollab:
                 self.client.delete_company(company.id)
 
     def get_project_task_lists(self, project_id: int) -> list[AcTaskList]:
-        res = self.client.get_task_lists(project_id)
-        if res.status_code != 200:
-            raise AcApiError(f"Error {res.status_code}")
-        res_data = res.json()
-        task_lists = list(map(task_list_from_json, res_data))
+        task_lists = []
+        page = 0
+        while True:
+            page = page + 1
+            res = self.client.get_task_lists(project_id, page)
+            if res.status_code != 200:
+                raise AcApiError(f"Error {res.status_code}")
+            res_data = res.json()
+            if page > 1:
+                break
+            task_lists.extend(list(map(task_list_from_json, res_data)))
         return task_lists
 
     def get_project_archived_task_lists(self, project_id: int) -> list[AcTaskList]:
-        client = AcClient(self.session.cur_account, self.session.token)
-        res = client.get_archived_task_lists(project_id)
-        if res.status_code != 200:
-            raise AcApiError(f"Error {res.status_code}")
-        res_data = res.json()
-        task_lists = list(map(task_list_from_json, res_data))
+        task_lists = []
+        page = 0
+        while True:
+            page = page + 1
+            res = self.client.get_archived_task_lists(project_id, page)
+            if res.status_code != 200:
+                raise AcApiError(f"Error {res.status_code}")
+            res_data = res.json()
+            if page > 1:
+                break
+            task_lists.extend(list(map(task_list_from_json, res_data)))
         return task_lists
 
     def get_project_all_task_lists(self, project: AcProject) -> list[AcTaskList]:
