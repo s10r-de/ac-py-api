@@ -45,7 +45,6 @@ class TestStorage(TestCase):
         ac_storage.reset()  # reset again should not throw any error
         self.assertEqual(True, True)
 
-
     def test_020_ensure_dirs(self):
         account_id = 12341234
         ac_storage = AcFileStorage(DATA_DIR, account_id)
@@ -92,3 +91,13 @@ class TestStorage(TestCase):
             attachment = attachment_from_json(json.load(fh))
         attachment.id = attachment_id
         return attachment
+
+    def test_save_and_remove_timestamp(self):
+        account_id = 12341234
+        ac_storage = AcFileStorage(DATA_DIR, account_id)
+        ac_storage.reset()
+        ac_storage.ensure_dirs()
+        ac_storage.save_timestamp()
+        self.assertTrue(os.path.isfile(ac_storage.ts_file))
+        ac_storage.remove_timestamp()
+        self.assertFalse(os.path.isfile(ac_storage.ts_file))
