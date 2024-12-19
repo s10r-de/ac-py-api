@@ -16,7 +16,7 @@ class AcFileStorageBaseClass:
 
     def reset(self):
         if os.path.exists(self.get_path()):
-            tmp_path = f"{0}_{1:#d}".format(self.get_path(), int(time.time()))
+            tmp_path = self.get_path() + "_" + str(time.time())
             os.rename(self.get_path(), tmp_path)
             shutil.rmtree(tmp_path)
 
