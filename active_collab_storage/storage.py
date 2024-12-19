@@ -1,5 +1,7 @@
+import logging
 import os
 import shutil
+from datetime import datetime
 
 from active_collab_storage import DEFAULT_MODE_DIRS
 from .attachment import AcFileStorageAttachment
@@ -38,8 +40,10 @@ class AcFileStorage:
             "comments": AcFileStorageComment(root_path, account_id),
             "attachments": AcFileStorageAttachment(root_path, account_id),
         }
+        self.ts_file = os.path.join(self.get_account_path(), "last_success.txt")
 
     def reset(self):
+        self.remove_timestamp()
         for _k, obj in self.data_objects.items():
             obj.reset()
         if os.path.exists(self.get_account_path()):
@@ -53,3 +57,14 @@ class AcFileStorage:
 
     def get_account_path(self) -> str:
         return os.path.join(self.root_path, f"account-{self.account_id:#08d}")
+
+    def remove_timestamp(self):
+        if os.path.exists(self.ts_file):
+            os.remove(self.ts_file)
+
+    def save_timestamp(self):
+        ts = datetime.now().isoformat()
+        with open(self.ts_file, "w", encoding="utf-8") as f:
+            f.write(ts)
+            f.close()
+            logging.debug('Saved timestamp "%s" to %s' % (ts, self.ts_file))

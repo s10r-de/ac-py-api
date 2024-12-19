@@ -22,6 +22,8 @@ def run_dump_all(ac: ActiveCollab, config: configparser.ConfigParser):
     dump_all_task_labels(ac, ac_storage)
     dump_all_projects_with_all_data(ac, ac_storage)
 
+    ac_storage.save_timestamp()
+
     return {
         "account": account_id,
         "storage_path": storage_path,
