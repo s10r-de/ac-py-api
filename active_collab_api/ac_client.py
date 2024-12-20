@@ -203,9 +203,9 @@ class AcClient:
 
     # subtasks
 
-    def get_subtasks(self, project_id: int, task_id: int, page: int = 1):
+    def get_subtasks(self, project_id: int, task_id: int):
         return self._get(
-            "projects/%d/tasks/%d/subtasks?page=%d" % (project_id, task_id, page)
+            "projects/%d/tasks/%d/subtasks" % (project_id, task_id)
         )
 
     def post_subtask(self, project_id: int, task_id: int, data: dict) -> Response:
