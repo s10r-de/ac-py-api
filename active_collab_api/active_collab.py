@@ -1,6 +1,7 @@
 import logging
 import time
 
+
 from active_collab_api import (
     AC_API_VERSION,
     AC_CLASS_COMMENT,
@@ -71,8 +72,6 @@ class ActiveCollab:
 
     For local persistence we use the AcFileStorage* classes.
     """
-
-    client: None
 
     base_url: str = ""
 
@@ -172,6 +171,7 @@ class ActiveCollab:
         return tasks
 
     def get_active_tasks(self, project_id: int) -> list[AcTask]:
+        # no paging available
         res = self.client.get_project_active_tasks(project_id)
         if res.status_code != 200:
             raise AcApiError(f"Error {res.status_code}")
@@ -181,8 +181,9 @@ class ActiveCollab:
 
     def get_completed_tasks(self, project_id: int) -> list[AcTask]:
         tasks = []
-        page = 1
+        page = 0
         while True:
+            page = page + 1
             res = self.client.get_project_completed_tasks(project_id, page)
             if res.status_code != 200:
                 raise AcApiError(f"Error {res.status_code}")
@@ -190,7 +191,6 @@ class ActiveCollab:
             if len(res_data) == 0:
                 break
             tasks.extend(list(map(task_from_json, res_data)))
-            page = page + 1
         return tasks
 
     def complete_task(self, task: AcTask) -> dict | None:
@@ -202,7 +202,7 @@ class ActiveCollab:
         res_data = res.json()
         return res_data
 
-    def create_task(self, task: AcTask) -> dict | None:
+    def create_task(self, task: AcTask) -> AcTask | None:
         logging.debug("Create task: " + task.to_json())
         task.type = task.class_  # FIXME
         res = self.client.post_task(task.to_dict())
@@ -217,7 +217,7 @@ class ActiveCollab:
             logging.error("Error %d - %s" % (res.status_code, str(res.text)))
             return None
         res_data = res.json()
-        return res_data
+        return task_from_json(res_data["single"])
 
     def update_task_set_task_number(self, task: AcTask) -> dict | None:
         logging.debug("Set the task number %s", task.to_json())
@@ -282,7 +282,7 @@ class ActiveCollab:
         res_data = res.json()
         return res_data
 
-    def create_project(self, project: AcProject) -> dict | None:
+    def create_project(self, project: AcProject) -> AcProject | None:
         logging.debug("Creating project %s", project.to_json())
         project = _workaround_project_fix_type_from_class(project)
         res = self.client.post_project(project.to_dict())
@@ -293,7 +293,7 @@ class ActiveCollab:
             )
             return None
         res_data = res.json()
-        return res_data
+        return project_from_json(res_data["single"])
 
     def update_project_set_project_number(self, project: AcProject) -> dict | None:
         logging.debug("Set the project_number %s", project.to_json())
@@ -356,12 +356,12 @@ class ActiveCollab:
         return res_data
 
     def get_subtasks(self, task: AcTask) -> list[AcSubtask]:
+        # no paging supported
         res = self.client.get_subtasks(task.project_id, task.id)
         if res.status_code != 200:
             raise AcApiError(f"Error {res.status_code}")
         res_data = res.json()
-        subtasks = list(map(subtask_from_json, res_data))
-        return subtasks
+        return list(map(subtask_from_json, res_data))
 
     def complete_subtask(self, subtask: AcSubtask) -> dict | None:
         logging.debug("Complete subtask: " + subtask.to_json())
@@ -392,11 +392,17 @@ class ActiveCollab:
         return res_data
 
     def get_comments(self, task: AcTask) -> list[AcComment]:
-        res = self.client.get_comments(task.id)
-        if res.status_code != 200:
-            raise AcApiError(f"Error {res.status_code}")
-        res_data = res.json()
-        comments = list(map(comment_from_json, res_data))
+        comments = []
+        page = 0
+        while True:
+            page = page + 1
+            res = self.client.get_comments(task.id, page)
+            if res.status_code != 200:
+                raise AcApiError(f"Error {res.status_code}")
+            res_data = res.json()
+            if len(res_data) == 0:
+                break
+            comments.extend(list(map(comment_from_json, res_data)))
         return comments
 
     def create_comment(self, comment: AcComment) -> dict | None:
@@ -534,21 +540,20 @@ class ActiveCollab:
         companies = list(map(company_from_json, res_data))
         return companies
 
-    def create_company(self, company: AcCompany) -> AcCompany:
+    def create_company(self, company: AcCompany) -> AcCompany | None:
         logging.debug("create company: " + company.to_json())
         if company.is_owner is True:
             logging.warning("skip owner company %d" % company.id)
-            return False
+            return None
         res = self.client.post_company(company.to_dict())
         if res.status_code != 200:
             raise AcApiError(f"Error {res.status_code} {res.text}")
         return company_from_json(res.json())
 
     def empty_trash(self) -> dict:
-        client = AcClient(self.session.cur_account, self.session.token)
         # FIXME loop until empty
-        trash = client.get_trash()
-        client.delete_trash()
+        trash = self.client.get_trash()
+        self.client.delete_trash()
         return trash.json()
 
     def delete_all_users(self) -> None:
@@ -562,20 +567,31 @@ class ActiveCollab:
                 self.client.delete_company(company.id)
 
     def get_project_task_lists(self, project_id: int) -> list[AcTaskList]:
-        res = self.client.get_task_lists(project_id)
-        if res.status_code != 200:
-            raise AcApiError(f"Error {res.status_code}")
-        res_data = res.json()
-        task_lists = list(map(task_list_from_json, res_data))
+        task_lists = []
+        page = 0
+        while True:
+            page = page + 1
+            res = self.client.get_task_lists(project_id, page)
+            if res.status_code != 200:
+                raise AcApiError(f"Error {res.status_code}")
+            res_data = res.json()
+            if page > 1:
+                break
+            task_lists.extend(list(map(task_list_from_json, res_data)))
         return task_lists
 
     def get_project_archived_task_lists(self, project_id: int) -> list[AcTaskList]:
-        client = AcClient(self.session.cur_account, self.session.token)
-        res = client.get_archived_task_lists(project_id)
-        if res.status_code != 200:
-            raise AcApiError(f"Error {res.status_code}")
-        res_data = res.json()
-        task_lists = list(map(task_list_from_json, res_data))
+        task_lists = []
+        page = 0
+        while True:
+            page = page + 1
+            res = self.client.get_archived_task_lists(project_id, page)
+            if res.status_code != 200:
+                raise AcApiError(f"Error {res.status_code}")
+            res_data = res.json()
+            if len(res_data) == 0:
+                break
+            task_lists.extend(list(map(task_list_from_json, res_data)))
         return task_lists
 
     def get_project_all_task_lists(self, project: AcProject) -> list[AcTaskList]:
@@ -599,7 +615,7 @@ class ActiveCollab:
         res_data = res.json()
         return res_data
 
-    def create_task_list(self, task_list: AcTaskList) -> dict | None:
+    def create_task_list(self, task_list: AcTaskList) -> AcTaskList | None:
         logging.debug("create task list: " + task_list.to_json())
         task_list.type = task_list.class_  # FIXME
         res = self.client.post_task_list(task_list.to_dict())
@@ -614,7 +630,7 @@ class ActiveCollab:
             logging.error("Error %d - %s" % (res.status_code, str(res.text)))
             return None
         res_data = res.json()
-        return res_data
+        return task_list_from_json(res_data["single"])
 
     def get_task_history(self, task: AcTask) -> list[AcTaskHistory]:
         res = self.client.get_task_history(task.id)

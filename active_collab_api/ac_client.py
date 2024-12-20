@@ -114,7 +114,9 @@ class AcClient:
     def put_task(self, project_id: int, task_id: int, data: dict) -> Response:
         if "labels" in data.keys():
             data["labels"] = list(map(lambda task: task["name"], data["labels"]))
-        return self._put("projects/%d/tasks/%d" % (project_id, task_id), json.dumps(data))
+        return self._put(
+            "projects/%d/tasks/%d" % (project_id, task_id), json.dumps(data)
+        )
 
     def complete_task(self, task_id: int) -> Response:
         return self._put("complete/task/%d" % task_id, "")
@@ -144,11 +146,11 @@ class AcClient:
 
     # projects
 
-    def get_active_projects(self):
-        return self._get("projects")
+    def get_active_projects(self, page: int = 1):
+        return self._get("projects?page=%d" % page)
 
-    def get_archived_projects(self):
-        return self._get("projects/archive")
+    def get_archived_projects(self, page: int = 1):
+        return self._get("projects/archive?page=%d" % page)
 
     def post_project(self, data: dict) -> Response:
         return self._post("projects", json.dumps(data))
@@ -164,8 +166,8 @@ class AcClient:
 
     # notes
 
-    def get_project_notes(self, project_id: int):
-        return self._get("projects/%d/notes" % project_id)
+    def get_project_notes(self, project_id: int, page: int = 1):
+        return self._get("projects/%d/notes?page=%d" % (project_id, page))
 
     def update_note_assign_file(
         self,
@@ -202,7 +204,9 @@ class AcClient:
     # subtasks
 
     def get_subtasks(self, project_id: int, task_id: int):
-        return self._get("projects/%d/tasks/%d/subtasks" % (project_id, task_id))
+        return self._get(
+            "projects/%d/tasks/%d/subtasks" % (project_id, task_id)
+        )
 
     def post_subtask(self, project_id: int, task_id: int, data: dict) -> Response:
         return self._post(
@@ -214,8 +218,8 @@ class AcClient:
 
     # comments
 
-    def get_comments(self, task_id: int):
-        return self._get("comments/task/%d" % task_id)
+    def get_comments(self, task_id: int, page: int = 1):
+        return self._get("comments/task/%d?page=%d" % (task_id, page))
 
     def post_comment(self, parent_type: str, parent_id: int, data: dict) -> Response:
         return self._post("comments/%s/%d" % (parent_type, parent_id), json.dumps(data))
@@ -308,11 +312,11 @@ class AcClient:
 
     # task list
 
-    def get_task_lists(self, project_id: int) -> Response:
-        return self._get("projects/%d/task-lists" % project_id)
+    def get_task_lists(self, project_id: int, page: int = 1) -> Response:
+        return self._get("projects/%d/task-lists?page=%d" % (project_id, page))
 
-    def get_archived_task_lists(self, project_id: int) -> Response:
-        return self._get("projects/%d/task-lists/archive" % project_id)
+    def get_archived_task_lists(self, project_id: int, page: int = 1) -> Response:
+        return self._get("projects/%d/task-lists/archive?page=%d" % (project_id, page))
 
     def post_task_list(self, data: dict) -> Response:
         project_id = data["project_id"]
