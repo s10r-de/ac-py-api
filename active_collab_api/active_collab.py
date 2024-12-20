@@ -1,7 +1,6 @@
 import logging
 import time
 
-import requests
 
 from active_collab_api import (
     AC_API_VERSION,
@@ -81,6 +80,7 @@ class ActiveCollab:
     def __init__(self, base_url: str, is_cloud: bool = False):
         self.base_url = base_url.rstrip("/")
         self.is_cloud = is_cloud
+        self.client = None
         self.file_access_token = None  # for caching the token
         self.file_access_token_expires_at = 0
 
@@ -293,7 +293,7 @@ class ActiveCollab:
             )
             return None
         res_data = res.json()
-        return project_from_json(res_data)
+        return project_from_json(res_data["single"])
 
     def update_project_set_project_number(self, project: AcProject) -> dict | None:
         logging.debug("Set the project_number %s", project.to_json())
