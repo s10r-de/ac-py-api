@@ -65,5 +65,12 @@
   "has_note": false,
   "tax_number": "DE123456789",
   "default_invoice_due_after": 30,
-  "default_invoice_recipients": null
+  "default_invoice_recipients": null,
+  "address_line_1": "addr 1",
+  "address_line_2": "addr 2",
+  "city": "city",
+  "zip_code": "12345",
+  "region": "region",
+  "country": "country",
+  "archived_on": 0
 }
