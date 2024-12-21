@@ -45,6 +45,7 @@ class AcCompany(AcDataObject):
     zip_code: str | None = dataclasses.field(default=None)
     region: str | None = dataclasses.field(default=None)
     country: str | None = dataclasses.field(default=None)
+    archived_on: int = dataclasses.field(default=0)
 
     def __eq__(self, other) -> bool:
         ignored_fields = ["members"]
