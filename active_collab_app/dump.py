@@ -2,6 +2,7 @@ import configparser
 
 from active_collab_api.active_collab import ActiveCollab
 from active_collab_app.statistics import Statistics
+from active_collab_app import helper
 from active_collab_storage.storage import AcFileStorage
 
 dump_statistics = Statistics()
@@ -23,6 +24,7 @@ def run_dump_all(ac: ActiveCollab, config: configparser.ConfigParser):
     dump_all_projects_with_all_data(ac, ac_storage)
 
     ac_storage.save_timestamp()
+    helper.save_dump_timestamp(config)
 
     return {
         "account": account_id,

@@ -1,6 +1,7 @@
 import configparser
+from datetime import datetime
 
-from active_collab_app import CFG_SECTION_DEFAULT
+from active_collab_app import CFG_OPTION_DUMP_TIMESTAMP_FILE, CFG_SECTION_DEFAULT
 
 
 def map_user_id(config: configparser.ConfigParser, from_user_id: int) -> int:
@@ -24,3 +25,11 @@ def map_company_id(config: configparser.ConfigParser, from_company_id: int) -> i
     if config.has_option(CFG_SECTION_DEFAULT, option_name):
         return config.getint(CFG_SECTION_DEFAULT, option_name)
     return from_company_id
+
+
+def save_dump_timestamp(config: configparser.ConfigParser) -> str:
+    filename = config.get(CFG_SECTION_DEFAULT, CFG_OPTION_DUMP_TIMESTAMP_FILE)
+    ts = datetime.now().isoformat()
+    with open(filename, "w", encoding="ascii") as fh:
+        fh.write(f"{ts}")
+    return filename
