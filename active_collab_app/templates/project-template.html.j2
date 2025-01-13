@@ -64,7 +64,13 @@
 <h3>Tasks:</h3>
 
 <li>
-    <ul>Task 1</ul>
+    {% for task in tasks %}
+    <ul>
+        <a href="{{ "task-%06d.html" % task.id }}">
+            #{{ task.task_number }}&nbsp;-&nbsp;{{ task.name }}
+        </a>
+    </ul>
+    {% endfor %}
 </li>
 
 <hr>

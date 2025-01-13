@@ -67,7 +67,7 @@ def load_all_tasks(ac_storage: AcFileStorage) -> dict[AcTask]:
     return tasks
 
 def render_all_tasks(data, j2env, output_path):
-    for task_id, task in data["tasks"].items():
+    for _task_id, task in data["tasks"].items():
         task_d = task.to_dict()
         # prepare some variables to be used in template
         task_d["html_filename"] = f"task-{task.id:06d}.html"
@@ -104,7 +104,7 @@ def render_all_projects(
     data, j2env: Environment, output_path: str
 ):
     project_list = []
-    for project_id, project in data["projects"].items():
+    for _project_id, project in data["projects"].items():
         project_d = project.to_dict()
 
         # add lookup data
@@ -130,6 +130,8 @@ def render_all_projects(
             project_d["updated_on"] = time.strftime(
                 time_format, time.gmtime(project_d["updated_on"])
             )
+        project_tasks = list(filter(lambda item: item[1].project_id == project.id, data["tasks"].items()))
+        project_d["tasks"] = list(map(lambda item: item[1].to_dict(), project_tasks))
         # render and save the HTML
         out_file = os.path.join(output_path, project_d["html_filename"])
         html = render_project(j2env, project_d).encode("utf8")
