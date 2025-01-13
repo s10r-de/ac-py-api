@@ -130,8 +130,12 @@ def render_all_projects(
             project_d["updated_on"] = time.strftime(
                 time_format, time.gmtime(project_d["updated_on"])
             )
-        project_tasks = list(filter(lambda item: item[1].project_id == project.id, data["tasks"].items()))
-        project_d["tasks"] = list(map(lambda item: item[1].to_dict(), project_tasks))
+        # add list of tasks for this project
+        project_tasks = []
+        for task in data["tasks"].values():
+            if task.project_id == project.id:
+                project_tasks.append(task.to_dict())
+        project_d["tasks"] = project_tasks
         # render and save the HTML
         out_file = os.path.join(output_path, project_d["html_filename"])
         html = render_project(j2env, project_d).encode("utf8")
