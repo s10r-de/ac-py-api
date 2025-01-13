@@ -1,8 +1,8 @@
 import configparser
+import logging
 import os
 import shutil
 import time
-import logging
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
@@ -23,6 +23,7 @@ def run_html(config: configparser.ConfigParser):
     shutil.rmtree(os.path.join(output_path, "*"), ignore_errors=True)
     shutil.copy("css/print.css", output_path)
     render_all_projects(ac_storage, j2env, output_path)
+    render_all_tasks(ac_storage, j2env, output_path)
     return {"path": output_path}
 
 def load_all_companies(ac_storage: AcFileStorage) -> dict:
@@ -42,6 +43,38 @@ def load_all_project_categories(ac_storage: AcFileStorage) -> dict:
     for category_id in ac_storage.data_objects["project-categories"].list_ids():
         categories[category_id] = ac_storage.data_objects["project-categories"].load(category_id)
     return categories
+
+def render_all_tasks(ac_storage: AcFileStorage, j2env, output_path):
+    for task_id in ac_storage.data_objects["tasks"].list_ids():
+        task = ac_storage.data_objects["tasks"].load(task_id)
+        task_d = task.to_dict()
+        # prepare some variables to be used in template
+        task_d["html_filename"] = f"task-{task.id:06d}.html"
+        time_format = "%Y-%m-%d"
+        if task_d["completed_on"]:
+            task_d["completed_on"] = time.strftime(
+                time_format, time.gmtime(task_d["completed_on"])
+            )
+        if task_d["created_on"]:
+            task_d["created_on"] = time.strftime(
+                time_format, time.gmtime(task_d["created_on"])
+            )
+        if task_d["updated_on"]:
+            task_d["updated_on"] = time.strftime(
+                time_format, time.gmtime(task_d["updated_on"])
+            )
+        if task_d["start_on"]:
+            task_d["start_on"] = time.strftime(
+                time_format, time.gmtime(task_d["start_on"])
+            )
+        if task_d["due_on"]:
+            task_d["due_on"] = time.strftime(
+                time_format, time.gmtime(task_d["due_on"])
+            )
+        out_file = os.path.join(output_path, "task-{}.html".format(task_id))
+        html = render_task(j2env, task_d).encode("utf-8")
+        save_html(out_file, html)
+    # todo: task index?
 
 def render_all_projects(
     ac_storage: AcFileStorage, j2env: Environment, output_path: str
@@ -107,3 +140,8 @@ def render_project(j2env: Environment, project_d: dict) -> str:
 def render_project_index(j2env: Environment, project_list: list) -> str:
     project_index_template = j2env.get_template("project-index-template.html.j2")
     return project_index_template.render(projects=project_list)
+
+
+def render_task(j2env: Environment, task_d: dict) -> str:
+    task_template = j2env.get_template("task-template.html.j2")
+    return task_template.render(**task_d)

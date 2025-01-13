@@ -1,0 +1,100 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Task {{ task_number }}</title>
+    <link rel="stylesheet" href="print.css" media="all">
+
+</head>
+<body>
+<h1>Task No. {{ task_number }} {% if is_completed %} - Completed on: {{ completed_on }} {% endif %}</h1>
+<h2>{{ name }}</h2>
+
+<div>
+    <a href="{{ "project-%06d.html" % project_id }}">Project {{ project_id }} </a>
+</div>
+&nbsp;
+
+<table>
+    <tr>
+        <td>Task-List / Task ID (internal)</td>
+        <td>{{ task_list_id }} / {{ id }}</td>
+    </tr>
+    <tr>
+        <td>Position</td>
+        <td>{{ position }}</td>
+    </tr>
+
+    <tr>
+        <td>Assignee</td>
+        <td>{{ assignee_id }}</td>
+    </tr>
+
+    <tr>
+        <td>Start on / Due on</td>
+        <td>{{ start_on }} / {{ due_on }}</td>
+    </tr>
+
+    <tr>
+        <td>Important</td>
+        <td>{{ is_important }}</td>
+    </tr>
+
+    <tr>
+        <td>is_trashed</td>
+        <td>{{ is_trashed }}</td>
+    </tr>
+
+    <tr>
+        <td>Labels</td>
+        <td>
+            <ul>
+            {% for label in labels %}
+                <li style="color: {{ label.lighter_text_color }}">{{ label.name }}</li>
+            {% endfor %}
+            </ul>
+        </td>
+
+    </tr>
+
+    <tr>
+        <td>Created</td>
+        <td>{{ created_by_name }} &lt;{{ created_by_email }}&gt; {{ created_on }}</td>
+    </tr>
+    <tr>
+        <td>Completed</td>
+        <td>{{ completed_by_name }} &lt;{{ completed_by_email }}&gt; {{ completed_on }}</td>
+    </tr>
+    <tr>
+        <td>Trashed on</td>
+        <td>{{ trashed_on }}</td>
+    </tr>
+
+</table>
+<p>{{ body_formatted|safe }}</p>
+
+<h3>Attachments:</h3>
+<li>
+    <ul>TODO: list attachment here</ul>
+</li>
+
+<h3>Subtasks</h3>
+
+<li>
+    <ul>TODO: list subtasks here</ul>
+</li>
+
+<h3>Dependencies</h3>
+
+<li>
+    <ul>TODO: list dependencies here</ul>
+</li>
+
+<h3>Comments</h3>
+
+<li>
+    <ul>TODO: list comments here</ul>
+</li>
+
+
+</body>
+</html>
