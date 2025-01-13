@@ -22,9 +22,24 @@ def run_html(config: configparser.ConfigParser):
     output_path = config.get("WWW", "path")
     shutil.rmtree(os.path.join(output_path, "*"), ignore_errors=True)
     shutil.copy("css/print.css", output_path)
-    render_all_projects(ac_storage, j2env, output_path)
-    render_all_tasks(ac_storage, j2env, output_path)
+
+    data = {}
+    data["companies"] = load_all_companies(ac_storage)
+    data["project_categories"] = load_all_project_categories(ac_storage)
+    data["project_labels"] = load_all_project_labels(ac_storage)
+
+    data["projects"] = load_all_projects(ac_storage)
+    data["tasks"] = load_all_tasks(ac_storage)
+
+    render_all_projects(data, j2env, output_path)
+    render_all_tasks(data, j2env, output_path)
     return {"path": output_path}
+
+def load_all_projects(ac_storage: AcFileStorage):
+    projects = {}
+    for project_id in ac_storage.data_objects["projects"].list_ids():
+        projects[project_id] = ac_storage.data_objects["projects"].load(project_id)
+    return projects
 
 def load_all_companies(ac_storage: AcFileStorage) -> dict:
     companies = {}
@@ -44,9 +59,14 @@ def load_all_project_categories(ac_storage: AcFileStorage) -> dict:
         categories[category_id] = ac_storage.data_objects["project-categories"].load(category_id)
     return categories
 
-def render_all_tasks(ac_storage: AcFileStorage, j2env, output_path):
+def load_all_tasks(ac_storage: AcFileStorage) -> dict[AcTask]:
+    tasks = {}
     for task_id in ac_storage.data_objects["tasks"].list_ids():
-        task = ac_storage.data_objects["tasks"].load(task_id)
+        tasks[task_id] = ac_storage.data_objects["tasks"].load(task_id)
+    return tasks
+
+def render_all_tasks(data, j2env, output_path):
+    for task_id, task in data["tasks"].items():
         task_d = task.to_dict()
         # prepare some variables to be used in template
         task_d["html_filename"] = f"task-{task.id:06d}.html"
@@ -78,22 +98,18 @@ def render_all_tasks(ac_storage: AcFileStorage, j2env, output_path):
     # todo: task index?
 
 def render_all_projects(
-    ac_storage: AcFileStorage, j2env: Environment, output_path: str
+    data, j2env: Environment, output_path: str
 ):
-    companies = load_all_companies(ac_storage)
-    categories = load_all_project_categories(ac_storage)
-    labels = load_all_project_labels(ac_storage)
     project_list = []
-    for project_id in ac_storage.data_objects["projects"].list_ids():
-        project = ac_storage.data_objects["projects"].load(project_id)
+    for project_id, project in data["projects"].items():
         project_d = project.to_dict()
 
         # add lookup data
         if project.category_id > 0:
-            project_d["category"] = categories[project.category_id]
+            project_d["category"] = data["project_categories"][project.category_id]
         if project.label_id > 0:
-            project_d["label"] = labels[project.label_id]
-        project_d["client_company"] = companies[project.company_id].to_dict()
+            project_d["label"] = data["project_labels"][project.label_id]
+        project_d["client_company"] = data["companies"][project.company_id].to_dict()
 
         # prepare some variables to be used in template
         project_d["html_filename"] = f"project-{project.id:06d}.html"
