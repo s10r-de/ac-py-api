@@ -51,6 +51,7 @@ def render_all_tasks(ac_storage: AcFileStorage, j2env, output_path):
         # prepare some variables to be used in template
         task_d["html_filename"] = f"task-{task.id:06d}.html"
         time_format = "%Y-%m-%d"
+        task_d["now"] = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(time.time()))
         if task_d["completed_on"]:
             task_d["completed_on"] = time.strftime(
                 time_format, time.gmtime(task_d["completed_on"])
@@ -97,6 +98,7 @@ def render_all_projects(
         # prepare some variables to be used in template
         project_d["html_filename"] = f"project-{project.id:06d}.html"
         time_format = "%Y-%m-%d"
+        project_d["now"] = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(time.time()))
         if project_d["completed_on"]:
             project_d["completed_on"] = time.strftime(
                 time_format, time.gmtime(project_d["completed_on"])
