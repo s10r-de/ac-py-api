@@ -6,6 +6,7 @@ import time
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
+from active_collab_api.ac_task import AcTask
 from active_collab_storage.storage import AcFileStorage
 
 
@@ -92,7 +93,9 @@ def render_all_tasks(data, j2env, output_path):
             task_d["due_on"] = time.strftime(
                 time_format, time.gmtime(task_d["due_on"])
             )
-        out_file = os.path.join(output_path, "task-{}.html".format(task_id))
+        task_d["project"] = data["projects"][task.project_id].to_dict()
+        # render and save the HTML
+        out_file = os.path.join(output_path, task_d["html_filename"])
         html = render_task(j2env, task_d).encode("utf-8")
         save_html(out_file, html)
     # todo: task index?
