@@ -66,9 +66,11 @@
 <li>
     {% for task in tasks %}
     <ul>
-        <a href="{{ "task-%06d.html" % task.id }}">
-            #{{ task.task_number }}&nbsp;-&nbsp;{{ task.name }}
-        </a>
+        <li>
+            <a href="{{ "task-%08d.html" % task.id }}">
+                #{{ task.task_number }}&nbsp;-&nbsp;{{ task.name }}
+            </a>
+        </li>
     </ul>
     {% endfor %}
 </li>

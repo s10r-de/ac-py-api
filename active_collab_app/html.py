@@ -70,7 +70,7 @@ def render_all_tasks(data, j2env, output_path):
     for _task_id, task in data["tasks"].items():
         task_d = task.to_dict()
         # prepare some variables to be used in template
-        task_d["html_filename"] = f"task-{task.id:06d}.html"
+        task_d["html_filename"] = f"task-{task.id:08d}.html"
         time_format = "%Y-%m-%d"
         task_d["now"] = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(time.time()))
         if task_d["completed_on"]:
@@ -115,7 +115,7 @@ def render_all_projects(
         project_d["client_company"] = data["companies"][project.company_id].to_dict()
 
         # prepare some variables to be used in template
-        project_d["html_filename"] = f"project-{project.id:06d}.html"
+        project_d["html_filename"] = f"project-{project.id:08d}.html"
         time_format = "%Y-%m-%d"
         project_d["now"] = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(time.time()))
         if project_d["completed_on"]:
