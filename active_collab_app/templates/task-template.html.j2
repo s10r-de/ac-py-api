@@ -6,7 +6,9 @@
 
 </head>
 <body>
-<h1>Task No. {{ task_number }} {% if is_completed %} - Completed on: {{ completed_on }} {% endif %}</h1>
+<a href="index.html">index</a>
+<p></p>
+<h1>Task No. {{ task_number }} {% if is_completed %} - ☑️ Completed on: {{ completed_on }} {% endif %}</h1>
 <h2>{{ name }}</h2>
 
 <div>
@@ -36,7 +38,7 @@
 
     <tr>
         <td>Important</td>
-        <td>{{ is_important }}</td>
+        <td {% if is_important %}class="important"{% endif %}>{{ is_important }} {% if is_important %}‼️{% endif %}</td>
     </tr>
 
     <tr>
@@ -58,11 +60,11 @@
 
     <tr>
         <td>Created</td>
-        <td>{{ created_by_name }} &lt;{{ created_by_email }}&gt; {{ created_on }}</td>
+        <td>{{ created_by_name }} &lt;<a href="mailto:{{ created_by_email }}">{{ created_by_email }}</a>&gt; {{ created_on }}</td>
     </tr>
     <tr>
         <td>Completed</td>
-        <td>{{ completed_by_name }} &lt;{{ completed_by_email }}&gt; {{ completed_on }}</td>
+        <td>{{ completed_by_name }} &lt;<a href="mailto:{{ completed_by_email }}">{{ completed_by_email }}</a>&gt; {{ completed_on }}</td>
     </tr>
     <tr>
         <td>Trashed on</td>

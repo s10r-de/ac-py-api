@@ -40,3 +40,9 @@ table th, td {
     margin: 1cm 2cm;
 }
 
+.completed {
+    text-decoration: line-through;
+}
+.important {
+    background: yellow;
+}

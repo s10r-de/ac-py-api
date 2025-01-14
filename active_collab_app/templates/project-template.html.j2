@@ -6,6 +6,8 @@
 
 </head>
 <body>
+<a href="index.html">index</a>
+<p></p>
 <h1>Project No. {{ project_number }} {% if completed_on %} - Completed on: {{ completed_on }} {% endif %}</h1>
 <h2>{{ name }}</h2>
 <p>{{ body_formatted|safe }}</p>
@@ -37,11 +39,11 @@
 
     <tr>
         <td>Created</td>
-        <td>{{ created_by_name }} &lt;{{ created_by_email }}&gt; {{ created_on }}</td>
+        <td>{{ created_by_name }} &lt;<a href="mailto:{{ created_by_email }}">{{ created_by_email }}</a>&gt; {{ created_on }}</td>
     </tr>
     <tr>
         <td>Completed</td>
-        <td>{{ completed_by_name }} &lt;{{ completed_by_email }}&gt; {{ completed_on }}</td>
+        <td>{{ completed_by_name }} &lt;<a href="mailto:{{ completed_by_email }}">{{ completed_by_email }}</a>&gt; {{ completed_on }}</td>
     </tr>
     <tr>
         <td>Trashed on</td>
@@ -66,9 +68,9 @@
 <li>
     {% for task in tasks %}
     <ul>
-        <li>
+        <li class="{% if task.is_completed %}completed{% endif %} {% if task.is_important %}important{% endif %}">
             <a href="{{ "task-%08d.html" % task.id }}">
-                #{{ task.task_number }}&nbsp;-&nbsp;{{ task.name }}
+                #{{ task.task_number }}&nbsp;-&nbsp;{{ task.name }} {% if task.is_important %}‼️{% endif %} {% if task.is_completed %} - ☑️ {{ task.completed_on }} {% endif %}
             </a>
         </li>
     </ul>
