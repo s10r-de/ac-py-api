@@ -1,3 +1,5 @@
+from typing import Iterator
+
 from active_collab_api import AC_CLASS_TASK, AC_ERROR_WRONG_CLASS
 from active_collab_api.ac_task import AcTask, task_from_json
 
@@ -20,3 +22,9 @@ class AcFileStorageTask(AcFileStorageBaseClass):
     def load(self, task_id: int) -> AcTask:
         task = self.load_by_id(task_id)
         return task_from_json(task)
+
+    def get_all(self):
+        return map(task_from_json, super().get_all())
+
+    def find_by_project(self, project_id: int) -> Iterator[AcTask]:
+        return filter(lambda task: task.project_id == project_id, self.get_all())

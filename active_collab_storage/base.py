@@ -1,8 +1,9 @@
-import re
 import json
 import os
+import re
 import shutil
 import time
+from typing import Iterable
 
 from active_collab_storage import DEFAULT_MODE_DIRS, AC_ERROR_ID_MUST_BE_INT
 
@@ -13,6 +14,7 @@ class AcFileStorageBaseClass:
         self.filename_prefix = ""
         self.root_path = root_path
         self.account_id = account_id
+        self.ids = []
 
     def reset(self):
         if os.path.exists(self.get_path()):
@@ -44,16 +46,13 @@ class AcFileStorageBaseClass:
             json.dump(obj.to_dict(), f, ensure_ascii=False, sort_keys=True, indent=2)
         return full_filename
 
-    def list_ids(self) -> list[int]:
-        ids = []
+    def list_ids(self) -> Iterable[int]:
         r = re.compile(r".*[-]([0-9]{18})\.json$")
-        with os.scandir(self.get_path()) as files:
-            for f in files:
-                m = r.match(f.name)
-                if m:
-                    ids.append(int(m.groups()[0]))
-        ids.sort()
-        return ids
+        yield from sorted([
+            int(f.name[-23:-5])
+            for f in os.scandir(self.get_path())
+            if r.match(f.name)
+        ])
 
     def load_by_id(self, id_: int) -> dict:
         filename = self.filename_with_id(id_)
@@ -61,3 +60,6 @@ class AcFileStorageBaseClass:
         with open(full_filename, "r", encoding="utf-8") as f:
             data = json.load(f)
         return data
+
+    def get_all(self):
+        return map(self.load_by_id, self.list_ids())

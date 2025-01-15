@@ -6,7 +6,6 @@ import time
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from active_collab_api.ac_task import AcTask
 from active_collab_storage.storage import AcFileStorage
 
 
@@ -24,50 +23,12 @@ def run_html(config: configparser.ConfigParser):
     shutil.rmtree(os.path.join(output_path, "*"), ignore_errors=True)
     shutil.copy("css/print.css", output_path)
 
-    data = {}
-    data["companies"] = load_all_companies(ac_storage)
-    data["project_categories"] = load_all_project_categories(ac_storage)
-    data["project_labels"] = load_all_project_labels(ac_storage)
-
-    data["projects"] = load_all_projects(ac_storage)
-    data["tasks"] = load_all_tasks(ac_storage)
-
-    render_all_projects(data, j2env, output_path)
-    render_all_tasks(data, j2env, output_path)
+    render_all_projects(ac_storage, j2env, output_path)
+    render_all_tasks(ac_storage, j2env, output_path)
     return {"path": output_path}
 
-def load_all_projects(ac_storage: AcFileStorage):
-    projects = {}
-    for project_id in ac_storage.data_objects["projects"].list_ids():
-        projects[project_id] = ac_storage.data_objects["projects"].load(project_id)
-    return projects
-
-def load_all_companies(ac_storage: AcFileStorage) -> dict:
-    companies = {}
-    for company_id in ac_storage.data_objects["companies"].list_ids():
-        companies[company_id] = ac_storage.data_objects["companies"].load(company_id)
-    return companies
-
-def load_all_project_labels(ac_storage: AcFileStorage) -> dict:
-    labels = {}
-    for label_id in ac_storage.data_objects["project-labels"].list_ids():
-        labels[label_id] = ac_storage.data_objects["project-labels"].load(label_id)
-    return labels
-
-def load_all_project_categories(ac_storage: AcFileStorage) -> dict:
-    categories = {}
-    for category_id in ac_storage.data_objects["project-categories"].list_ids():
-        categories[category_id] = ac_storage.data_objects["project-categories"].load(category_id)
-    return categories
-
-def load_all_tasks(ac_storage: AcFileStorage) -> dict[AcTask]:
-    tasks = {}
-    for task_id in ac_storage.data_objects["tasks"].list_ids():
-        tasks[task_id] = ac_storage.data_objects["tasks"].load(task_id)
-    return tasks
-
-def render_all_tasks(data, j2env, output_path):
-    for _task_id, task in data["tasks"].items():
+def render_all_tasks(ac_storage: AcFileStorage, j2env: Environment, output_path: str) -> None:
+    for task in ac_storage.data_objects["tasks"].get_all():
         task_d = task.to_dict()
         # prepare some variables to be used in template
         task_d["html_filename"] = f"task-{task.id:08d}.html"
@@ -93,7 +54,7 @@ def render_all_tasks(data, j2env, output_path):
             task_d["due_on"] = time.strftime(
                 time_format, time.gmtime(task_d["due_on"])
             )
-        task_d["project"] = data["projects"][task.project_id].to_dict()
+        task_d["project"] = ac_storage.data_objects["projects"].load(task.project_id).to_dict()
         # render and save the HTML
         out_file = os.path.join(output_path, task_d["html_filename"])
         html = render_task(j2env, task_d).encode("utf-8")
@@ -101,18 +62,21 @@ def render_all_tasks(data, j2env, output_path):
     # todo: task index?
 
 def render_all_projects(
-    data, j2env: Environment, output_path: str
-):
+    ac_storage: AcFileStorage, j2env: Environment, output_path: str
+) -> None:
     project_list = []
-    for _project_id, project in data["projects"].items():
+    for project in ac_storage.data_objects["projects"].get_all():
         project_d = project.to_dict()
 
         # add lookup data
         if project.category_id > 0:
-            project_d["category"] = data["project_categories"][project.category_id]
+            project_d["category"] = (
+                ac_storage.data_objects["project-categories"].load(project.category_id).to_dict())
         if project.label_id > 0:
-            project_d["label"] = data["project_labels"][project.label_id]
-        project_d["client_company"] = data["companies"][project.company_id].to_dict()
+            project_d["label"] = (
+                ac_storage.data_objects["project-labels"].load(project.label_id).to_dict())
+        project_d["client_company"] = (
+            ac_storage.data_objects["companies"].load(project.company_id).to_dict())
 
         # prepare some variables to be used in template
         project_d["html_filename"] = f"project-{project.id:08d}.html"
@@ -131,11 +95,8 @@ def render_all_projects(
                 time_format, time.gmtime(project_d["updated_on"])
             )
         # add list of tasks for this project
-        project_tasks = []
-        for task in data["tasks"].values():
-            if task.project_id == project.id:
-                project_tasks.append(task.to_dict())
-        project_d["tasks"] = project_tasks
+        project_d["tasks"] = map(lambda t: t.to_dict(),
+                                 ac_storage.data_objects["tasks"].find_by_project(project.id))
         # render and save the HTML
         out_file = os.path.join(output_path, project_d["html_filename"])
         html = render_project(j2env, project_d).encode("utf8")
