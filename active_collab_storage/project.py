@@ -10,12 +10,14 @@ class AcFileStorageProject(AcFileStorageBaseClass):
         super().__init__(root_path, account_id)
         self.filename_prefix = "project"
         self.dir_name = "projects"
+        self.data = None
 
     def setup(self):
         pass
 
     def save(self, project: AcProject) -> str:
         assert project.class_ == AC_CLASS_PROJECT, AC_ERROR_WRONG_CLASS
+        self.data = None
         return super().save_with_id(project, project.id)
 
     def load(self, project_id: int) -> AcProject:
@@ -23,4 +25,6 @@ class AcFileStorageProject(AcFileStorageBaseClass):
         return project_from_json(project)
 
     def get_all(self) -> Iterable[AcProject]:
-        return map(project_from_json, super().get_all())
+        if self.data is None:
+            self.data = map(project_from_json, super().get_all())
+        return self.data
