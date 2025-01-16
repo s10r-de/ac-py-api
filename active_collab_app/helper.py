@@ -1,5 +1,6 @@
 import configparser
 from datetime import datetime
+import time
 
 from active_collab_app import CFG_OPTION_DUMP_TIMESTAMP_FILE, CFG_SECTION_DEFAULT
 
@@ -33,3 +34,12 @@ def save_dump_timestamp(config: configparser.ConfigParser) -> str:
     with open(filename, "w", encoding="ascii") as fh:
         fh.write(f"{ts}")
     return filename
+
+
+def format_timestamp_as_date(ts: int) -> str:
+    time_format = "%Y-%m-%d"
+    return time.strftime(time_format, time.gmtime(ts))
+
+def format_timestamp_as_datetime(ts: int) -> str:
+    time_format = "%Y-%m-%d %H:%M:%S"
+    return time.strftime(time_format, time.gmtime(ts))

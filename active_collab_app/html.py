@@ -18,6 +18,7 @@ def run_html(config: configparser.ConfigParser):
     j2env = Environment(
         loader=FileSystemLoader(os.path.join(d, "templates")),
         autoescape=select_autoescape(),
+        extensions=['jinja_extension.JinjaFilters']
     )
     output_path = config.get("WWW", "path")
     shutil.rmtree(os.path.join(output_path, "*"), ignore_errors=True)
