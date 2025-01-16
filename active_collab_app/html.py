@@ -122,15 +122,24 @@ def save_html(out_file, html):
 
 
 def render_project(j2env: Environment, project_d: dict) -> str:
+    context = {
+        'now': time.time()
+    }
     project_template = j2env.get_template("project-template.html.j2")
-    return project_template.render(**project_d)
+    return project_template.render(**project_d, **context)
 
 
 def render_project_index(j2env: Environment, project_list: list) -> str:
+    context = {
+        'now': time.time()
+    }
     project_index_template = j2env.get_template("project-index-template.html.j2")
-    return project_index_template.render(projects=project_list)
+    return project_index_template.render(projects=project_list, **context)
 
 
 def render_task(j2env: Environment, task_d: dict) -> str:
+    context = {
+        'now': time.time()
+    }
     task_template = j2env.get_template("task-template.html.j2")
-    return task_template.render(**task_d)
+    return task_template.render(**task_d, **context)
