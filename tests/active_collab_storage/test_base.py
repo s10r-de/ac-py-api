@@ -108,7 +108,18 @@ class TestBase(TestCase):
         self.assertRegex(filename, regex)
         self.assertTrue(os.path.exists(filename))
 
-    def test_list(self):
+    def test_list_is_empty(self):
+        m_name = inspect.stack()[0][3]
+        storage = AcFileStorageBaseClass(DATA_DIR + m_name, ACCOUNT_ID)
+        storage.filename_prefix = TEST_FILENAME_PREFIX
+        storage.dir_name = TEST_DIR_NAME
+        storage.reset()
+        storage.ensure_dirs()
+        ids = storage.list_ids()
+        with self.assertRaises(StopIteration):
+            next(ids)
+
+    def test_list_has_two_items(self):
         m_name = inspect.stack()[0][3]
         storage = AcFileStorageBaseClass(DATA_DIR + m_name, ACCOUNT_ID)
         storage.filename_prefix = TEST_FILENAME_PREFIX
@@ -122,14 +133,22 @@ class TestBase(TestCase):
             company = company_from_json(company_json)
         company77 = copy.copy(company)
         company77.id = 77
-        storage.save_with_id(company77, company77.id)
         company88 = copy.copy(company)
         company88.id = 88
+        company123 = copy.copy(company)
+        company123.id = 123
+        storage.save_with_id(company123, company123.id)
         storage.save_with_id(company88, company88.id)
-        items = storage.list_ids()
-        self.assertIn(77, items)
-        self.assertIn(88, items)
-        self.assertEqual(2, len(items))
+        storage.save_with_id(company77, company77.id)
+        ids = storage.list_ids()  # must be sorted
+        item_id = next(ids)
+        self.assertEqual(77, item_id)
+        item_id = next(ids)
+        self.assertEqual(88, item_id)
+        item_id = next(ids)
+        self.assertEqual(123, item_id)
+        with self.assertRaises(StopIteration):
+            next(ids)
 
     def test_load(self):
         m_name = inspect.stack()[0][3]
@@ -149,3 +168,31 @@ class TestBase(TestCase):
         self.assertEqual(company.class_, loaded_comp["class"])
         self.assertEqual(company.id, loaded_comp["id"])
         self.assertEqual(company.name, loaded_comp["name"])
+
+    def test_get_all_two_items(self):
+        m_name = inspect.stack()[0][3]
+        storage = AcFileStorageBaseClass(DATA_DIR + m_name, ACCOUNT_ID)
+        storage.filename_prefix = TEST_FILENAME_PREFIX
+        storage.dir_name = TEST_DIR_NAME
+        storage.reset()
+        storage.ensure_dirs()
+        with open(
+            "tests/example-data/example-company-5.json", "r", encoding="utf-8"
+        ) as fh:
+            company_json = json.load(fh)
+            company = company_from_json(company_json)
+        company77 = copy.copy(company)
+        company77.id = 77
+        company88 = copy.copy(company)
+        company88.id = 88
+
+        storage.save_with_id(company88, company88.id)
+        storage.save_with_id(company77, company77.id)
+
+        all_items = storage.get_all()
+        item = next(all_items)
+        self.assertEqual(company77.id, item["id"])
+        item = next(all_items)
+        self.assertEqual(company88.id, item["id"])
+        with self.assertRaises(StopIteration):
+            next(all_items)

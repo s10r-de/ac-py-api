@@ -1,0 +1,25 @@
+from jinja2 import pass_eval_context as eval_context
+from jinja2.ext import Extension
+
+from active_collab_app.helper import format_timestamp_as_date, format_timestamp_as_datetime
+
+
+@eval_context
+def as_date(eval_ctx, ts: int) -> str:
+    return format_timestamp_as_date(ts)
+
+@eval_context
+def as_datetime(eval_ctx, ts: int) -> str:
+    return format_timestamp_as_datetime(ts)
+
+@eval_context
+def email(eval_ctx, email: str) -> str:
+    return f'<a class="email" href="mailto:{email}">&lt;{email}&gt;</a>'
+
+class JinjaFilters(Extension):
+    def __init__(self, environment):
+        super(JinjaFilters, self).__init__(environment)
+        environment.filters["as_date"] = as_date
+        environment.filters["as_datetime"] = as_datetime
+        environment.filters["email"] = email
+
