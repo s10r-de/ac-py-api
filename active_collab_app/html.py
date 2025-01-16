@@ -34,7 +34,9 @@ def render_all_tasks(ac_storage: AcFileStorage, j2env: Environment, output_path:
         # prepare some variables to be used in template
         task_d["html_filename"] = f"task-{task.id:08d}.html"
         task_d["project"] = ac_storage.data_objects["projects"].load(task.project_id).to_dict()
-        task_d["subtasks"] = map(lambda t: t.to_dict(), ac_storage.data_objects["subtasks"].sort_by_position(ac_storage.data_objects["subtasks"].find_by_task(task.id)))
+        task_d["subtasks"] = map(lambda t: t.to_dict(),
+                                 ac_storage.data_objects["subtasks"].sort_by_position(
+                                     ac_storage.data_objects["subtasks"].find_by_task(task.id)))
         # render and save the HTML
         out_file = os.path.join(output_path, task_d["html_filename"])
         html = render_task(j2env, task_d).encode("utf-8")
@@ -57,10 +59,10 @@ def render_all_projects(
                 ac_storage.data_objects["project-labels"].load(project.label_id).to_dict())
         project_d["client_company"] = (
             ac_storage.data_objects["companies"].load(project.company_id).to_dict())
-
         # prepare some variables to be used in template
         project_d["html_filename"] = f"project-{project.id:08d}.html"
-        project_d["tasks"] = list(map(lambda t: t.to_dict(), ac_storage.data_objects["tasks"].find_by_project(project.id)))
+        project_d["tasks"] = list(map(lambda t: t.to_dict(),
+                                      ac_storage.data_objects["tasks"].find_by_project(project.id)))
         # render and save the HTML
         out_file = os.path.join(output_path, project_d["html_filename"])
         html = render_project(j2env, project_d).encode("utf8")

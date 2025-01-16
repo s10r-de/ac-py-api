@@ -5,21 +5,23 @@ from active_collab_app.helper import format_timestamp_as_date, format_timestamp_
 
 
 @eval_context
-def as_date(eval_ctx, ts: int) -> str:
+def as_date(_eval_ctx, ts: int) -> str:
     return format_timestamp_as_date(ts)
 
 @eval_context
-def as_datetime(eval_ctx, ts: int) -> str:
+def as_datetime(_eval_ctx, ts: int) -> str:
     return format_timestamp_as_datetime(ts)
 
 @eval_context
-def email(eval_ctx, email: str) -> str:
-    return f'<a class="email" href="mailto:{email}">&lt;{email}&gt;</a>'
+def email(_eval_ctx, addr: str) -> str:
+    return f'<a class="email" href="mailto:{addr}">&lt;{addr}&gt;</a>'
 
 class JinjaFilters(Extension):
     def __init__(self, environment):
-        super(JinjaFilters, self).__init__(environment)
+        super().__init__(environment)
         environment.filters["as_date"] = as_date
         environment.filters["as_datetime"] = as_datetime
         environment.filters["email"] = email
 
+    def parse(self, _parser):
+        pass
