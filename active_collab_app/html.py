@@ -33,29 +33,8 @@ def render_all_tasks(ac_storage: AcFileStorage, j2env: Environment, output_path:
         task_d = task.to_dict()
         # prepare some variables to be used in template
         task_d["html_filename"] = f"task-{task.id:08d}.html"
-        time_format = "%Y-%m-%d"
-        task_d["now"] = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(time.time()))
-        if task_d["completed_on"]:
-            task_d["completed_on"] = time.strftime(
-                time_format, time.gmtime(task_d["completed_on"])
-            )
-        if task_d["created_on"]:
-            task_d["created_on"] = time.strftime(
-                time_format, time.gmtime(task_d["created_on"])
-            )
-        if task_d["updated_on"]:
-            task_d["updated_on"] = time.strftime(
-                time_format, time.gmtime(task_d["updated_on"])
-            )
-        if task_d["start_on"]:
-            task_d["start_on"] = time.strftime(
-                time_format, time.gmtime(task_d["start_on"])
-            )
-        if task_d["due_on"]:
-            task_d["due_on"] = time.strftime(
-                time_format, time.gmtime(task_d["due_on"])
-            )
         task_d["project"] = ac_storage.data_objects["projects"].load(task.project_id).to_dict()
+        task_d["subtasks"] = map(lambda t: t.to_dict(), ac_storage.data_objects["subtasks"].sort_by_position(ac_storage.data_objects["subtasks"].find_by_task(task.id)))
         # render and save the HTML
         out_file = os.path.join(output_path, task_d["html_filename"])
         html = render_task(j2env, task_d).encode("utf-8")
@@ -81,23 +60,7 @@ def render_all_projects(
 
         # prepare some variables to be used in template
         project_d["html_filename"] = f"project-{project.id:08d}.html"
-        time_format = "%Y-%m-%d"
-        project_d["now"] = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(time.time()))
-        if project_d["completed_on"]:
-            project_d["completed_on"] = time.strftime(
-                time_format, time.gmtime(project_d["completed_on"])
-            )
-        if project_d["created_on"]:
-            project_d["created_on"] = time.strftime(
-                time_format, time.gmtime(project_d["created_on"])
-            )
-        if project_d["updated_on"]:
-            project_d["updated_on"] = time.strftime(
-                time_format, time.gmtime(project_d["updated_on"])
-            )
-        # add list of tasks for this project
-        project_d["tasks"] = map(lambda t: t.to_dict(),
-                                 ac_storage.data_objects["tasks"].find_by_project(project.id))
+        project_d["tasks"] = list(map(lambda t: t.to_dict(), ac_storage.data_objects["tasks"].find_by_project(project.id)))
         # render and save the HTML
         out_file = os.path.join(output_path, project_d["html_filename"])
         html = render_project(j2env, project_d).encode("utf8")

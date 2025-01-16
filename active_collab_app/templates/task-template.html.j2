@@ -8,7 +8,7 @@
 <body>
 <a href="index.html">index</a>
 <p></p>
-<h1>Task No. {{ task_number }} {% if is_completed %} - ☑️ Completed on: {{ completed_on }} {% endif %}</h1>
+<h1>Task No. {{ task_number }} {% if is_completed %} - ☑️ Completed on: {{ completed_on|as_date }} {% endif %}</h1>
 <h2>{{ name }}</h2>
 
 <div>
@@ -33,7 +33,7 @@
 
     <tr>
         <td>Start on / Due on</td>
-        <td>{{ start_on }} / {{ due_on }}</td>
+        <td>{{ start_on|as_date }} / {{ due_on|as_date }}</td>
     </tr>
 
     <tr>
@@ -60,15 +60,21 @@
 
     <tr>
         <td>Created</td>
-        <td>{{ created_by_name }} &lt;<a href="mailto:{{ created_by_email }}">{{ created_by_email }}</a>&gt; {{ created_on }}</td>
+        <td>{{ created_by_name }}
+            {{ created_by_email|email }}
+            {{ created_on|as_datetime }}
+        </td>
     </tr>
     <tr>
         <td>Completed</td>
-        <td>{{ completed_by_name }} &lt;<a href="mailto:{{ completed_by_email }}">{{ completed_by_email }}</a>&gt; {{ completed_on }}</td>
+        <td>{{ completed_by_name }}
+            {{ completed_by_email|email }}
+            {{ completed_on|as_datetime }}
+        </td>
     </tr>
     <tr>
         <td>Trashed on</td>
-        <td>{{ trashed_on }}</td>
+        <td>{{ trashed_on|as_datetime }}</td>
     </tr>
 
 </table>
@@ -81,18 +87,20 @@
 
 <h3>Subtasks</h3>
 
-<li>
-    <ul>TODO: list subtasks here</ul>
-</li>
 <ul>
+    {% for subtask in subtasks %}
+        <li class="{% if subtask.is_completed %}completed{% endif %}">
+            <input type="checkbox" disabled {% if subtask.is_completed %}checked{% endif %}/>
+            {{ subtask.position }} - {{ subtask.name }}
+            {% if subtask.is_completed %}<i>completed on {{ subtask.completed_on|as_datetime }}{% endif %}</i>
         </li>
+    {% else %}
+        <i>No subtasks</i>
+    {% endfor %}
 </ul>
 
 <h3>Dependencies</h3>
 
-<li>
-    <ul>TODO: list dependencies here</ul>
-</li>
 <ul>
     <li>TODO: list dependencies here</li>
 </ul>

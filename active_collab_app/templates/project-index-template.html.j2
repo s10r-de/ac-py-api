@@ -15,7 +15,7 @@
                     <input type="checkbox" disabled {% if p.completed_on %}checked{% endif %} />
                     {{ p.project_number }} -
                     {{ p.name }}
-                    {% if p.completed_on %} - ☑️ {{ p.completed_on }} {% endif %}
+                    {% if p.completed_on %} - <i>completed on {{ p.completed_on|as_datetime }} {% endif %}</i>
                     {% if p.label %} // <b>#{{ p.label.name }}</b> {% endif %}
                 </a>
             </div>
