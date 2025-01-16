@@ -53,29 +53,31 @@
 </table>
 
 <h3>Attachments:</h3>
-<li>
-    <ul>Attachment 1</ul>
-</li>
+<ul>
+    <li>Attachment 1</li>
+</ul>
 
 <h3>Members:</h3>
 
-<li>
-    <ul>{{ members }}</ul>
-</li>
+<ul>
+    <li>{{ members }}</li>
+</ul>
 
 <h3>Tasks:</h3>
 
-<li>
+<ul>
     {% for task in tasks %}
     <ul>
         <li class="{% if task.is_completed %}completed{% endif %} {% if task.is_important %}important{% endif %}">
+            <input type="checkbox" disabled {% if task.is_completed %}checked{% endif %}/>
             <a href="{{ "task-%08d.html" % task.id }}">
                 #{{ task.task_number }}&nbsp;-&nbsp;{{ task.name }} {% if task.is_important %}‼️{% endif %} {% if task.is_completed %} - ☑️ {{ task.completed_on }} {% endif %}
             </a>
         </li>
-    </ul>
+    {% else %}
+        <i>No tasks</i>
     {% endfor %}
-</li>
+</ul>
 
 <hr>
 <div class="footer">

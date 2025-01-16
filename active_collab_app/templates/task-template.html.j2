@@ -50,9 +50,9 @@
         <td>Labels</td>
         <td>
             <ul>
-            {% for label in labels %}
-                <li style="color: {{ label.lighter_text_color }}">{{ label.name }}</li>
-            {% endfor %}
+                {% for label in labels %}
+                    <li style="color: {{ label.lighter_text_color }}">{{ label.name }}</li>
+                {% endfor %}
             </ul>
         </td>
 
@@ -75,27 +75,33 @@
 <p>{{ body_formatted|safe }}</p>
 
 <h3>Attachments:</h3>
-<li>
-    <ul>TODO: list attachment here</ul>
-</li>
+<ul>
+    <li>TODO: list attachment here</li>
+</ul>
 
 <h3>Subtasks</h3>
 
 <li>
     <ul>TODO: list subtasks here</ul>
 </li>
+<ul>
+        </li>
+</ul>
 
 <h3>Dependencies</h3>
 
 <li>
     <ul>TODO: list dependencies here</ul>
 </li>
+<ul>
+    <li>TODO: list dependencies here</li>
+</ul>
 
 <h3>Comments</h3>
 
-<li>
-    <ul>TODO: list comments here</ul>
-</li>
+<ul>
+    <li>TODO: list comments here</li>
+</ul>
 
 <hr>
 <div class="footer">

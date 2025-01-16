@@ -12,6 +12,7 @@
         <li {% if p.completed_on %}class="completed"{% endif %}>
             <div>
                 <a href="{{ p.html_filename }}">
+                    <input type="checkbox" disabled {% if p.completed_on %}checked{% endif %} />
                     {{ p.project_number }} -
                     {{ p.name }}
                     {% if p.completed_on %} - ☑️ {{ p.completed_on }} {% endif %}
@@ -19,6 +20,8 @@
                 </a>
             </div>
         </li>
+    {%  else %}
+        <i>No projects</i>
     {% endfor %}
 </ul>
 <hr>
