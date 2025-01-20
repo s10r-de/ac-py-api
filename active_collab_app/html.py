@@ -68,8 +68,8 @@ def render_all_projects(
             try:
                 user = ac_storage.data_objects["users"].load(member_id)
                 members.append(user.to_dict())
-            except FileNotFoundError as e:
-                logging.error("User {} not found".format(member_id))
+            except FileNotFoundError as _e:
+                logging.error("User '%s' not found" % member_id)
         project_d["members"] = members
         # render and save the HTML
         out_file = os.path.join(output_path, project_d["html_filename"])
