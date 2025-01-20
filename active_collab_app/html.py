@@ -63,6 +63,14 @@ def render_all_projects(
         project_d["html_filename"] = f"project-{project.id:08d}.html"
         project_d["tasks"] = list(map(lambda t: t.to_dict(),
                                       ac_storage.data_objects["tasks"].find_by_project(project.id)))
+        members = []
+        for member_id in project.members:
+            try:
+                user = ac_storage.data_objects["users"].load(member_id)
+                members.append(user.to_dict())
+            except FileNotFoundError as e:
+                logging.error("User {} not found".format(member_id))
+        project_d["members"] = members
         # render and save the HTML
         out_file = os.path.join(output_path, project_d["html_filename"])
         html = render_project(j2env, project_d).encode("utf8")
