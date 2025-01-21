@@ -165,7 +165,7 @@ def load_tasks(ac: ActiveCollab, ac_storage: AcFileStorage) -> list[AcTask]:
 def fix_task_number(
     ac: ActiveCollab, ac_storage: AcFileStorage, offset: int = 0
 ) -> None:
-    tasks = ac_storage.data_objects["tasks"].list_ids()
+    tasks = list(ac_storage.data_objects["tasks"].list_ids())
     if tasks is None:
         return
     tasks.reverse()
@@ -223,7 +223,7 @@ def load_projects(
 def fix_project_number(
     ac: ActiveCollab, ac_storage: AcFileStorage, offset: int = 0
 ) -> None:
-    projects = ac_storage.data_objects["projects"].list_ids()
+    projects = list(ac_storage.data_objects["projects"].list_ids())
     if projects is None:
         return
     projects.reverse()
