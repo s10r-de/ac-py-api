@@ -71,7 +71,7 @@
     {% for task_list in task_lists %}
         <li id="task_list-{{ task_list.id }}">
             <h4 class="task_list"><input type="checkbox" disabled {% if task_list.is_completed %}checked{% endif %}/>
-                {{ task_list.position }} Task-List {{ task_list.id }}: {{ task_list.name }}
+                Task-List {{ task_list.id }}: {{ task_list.name }}
                 {% if task_list.is_completed %} - <i>completed on {{ task_list.completed_on|as_datetime }} {% endif %}</i>
             </h4>
 

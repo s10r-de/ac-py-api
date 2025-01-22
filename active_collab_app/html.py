@@ -108,20 +108,19 @@ def task_list_without_tasks() -> AcTaskList:
     )
 
 def prepare_project_task_lists(ac_storage, project: AcProject):
-    task_lists = []
-    task_lists.append(task_list_without_tasks())
-    task_lists.extend(list(ac_storage.data_objects["task-lists"].find_by_project(project.id)))
-    # TODO: sort by position
-    return list(map(lambda t: t.to_dict(), task_lists))
+    task_lists = ac_storage.data_objects["task-lists"].find_by_project(project.id)
+    # task_lists.extend(task_list_without_tasks())
+    sorted_task_lists = sorted(task_lists, key=lambda t: t.position, reverse=False)
+    return list(map(lambda t: t.to_dict(), sorted_task_lists))
 
 def prepare_project_tasks(ac_storage, project: AcProject) -> list[dict]:
     return list(map(lambda t: t.to_dict(),
                     ac_storage.data_objects["tasks"].find_by_project(project.id)))
 
 def prepare_tasklist_tasks(ac_storage, tasklist_id: int) -> list[dict]:
-    # TODO: sort by position
-    return list(map(lambda t: t.to_dict(),
-                    ac_storage.data_objects["tasks"].find_by_tasklist(tasklist_id)))
+    tasks = ac_storage.data_objects["tasks"].find_by_tasklist(tasklist_id)
+    sorted_task_lists = sorted(tasks, key=lambda t: t.position, reverse=False)
+    return list(map(lambda t: t.to_dict(), sorted_task_lists))
 
 
 
