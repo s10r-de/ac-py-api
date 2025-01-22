@@ -69,12 +69,12 @@ def render_one_project(ac_storage, j2env, output_path, project):
     project_d["client_company"] = (
         ac_storage.data_objects["companies"].load(project.company_id).to_dict())
     project_d["members"] = prepare_project_members(ac_storage, project)
-    project_d["tasklists"] = prepare_project_tasklists(ac_storage, project)
+    project_d["task_lists"] = prepare_project_task_lists(ac_storage, project)
     project_d["tasks_by_tasklist"] = {}
-    for tasklist in project_d["tasklists"]:
+    for tasklist in project_d["task_lists"]:
         project_d["tasks_by_tasklist"][tasklist["id"]] = (
             prepare_tasklist_tasks(ac_storage, tasklist["id"]))
-    project_d["tasks_without_tasklists"] = prepare_tasklist_tasks(ac_storage, 0)
+    project_d["tasks_without_task_lists"] = prepare_tasklist_tasks(ac_storage, 0)
     # render and save the HTML
     out_file = os.path.join(output_path, project_d["html_filename"])
     html = render_project(j2env, project_d).encode("utf8")
@@ -107,12 +107,12 @@ def task_list_without_tasks() -> AcTaskList:
         url_path=""
     )
 
-def prepare_project_tasklists(ac_storage, project: AcProject):
-    tasklists = []
-    tasklists.append(task_list_without_tasks())
-    tasklists.extend(list(ac_storage.data_objects["task-lists"].find_by_project(project.id)))
+def prepare_project_task_lists(ac_storage, project: AcProject):
+    task_lists = []
+    task_lists.append(task_list_without_tasks())
+    task_lists.extend(list(ac_storage.data_objects["task-lists"].find_by_project(project.id)))
     # TODO: sort by position
-    return list(map(lambda t: t.to_dict(), tasklists))
+    return list(map(lambda t: t.to_dict(), task_lists))
 
 def prepare_project_tasks(ac_storage, project: AcProject) -> list[dict]:
     return list(map(lambda t: t.to_dict(),
