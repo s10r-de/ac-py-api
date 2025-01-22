@@ -68,17 +68,34 @@
 <h3>Tasks:</h3>
 
 <ul>
-    {% for task in tasks %}
-        <li class="{% if task.is_completed %}completed{% endif %} {% if task.is_important %}important{% endif %}">
-            <input type="checkbox" disabled {% if task.is_completed %}checked{% endif %}/>
-            <a href="{{ "task-%08d.html" % task.id }}">
-                #{{ task.task_number }}&nbsp;-&nbsp;{{ task.name }} {% if task.is_important %}‼️{% endif %}
-                {% if task.is_completed %} - <i>completed on {{ task.completed_on|as_datetime }} {% endif %}</i>
-            </a>
+    {% for task_list in tasklists %}
+        <li>
+            <h4><input type="checkbox" disabled {% if task_list.is_completed %}checked{% endif %}/>
+                Task-List {{ task_list.position }}: {{ task_list.name }}
+                {% if task_list.is_completed %} - <i>completed on {{ task_list.completed_on|as_datetime }} {% endif %}</i>
+            </h4>
+
+            {% for task in tasks_by_tasklist[task_list.id] %}
+                <li class="{% if task.is_completed %}completed{% endif %} {% if task.is_important %}important{% endif %}">
+                    <input type="checkbox" disabled {% if task.is_completed %}checked{% endif %}/>
+                    <a href="{{ "task-%08d.html" % task.id }}">
+                        #{{ task.task_number }}&nbsp;-&nbsp;{{ task.name }} {% if task.is_important %}‼️{% endif %}
+                        {% if task.is_completed %} - <i>completed on {{ task.completed_on|as_datetime }} {% endif %}</i>
+                    </a>
+                </li>
+            {% else %}
+                <i>No tasks</i>
+            {% endfor %}
+
+
         </li>
     {% else %}
-        <i>No tasks</i>
-    {% endfor %}
+        <i>No tasklists</i>
+    {%  endfor %}
+
+</ul>
+<ul>
+
 </ul>
 
 <hr>
