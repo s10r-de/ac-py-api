@@ -6,6 +6,9 @@ import time
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
+from active_collab_api import AC_CLASS_TASK_LIST
+from active_collab_api.ac_project import AcProject
+from active_collab_api.ac_task_list import AcTaskList
 from active_collab_storage.storage import AcFileStorage
 
 
@@ -48,35 +51,88 @@ def render_all_projects(
 ) -> None:
     project_list = []
     for project in ac_storage.data_objects["projects"].get_all():
-        project_d = project.to_dict()
-
-        # add lookup data
-        if project.category_id > 0:
-            project_d["category"] = (
-                ac_storage.data_objects["project-categories"].load(project.category_id).to_dict())
-        if project.label_id > 0:
-            project_d["label"] = (
-                ac_storage.data_objects["project-labels"].load(project.label_id).to_dict())
-        project_d["client_company"] = (
-            ac_storage.data_objects["companies"].load(project.company_id).to_dict())
-        # prepare some variables to be used in template
-        project_d["html_filename"] = f"project-{project.id:08d}.html"
-        project_d["tasks"] = list(map(lambda t: t.to_dict(),
-                                      ac_storage.data_objects["tasks"].find_by_project(project.id)))
-        members = []
-        for member_id in project.members:
-            try:
-                user = ac_storage.data_objects["users"].load(member_id)
-                members.append(user.to_dict())
-            except FileNotFoundError as _e:
-                logging.error("User '%s' not found" % member_id)
-        project_d["members"] = members
-        # render and save the HTML
-        out_file = os.path.join(output_path, project_d["html_filename"])
-        html = render_project(j2env, project_d).encode("utf8")
-        save_html(out_file, html)
+        project_d = render_one_project(ac_storage, j2env, output_path, project)
         project_list.append(project_d)
     save_project_index_html(j2env, output_path, project_list)
+
+
+def render_one_project(ac_storage, j2env, output_path, project):
+    project_d = project.to_dict()
+    project_d["html_filename"] = f"project-{project.id:08d}.html"
+    # add lookup data
+    if project.category_id > 0:
+        project_d["category"] = (
+            ac_storage.data_objects["project-categories"].load(project.category_id).to_dict())
+    if project.label_id > 0:
+        project_d["label"] = (
+            ac_storage.data_objects["project-labels"].load(project.label_id).to_dict())
+    project_d["client_company"] = (
+        ac_storage.data_objects["companies"].load(project.company_id).to_dict())
+    project_d["members"] = prepare_project_members(ac_storage, project)
+    project_d["task_lists"] = prepare_project_task_lists(ac_storage, project)
+    project_d["tasks_by_tasklist"] = {}
+    for tasklist in project_d["task_lists"]:
+        project_d["tasks_by_tasklist"][tasklist["id"]] = (
+            prepare_tasklist_tasks(ac_storage, tasklist["id"]))
+    project_d["tasks_without_task_lists"] = prepare_tasklist_tasks(ac_storage, 0)
+    # render and save the HTML
+    out_file = os.path.join(output_path, project_d["html_filename"])
+    html = render_project(j2env, project_d).encode("utf8")
+    save_html(out_file, html)
+    return project_d
+
+def task_list_without_tasks() -> AcTaskList:
+    return AcTaskList(
+        class_ = AC_CLASS_TASK_LIST,
+        completed_by_id=None,
+        completed_on=0,
+        completed_tasks=0,
+        created_by_email="",
+        created_by_id=0,
+        created_by_name="",
+        created_on=0,
+        due_on=0,
+        id=0,
+        is_completed=True,
+        is_trashed=False,
+        name="Tasks without task list",
+        open_tasks=0,
+        position=999999,
+        project_id=0,
+        start_on=0,
+        trashed_by_id=0,
+        trashed_on=0,
+        updated_by_id=0,
+        updated_on=0,
+        url_path=""
+    )
+
+def prepare_project_task_lists(ac_storage, project: AcProject):
+    task_lists = ac_storage.data_objects["task-lists"].find_by_project(project.id)
+    # task_lists.extend(task_list_without_tasks())
+    sorted_task_lists = sorted(task_lists, key=lambda t: t.position, reverse=False)
+    return list(map(lambda t: t.to_dict(), sorted_task_lists))
+
+def prepare_project_tasks(ac_storage, project: AcProject) -> list[dict]:
+    return list(map(lambda t: t.to_dict(),
+                    ac_storage.data_objects["tasks"].find_by_project(project.id)))
+
+def prepare_tasklist_tasks(ac_storage, tasklist_id: int) -> list[dict]:
+    tasks = ac_storage.data_objects["tasks"].find_by_tasklist(tasklist_id)
+    sorted_task_lists = sorted(tasks, key=lambda t: t.position, reverse=False)
+    return list(map(lambda t: t.to_dict(), sorted_task_lists))
+
+
+
+def prepare_project_members(ac_storage, project):
+    members = []
+    for member_id in project.members:
+        try:
+            user = ac_storage.data_objects["users"].load(member_id)
+            members.append(user.to_dict())
+        except FileNotFoundError as _e:
+            logging.error("User '%s' not found" % member_id)
+    return members
 
 
 def save_project_index_html(j2env, output_path, project_list):
