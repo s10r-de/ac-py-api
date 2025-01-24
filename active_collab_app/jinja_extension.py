@@ -34,10 +34,8 @@ reactions = {
 
 @eval_context
 def to_emoji(_eval_ctx, reaction) -> str:
-    emoji = "�"
-    if reaction in reactions:
-        emoji = reactions[reaction]
-    return emoji
+    fallback_emoji = "�"
+    return reactions.get(reaction) or fallback_emoji
 
 class JinjaFilters(Extension):
     def __init__(self, environment):
