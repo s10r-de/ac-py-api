@@ -131,9 +131,11 @@
             </div>
             <div class="comment-body">{{ comment.body_formatted|safe }}</div>
 
-            <div class="comment-reactions todo">
-                {%  for reaction in comment.reactions %}
-                    TODO: reactions: {{ reaction|json }}
+            <div class="comment-reactions">
+                {% for reaction in comment.reactions %}
+                    <span class="reaction-emoji">{{ reaction.class|emoji }}</span>
+                    <span class="reaction-name">{{ reaction.created_by_name }}</span>
+                    <div class="debug">{{ reaction|json }}</div>
                 {% endfor %}
             </div>
 
