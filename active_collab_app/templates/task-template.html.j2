@@ -84,7 +84,7 @@
 <div class="attachments">
     {% for attachment in attachments %}
         <p class="todo">TODO: Attachment {{ attachment|json }}</p>
-    {%  else %}
+    {% else %}
         <p>No attachments</p>
     {% endfor %}
 </div>
@@ -98,9 +98,9 @@
             {{ subtask.position }} - {{ subtask.name }}
             {% if subtask.is_completed %}<i>completed on {{ subtask.completed_on|as_datetime }}{% endif %}</i>
         </div>
-            <div class="subtask-debug debug">
-                DEBUG: {{ subtask|json }}
-            </div>
+        <div class="subtask-debug debug">
+            DEBUG: {{ subtask|json }}
+        </div>
     {% else %}
         <li>No subtasks</li>
     {% endfor %}
@@ -116,24 +116,22 @@
 
 <div class="comments">
     {% for comment in comments %}
+        <hr class="comment-separator"/>
         <div class="comment">
             <div class="comment-meta">
-                <p>created: {{ comment.created_on|as_datetime }} {{ comment.created_by_name }} {{ comment.created_by_email|email }}</p>
-                {% if comment.last_modification_on %}
-                    <p>modfied: {{ comment.last_modification_on|as_datetime }} {{ comment.last_modification_by_name }} {{ comment.last_modification_by_email|email }}</p>
-                {% endif %}
-                {% if comment.updated_on != comment.created_on %}
-                    <p>updated: {{ comment.updated_on|as_datetime }} {{ comment.updated_by_id }}</p>
-                {% endif %}
+                <p>{{ comment.created_on|as_datetime }} {{ comment.created_by_name }} {{ comment.created_by_email|email }}</p>
+                {% if comment.last_modification_on %}<p>modified: {{ comment.last_modification_on|as_datetime }} {{ comment.last_modification_by_name }} {{ comment.last_modification_by_email|email }}</p>{% endif %}
                 {% for attachment in comment.attachments %}
                     <p class="todo">TODO: Attachment {{ attachment|json }}</p>
                 {% endfor %}
             </div>
             <div class="comment-body">{{ comment.body_formatted|safe }}</div>
 
-            <div class="comment-reactions todo">
-                {%  for reaction in comment.reactions %}
-                    TODO: reactions: {{ reaction|json }}
+            <div class="comment-reactions">
+                {% for reaction in comment.reactions %}
+                    <span class="reaction-emoji">{{ reaction.class|emoji }}</span>
+                    <span class="reaction-name">{{ reaction.created_by_name }}</span>
+                    <div class="debug">{{ reaction|json }}</div>
                 {% endfor %}
             </div>
 
@@ -141,6 +139,7 @@
                 DEBUG: {{ comment|json }}
             </div>
         </div>
+        <p></p>
     {% else %}
         <div>No comments</div>
     {% endfor %}

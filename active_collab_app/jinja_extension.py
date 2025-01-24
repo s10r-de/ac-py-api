@@ -22,6 +22,21 @@ def email(_eval_ctx, addr: str) -> str:
 def to_json(_eval_ctx, data: dict) -> str:
     return "<textarea>{}</textarea>".format(json.dumps(data, indent=2))
 
+reactions = {
+    "ThumbsUpReaction": "👍",
+    "ApplauseReaction": "👏",
+    "SmileReaction": "😀",
+    "HeartReaction": "♥️",
+    "PartyReaction": "🎉",
+    "ThinkingReaction": "🤔",
+    "ThumbsDownReaction": "👎",
+}
+
+@eval_context
+def to_emoji(_eval_ctx, reaction) -> str:
+    fallback_emoji = "�"
+    return reactions.get(reaction) or fallback_emoji
+
 class JinjaFilters(Extension):
     def __init__(self, environment):
         super().__init__(environment)
@@ -29,6 +44,7 @@ class JinjaFilters(Extension):
         environment.filters["as_datetime"] = as_datetime
         environment.filters["email"] = email
         environment.filters["json"] = to_json
+        environment.filters["emoji"] = to_emoji
 
     def parse(self, _parser):
         pass

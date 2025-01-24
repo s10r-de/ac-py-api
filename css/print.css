@@ -70,7 +70,7 @@ table th, td {
 
 .task-meta, .comment-meta, .project-meta {
     background: aliceblue;
-    font-size: 70%;
+    font-size: 80%;
 }
 
 .debug {
@@ -80,4 +80,19 @@ table th, td {
 
 .todo {
     color: red;
+}
+
+.comment-separator {
+    color: ghostwhite;
+}
+
+.reaction-emoji {
+    border-radius: 0.25em;
+    padding: 0.25em;
+    background: aliceblue;
+}
+
+.reaction-name {
+    font-size: 90%;
+    color: grey;
 }
