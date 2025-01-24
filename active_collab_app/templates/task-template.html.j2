@@ -119,12 +119,8 @@
         <hr class="comment-separator"/>
         <div class="comment">
             <div class="comment-meta">
-                <p>
-                    created: {{ comment.created_on|as_datetime }} {{ comment.created_by_name }} {{ comment.created_by_email|email }}</p>
-                {% if comment.last_modification_on %}
-                    <p>
-                        modfied: {{ comment.last_modification_on|as_datetime }} {{ comment.last_modification_by_name }} {{ comment.last_modification_by_email|email }}</p>
-                {% endif %}
+                <p>{{ comment.created_on|as_datetime }} {{ comment.created_by_name }} {{ comment.created_by_email|email }}</p>
+                {% if comment.last_modification_on %}<p>modified: {{ comment.last_modification_on|as_datetime }} {{ comment.last_modification_by_name }} {{ comment.last_modification_by_email|email }}</p>{% endif %}
                 {% for attachment in comment.attachments %}
                     <p class="todo">TODO: Attachment {{ attachment|json }}</p>
                 {% endfor %}
