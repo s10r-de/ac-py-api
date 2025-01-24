@@ -21,7 +21,7 @@ class AcFileStorageSubtask(AcFileStorageBaseClass):
         return super().save_with_id(subtask, subtask.id)
 
     def load(self, subtask_id: int) -> AcSubtask:
-        subtask = self.load_by_id(subtask_id)
+        subtask: dict = self.load_by_id(subtask_id)
         return subtask_from_json(subtask)
 
     def get_all(self):
@@ -32,5 +32,5 @@ class AcFileStorageSubtask(AcFileStorageBaseClass):
     def find_by_task(self, task_id: int) -> Iterator[AcSubtask]:
         return filter(lambda t: t.task_id == task_id, self.get_all())
 
-    def sort_by_position(self, subtasks: Iterator[AcSubtask]) -> Iterator[AcSubtask]:
+    def sort_by_position(self, subtasks: Iterator[AcSubtask]) -> list[AcSubtask]:
         return sorted(subtasks, key=lambda t: t.position)

@@ -11,7 +11,7 @@
 <h1>Project No. {{ project_number }} {% if completed_on %} - Completed on: {{ completed_on|as_date }} {% endif %}</h1>
 <h2>{{ name }}</h2>
 <p>{{ body_formatted|safe }}</p>
-<table>
+<table class="project-meta">
     <tr>
         <td>Project ID (internal)</td>
         <td>{{ id }}</td>
@@ -53,48 +53,56 @@
 </table>
 
 <h3>Attachments:</h3>
-<ul>
-    <li>Attachment 1</li>
-</ul>
+<div class="attachments">
+    {% for attachment in attachments %}
+        <p class="todo">TODO: Attachment {{ attachment|json }}</p>
+    {%  else %}
+        <p>No attachments</p>
+    {% endfor %}
+</div>
+
 
 <h3>Members:</h3>
 
-<ul>
+<div class="project-members">
     {% for user in members %}
-        <li>{{ user.first_name }} {{ user.last_name }} {{ user.email|email }}</li>
+        <div class="project-member">{{ user.first_name }} {{ user.last_name }} {{ user.email|email }}</div>
     {%  endfor %}
-</ul>
+</div>
 
 <h3>Tasks:</h3>
 
-<ul>
+<div>
     {% for task_list in task_lists %}
-        <li id="task_list-{{ task_list.id }}">
+        <div id="task_list-{{ task_list.id }}" class="tasklist">
+
             <h4 class="task_list"><input type="checkbox" disabled {% if task_list.is_completed %}checked{% endif %}/>
                 Task-List {{ task_list.id }}: {{ task_list.name }}
                 {% if task_list.is_completed %} - <i>completed on {{ task_list.completed_on|as_datetime }} {% endif %}</i>
             </h4>
-
-            {% for task in tasks_by_tasklist[task_list.id] %}
-                <li class="task {% if task.is_completed %}completed{% endif %} {% if task.is_important %}important{% endif %}">
-                    <input type="checkbox" disabled {% if task.is_completed %}checked{% endif %}/>
-                    <a href="{{ "task-%08d.html" % task.id }}">
-                        #{{ task.task_number }}&nbsp;-&nbsp;{{ task.name }} {% if task.is_important %}‼️{% endif %}
-                        {% if task.is_completed %} - <i>completed on {{ task.completed_on|as_datetime }} {% endif %}</i>
-                    </a>
-                </li>
-            {% else %}
-                <i>No tasks</i>
-            {% endfor %}
-        </li>
+            <div class="task_list-debug debug">
+                DEBUG: {{ task_list|json }}
+            </div>
+        </div>
+        {% for task in tasks_by_tasklist[task_list.id] %}
+            <div class="task {% if task.is_completed %}completed{% endif %} {% if task.is_important %}important{% endif %}">
+                <input type="checkbox" disabled {% if task.is_completed %}checked{% endif %}/>
+                <a href="{{ "task-%08d.html" % task.id }}">
+                    #{{ task.task_number }}&nbsp;-&nbsp;{{ task.name }} {% if task.is_important %}‼️{% endif %}
+                    {% if task.is_completed %} - <i>completed on {{ task.completed_on|as_datetime }} {% endif %}</i>
+                </a>
+            </div>
+            <div class="task-debug debug">
+                DEBUG: {{ task|json }}
+            </div>
+        {% else %}
+            <div>No tasks</div>
+        {% endfor %}
     {% else %}
-        <i>No task lists</i>
+        <div>No task lists</div>
     {%  endfor %}
+</div>
 
-</ul>
-<ul>
-
-</ul>
 
 <hr>
 <div class="footer">
