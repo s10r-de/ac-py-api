@@ -16,7 +16,7 @@
 </div>
 &nbsp;
 
-<table>
+<table class="task-meta">
     <tr>
         <td>Task-List / Task ID (internal)</td>
         <td>{{ task_list_id }} / {{ id }}</td>
@@ -78,38 +78,73 @@
     </tr>
 
 </table>
-<p>{{ body_formatted|safe }}</p>
+<div class="task-body">{{ body_formatted|safe }}</div>
 
 <h3>Attachments:</h3>
-<ul>
-    <li>TODO: list attachment here</li>
-</ul>
+<div class="attachments">
+    {% for attachment in attachments %}
+        <p class="todo">TODO: Attachment {{ attachment|json }}</p>
+    {%  else %}
+        <p>No attachments</p>
+    {% endfor %}
+</div>
 
 <h3>Subtasks</h3>
 
-<ul>
+<div class="subtasks">
     {% for subtask in subtasks %}
-        <li class="{% if subtask.is_completed %}completed{% endif %}">
+        <div class="subtask {% if subtask.is_completed %}completed{% endif %}">
             <input type="checkbox" disabled {% if subtask.is_completed %}checked{% endif %}/>
             {{ subtask.position }} - {{ subtask.name }}
             {% if subtask.is_completed %}<i>completed on {{ subtask.completed_on|as_datetime }}{% endif %}</i>
-        </li>
+        </div>
+            <div class="subtask-debug debug">
+                DEBUG: {{ subtask|json }}
+            </div>
     {% else %}
-        <i>No subtasks</i>
+        <li>No subtasks</li>
     {% endfor %}
-</ul>
+</div>
 
 <h3>Dependencies</h3>
 
 <ul>
-    <li>TODO: list dependencies here</li>
+    <li class="todo">TODO: list dependencies here</li>
 </ul>
 
 <h3>Comments</h3>
 
-<ul>
-    <li>TODO: list comments here</li>
-</ul>
+<div class="comments">
+    {% for comment in comments %}
+        <div class="comment">
+            <div class="comment-meta">
+                <p>created: {{ comment.created_on|as_datetime }} {{ comment.created_by_name }} {{ comment.created_by_email|email }}</p>
+                {% if comment.last_modification_on %}
+                    <p>modfied: {{ comment.last_modification_on|as_datetime }} {{ comment.last_modification_by_name }} {{ comment.last_modification_by_email|email }}</p>
+                {% endif %}
+                {% if comment.updated_on != comment.created_on %}
+                    <p>updated: {{ comment.updated_on|as_datetime }} {{ comment.updated_by_id }}</p>
+                {% endif %}
+                {% for attachment in comment.attachments %}
+                    <p class="todo">TODO: Attachment {{ attachment|json }}</p>
+                {% endfor %}
+            </div>
+            <div class="comment-body">{{ comment.body_formatted|safe }}</div>
+
+            <div class="comment-reactions todo">
+                {%  for reaction in comment.reactions %}
+                    TODO: reactions: {{ reaction|json }}
+                {% endfor %}
+            </div>
+
+            <div class="comment-debug debug">
+                DEBUG: {{ comment|json }}
+            </div>
+        </div>
+    {% else %}
+        <div>No comments</div>
+    {% endfor %}
+</div>
 
 <hr>
 <div class="footer">

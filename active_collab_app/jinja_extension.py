@@ -1,3 +1,5 @@
+import json
+
 from jinja2 import pass_eval_context as eval_context
 from jinja2.ext import Extension
 
@@ -16,12 +18,17 @@ def as_datetime(_eval_ctx, ts: int) -> str:
 def email(_eval_ctx, addr: str) -> str:
     return f'<a class="email" href="mailto:{addr}">&lt;{addr}&gt;</a>'
 
+@eval_context
+def to_json(_eval_ctx, data: dict) -> str:
+    return "<textarea>{}</textarea>".format(json.dumps(data, indent=2))
+
 class JinjaFilters(Extension):
     def __init__(self, environment):
         super().__init__(environment)
         environment.filters["as_date"] = as_date
         environment.filters["as_datetime"] = as_datetime
         environment.filters["email"] = email
+        environment.filters["json"] = to_json
 
     def parse(self, _parser):
         pass
