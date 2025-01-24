@@ -1,6 +1,6 @@
 
-* {
-      font-family: sans-serif;
+h1, h2, h3, h4, h5, p, div, i, b, li {
+    font-family: sans-serif;
 }
 
 table {
@@ -8,6 +8,7 @@ table {
     border-collapse: collapse;
     width: 100%;
 }
+
 table th, td {
     border: 1px solid;
     padding: 0.5em;
@@ -15,11 +16,14 @@ table th, td {
 
 /* Setting content width, unsetting floats and margins */
 /* Attention: the classes and IDs vary from theme to theme. Thus, set own classes here */
+
+/*
 #content, #page {
     width: 100%;
     margin: 0;
     float: none;
 }
+*/
 
 /** Setting margins */
 @page {
@@ -43,14 +47,37 @@ table th, td {
 .completed {
     text-decoration: line-through;
 }
+
 .important {
     background: yellow;
 }
+
 .task_list {
     background: lightblue;
     padding-top: 1em;
     padding-bottom: 1em;
 }
+
 .task {
     background: azure;
+}
+
+.task-body, .comment-body {
+    background: beige;
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+.task-meta, .comment-meta, .project-meta {
+    background: aliceblue;
+    font-size: 70%;
+}
+
+.debug {
+    display: none;
+    background: lightgrey;
+}
+
+.todo {
+    color: red;
 }

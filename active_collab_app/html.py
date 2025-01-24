@@ -40,6 +40,9 @@ def render_all_tasks(ac_storage: AcFileStorage, j2env: Environment, output_path:
         task_d["subtasks"] = map(lambda t: t.to_dict(),
                                  ac_storage.data_objects["subtasks"].sort_by_position(
                                      ac_storage.data_objects["subtasks"].find_by_task(task.id)))
+        task_d["comments"] = map(lambda c: c.to_dict(),
+                                  ac_storage.data_objects["comments"].sort_by_created(
+                                      ac_storage.data_objects["comments"].find_by_task(task.id)))
         # render and save the HTML
         out_file = os.path.join(output_path, task_d["html_filename"])
         html = render_task(j2env, task_d).encode("utf-8")
