@@ -25,14 +25,18 @@ def run_html(config: configparser.ConfigParser):
         extensions=['jinja_extension.JinjaFilters']
     )
     output_path = config.get("WWW", "path")
+    output_url = "attachments"
     shutil.rmtree(os.path.join(output_path, "*"), ignore_errors=True)
     shutil.copy("css/print.css", output_path)
 
     render_all_projects(ac_storage, j2env, output_path)
-    render_all_tasks(ac_storage, j2env, output_path)
+    render_all_tasks(ac_storage, j2env, output_path, output_url)
     return {"path": output_path}
 
-def render_all_tasks(ac_storage: AcFileStorage, j2env: Environment, output_path: str) -> None:
+def render_all_tasks(ac_storage: AcFileStorage,
+                     j2env: Environment,
+                     output_path: str,
+                     output_url: str) -> None:
     for task in ac_storage.data_objects["tasks"].get_all():
         task_d = task.to_dict()
         # prepare some variables to be used in template
@@ -54,10 +58,11 @@ def render_all_tasks(ac_storage: AcFileStorage, j2env: Environment, output_path:
             if not os.path.exists(output_attachments):
                 os.makedirs(output_attachments)
             src = ac_storage.data_objects["attachments"].get_bin_filename(attachment)
-            dest = os.path.join(output_attachments, attachment.name.replace("/", "_"))
+            dest_filename = attachment.name.replace("/", "_")
+            dest = os.path.join(output_attachments, dest_filename)
             logging.debug("Attachment: %d: '%s' copy %s -> %s" % (attachment.id, src, dest, dest))
             shutil.copy(src, dest)
-            url = "/".join(dest.split('/')[2:])
+            url = os.path.join(output_url, "%d" % attachment.project_id, dest_filename)
             attachment.download_url = url
             shutil.copy(src, dest)
         task_d["attachments"] = map(lambda a: a.to_dict(), attachments)
