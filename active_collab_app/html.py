@@ -7,6 +7,7 @@ import time
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from active_collab_api import AC_CLASS_TASK_LIST
+from active_collab_api.ac_attachment import AcAttachment
 from active_collab_api.ac_project import AcProject
 from active_collab_api.ac_task_list import AcTaskList
 from active_collab_storage.storage import AcFileStorage
@@ -43,6 +44,24 @@ def render_all_tasks(ac_storage: AcFileStorage, j2env: Environment, output_path:
         task_d["comments"] = map(lambda c: c.to_dict(),
                                   ac_storage.data_objects["comments"].sort_by_created(
                                       ac_storage.data_objects["comments"].find_by_task(task.id)))
+
+        attachments: list[AcAttachment] = (
+            list(ac_storage.data_objects["attachments"].find_by_task(task.id)))
+        for attachment in attachments:
+            output_attachments = os.path.join(output_path,
+                                              "attachments",
+                                              str(attachment.project_id))
+            if not os.path.exists(output_attachments):
+                os.makedirs(output_attachments)
+            src = ac_storage.data_objects["attachments"].get_bin_filename(attachment)
+            dest = os.path.join(output_attachments, attachment.name.replace("/", "_"))
+            logging.debug("Attachment: %d: '%s' copy %s -> %s" % (attachment.id, src, dest, dest))
+            shutil.copy(src, dest)
+            url = "/".join(dest.split('/')[2:])
+            attachment.download_url = url
+            shutil.copy(src, dest)
+        task_d["attachments"] = map(lambda a: a.to_dict(), attachments)
+
         # render and save the HTML
         out_file = os.path.join(output_path, task_d["html_filename"])
         html = render_task(j2env, task_d).encode("utf-8")

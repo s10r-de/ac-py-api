@@ -56,6 +56,11 @@
 <div class="attachments">
     {% for attachment in attachments %}
         <p class="todo">TODO: Attachment {{ attachment|json }}</p>
+
+        <div class="attachment-debug debug">
+            DEBUG: {{ attachment|json }}
+        </div>
+
     {%  else %}
         <p>No attachments</p>
     {% endfor %}

@@ -83,7 +83,24 @@
 <h3>Attachments:</h3>
 <div class="attachments">
     {% for attachment in attachments %}
-        <p class="todo">TODO: Attachment {{ attachment|json }}</p>
+
+        <div class="attachment">
+            {% if attachment.file_meta.kind == "image" %}
+                <img src="{{ attachment.download_url }}"/><br>
+                <b>{{ attachment.name }}</b>
+            {% else %}
+                <a href="{{ attachment.download_url }}">{{ attachment.name }}</a>
+            {% endif %}
+            <div>
+                <i>created by {{ attachment.created_by }} {{ attachment.created_by_email|email }}
+                    on {{ attachment.created_on|as_datetime }}</i>
+            </div>
+        </div>
+
+        <div class="attachment-debug debug">
+            DEBUG: {{ attachment|json }}
+        </div>
+
     {% else %}
         <p>No attachments</p>
     {% endfor %}
@@ -123,6 +140,11 @@
                 {% if comment.last_modification_on %}<p>modified: {{ comment.last_modification_on|as_datetime }} {{ comment.last_modification_by_name }} {{ comment.last_modification_by_email|email }}</p>{% endif %}
                 {% for attachment in comment.attachments %}
                     <p class="todo">TODO: Attachment {{ attachment|json }}</p>
+
+                    <div class="attachment-debug debug">
+                        DEBUG: {{ attachment|json }}
+                    </div>
+
                 {% endfor %}
             </div>
             <div class="comment-body">{{ comment.body_formatted|safe }}</div>
