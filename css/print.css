@@ -96,3 +96,18 @@ table th, td {
     font-size: 90%;
     color: grey;
 }
+
+.attachment {
+    background: bisque;
+    padding: 10px;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.attachment img {
+    width: 500px;
+}
+
+.task-body img {
+    width: 10px;
+}
