@@ -65,7 +65,10 @@ def render_all_tasks(ac_storage: AcFileStorage,
     # todo: task index?
 
 
-def copy_attachment(ac_storage:AcFileStorage, attachment:AcAttachment, output_path:str, output_url:str):
+def copy_attachment(ac_storage:AcFileStorage,
+                    attachment:AcAttachment,
+                    output_path:str,
+                    output_url:str):
     output_attachments = os.path.join(output_path,
                                       "attachments",
                                       str(attachment.project_id))
