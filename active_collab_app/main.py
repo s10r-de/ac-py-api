@@ -13,7 +13,7 @@ from active_collab_app import CFG_SECTION_DEFAULT
 from active_collab_app.delete import run_delete_all
 from active_collab_app.dump import run_dump_all
 from active_collab_app.empty import run_empty_trash
-from active_collab_app.html import run_html
+from active_collab_app.gen_html import run_html
 from active_collab_app.info import run_info
 from active_collab_app.load import run_load_all
 from active_collab_app.testing import run_testing

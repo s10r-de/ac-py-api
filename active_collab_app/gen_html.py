@@ -4,6 +4,7 @@ import os
 import shutil
 import time
 
+from bs4 import BeautifulSoup
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from active_collab_api import AC_CLASS_TASK_LIST
@@ -45,26 +46,22 @@ def render_all_tasks(ac_storage: AcFileStorage,
         task_d["subtasks"] = map(lambda t: t.to_dict(),
                                  ac_storage.data_objects["subtasks"].sort_by_position(
                                      ac_storage.data_objects["subtasks"].find_by_task(task.id)))
-        task_d["comments"] = map(lambda c: c.to_dict(),
-                                  ac_storage.data_objects["comments"].sort_by_created(
-                                      ac_storage.data_objects["comments"].find_by_task(task.id)))
+        comments = ac_storage.data_objects["comments"].sort_by_created(
+            ac_storage.data_objects["comments"].find_by_task(task.id))
+        for comment in comments:
+            for attachment in comment.attachments:
+                copy_attachment(ac_storage, attachment, output_path, output_url)
+                if attachment.disposition == "inline":
+                    comment.body_formatted = update_body(comment.body_formatted, attachment)
+
+        task_d["comments"] = map(lambda c: c.to_dict(), comments)
 
         attachments: list[AcAttachment] = (
             list(ac_storage.data_objects["attachments"].find_by_task(task.id)))
         for attachment in attachments:
-            output_attachments = os.path.join(output_path,
-                                              "attachments",
-                                              str(attachment.project_id))
-            if not os.path.exists(output_attachments):
-                os.makedirs(output_attachments)
-            src = ac_storage.data_objects["attachments"].get_bin_filename(attachment)
-            dest_filename = attachment.name.replace("/", "_")
-            dest = os.path.join(output_attachments, dest_filename)
-            logging.debug("Attachment: %d: '%s' copy %s -> %s" % (attachment.id, src, dest, dest))
-            shutil.copy(src, dest)
-            url = os.path.join(output_url, "%d" % attachment.project_id, dest_filename)
-            attachment.download_url = url
-            shutil.copy(src, dest)
+            copy_attachment(ac_storage, attachment, output_path, output_url)
+            if attachment.disposition == "inline":
+                task_d["body_formatted"] = update_body(task_d["body_formatted"], attachment)
         task_d["attachments"] = map(lambda a: a.to_dict(), attachments)
 
         # render and save the HTML
@@ -72,6 +69,36 @@ def render_all_tasks(ac_storage: AcFileStorage,
         html = render_task(j2env, task_d).encode("utf-8")
         save_html(out_file, html)
     # todo: task index?
+
+
+def update_body(body: str, attachment: AcAttachment) -> str:
+    soup = BeautifulSoup(body)
+    img = soup.find('img', {"attachment-id": str(attachment.id)})
+    if img:
+        img.attrs["src"] = attachment.download_url
+        parent = img.parent
+        parent.attrs["href"] = attachment.download_url
+        body = soup.renderContents().decode("utf-8")
+    return body
+
+
+def copy_attachment(ac_storage:AcFileStorage,
+                    attachment:AcAttachment,
+                    output_path:str,
+                    output_url:str):
+    output_attachments = os.path.join(output_path,
+                                      "attachments",
+                                      str(attachment.project_id))
+    if not os.path.exists(output_attachments):
+        os.makedirs(output_attachments)
+    src = ac_storage.data_objects["attachments"].get_bin_filename(attachment)
+    dest_filename = attachment.name.replace("/", "_")
+    dest = os.path.join(output_attachments, dest_filename)
+    logging.debug("Attachment: %d: '%s' copy %s -> %s" % (attachment.id, src, dest, dest))
+    shutil.copy(src, dest)
+    url = os.path.join(output_url, "%d" % attachment.project_id, dest_filename)
+    attachment.download_url = url
+
 
 def render_all_projects(
     ac_storage: AcFileStorage, j2env: Environment, output_path: str

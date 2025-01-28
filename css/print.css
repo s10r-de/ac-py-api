@@ -64,8 +64,8 @@ table th, td {
 
 .task-body, .comment-body {
     background: beige;
-    padding-top: 1em;
-    padding-bottom: 1em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
 }
 
 .task-meta, .comment-meta, .project-meta {
@@ -84,6 +84,8 @@ table th, td {
 
 .comment-separator {
     color: ghostwhite;
+    margin-top: 1em;
+    margin-bottom: 2em;
 }
 
 .reaction-emoji {
@@ -105,9 +107,10 @@ table th, td {
 }
 
 .attachment img {
-    width: 500px;
+    width: 30%;
 }
 
-.task-body img {
-    width: 10px;
+.task-body img, .comment-body img {
+    width: 200px;
+    margin: 10px;
 }
