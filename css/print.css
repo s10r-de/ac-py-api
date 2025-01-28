@@ -74,7 +74,7 @@ table th, td {
 }
 
 .debug {
-    /* display: none; */
+    display: none;
     background: lightgrey;
 }
 
