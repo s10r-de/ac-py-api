@@ -52,19 +52,7 @@ def render_all_tasks(ac_storage: AcFileStorage,
         attachments: list[AcAttachment] = (
             list(ac_storage.data_objects["attachments"].find_by_task(task.id)))
         for attachment in attachments:
-            output_attachments = os.path.join(output_path,
-                                              "attachments",
-                                              str(attachment.project_id))
-            if not os.path.exists(output_attachments):
-                os.makedirs(output_attachments)
-            src = ac_storage.data_objects["attachments"].get_bin_filename(attachment)
-            dest_filename = attachment.name.replace("/", "_")
-            dest = os.path.join(output_attachments, dest_filename)
-            logging.debug("Attachment: %d: '%s' copy %s -> %s" % (attachment.id, src, dest, dest))
-            shutil.copy(src, dest)
-            url = os.path.join(output_url, "%d" % attachment.project_id, dest_filename)
-            attachment.download_url = url
-            shutil.copy(src, dest)
+            copy_attachment(ac_storage, attachment, output_path, output_url)
         task_d["attachments"] = map(lambda a: a.to_dict(), attachments)
 
         # render and save the HTML
@@ -72,6 +60,22 @@ def render_all_tasks(ac_storage: AcFileStorage,
         html = render_task(j2env, task_d).encode("utf-8")
         save_html(out_file, html)
     # todo: task index?
+
+
+def copy_attachment(ac_storage:AcFileStorage, attachment:AcAttachment, output_path:str, output_url:str):
+    output_attachments = os.path.join(output_path,
+                                      "attachments",
+                                      str(attachment.project_id))
+    if not os.path.exists(output_attachments):
+        os.makedirs(output_attachments)
+    src = ac_storage.data_objects["attachments"].get_bin_filename(attachment)
+    dest_filename = attachment.name.replace("/", "_")
+    dest = os.path.join(output_attachments, dest_filename)
+    logging.debug("Attachment: %d: '%s' copy %s -> %s" % (attachment.id, src, dest, dest))
+    shutil.copy(src, dest)
+    url = os.path.join(output_url, "%d" % attachment.project_id, dest_filename)
+    attachment.download_url = url
+
 
 def render_all_projects(
     ac_storage: AcFileStorage, j2env: Environment, output_path: str
