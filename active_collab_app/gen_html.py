@@ -4,6 +4,7 @@ import os
 import shutil
 import time
 
+from bs4 import BeautifulSoup
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from active_collab_api import AC_CLASS_TASK_LIST
@@ -50,12 +51,17 @@ def render_all_tasks(ac_storage: AcFileStorage,
         for comment in comments:
             for attachment in comment.attachments:
                 copy_attachment(ac_storage, attachment, output_path, output_url)
+                if attachment.disposition == "inline":
+                    comment.body_formatted = update_body(comment.body_formatted, attachment)
+
         task_d["comments"] = map(lambda c: c.to_dict(), comments)
 
         attachments: list[AcAttachment] = (
             list(ac_storage.data_objects["attachments"].find_by_task(task.id)))
         for attachment in attachments:
             copy_attachment(ac_storage, attachment, output_path, output_url)
+            if attachment.disposition == "inline":
+                task_d["body_formatted"] = update_body(task_d["body_formatted"], attachment)
         task_d["attachments"] = map(lambda a: a.to_dict(), attachments)
 
         # render and save the HTML
@@ -63,6 +69,17 @@ def render_all_tasks(ac_storage: AcFileStorage,
         html = render_task(j2env, task_d).encode("utf-8")
         save_html(out_file, html)
     # todo: task index?
+
+
+def update_body(body: str, attachment: AcAttachment) -> str:
+    soup = BeautifulSoup(body)
+    img = soup.find('img', {"attachment-id": str(attachment.id)})
+    if img:
+        img.attrs["src"] = attachment.download_url
+        parent = img.parent
+        parent.attrs["href"] = attachment.download_url
+        body = soup.renderContents().decode("utf-8")
+    return body
 
 
 def copy_attachment(ac_storage:AcFileStorage,

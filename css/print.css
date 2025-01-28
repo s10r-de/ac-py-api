@@ -64,8 +64,8 @@ table th, td {
 
 .task-body, .comment-body {
     background: beige;
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
 }
 
 .task-meta, .comment-meta, .project-meta {
@@ -74,7 +74,7 @@ table th, td {
 }
 
 .debug {
-    display: none;
+    /* display: none; */
     background: lightgrey;
 }
 
@@ -109,5 +109,6 @@ table th, td {
 }
 
 .task-body img, .comment-body img {
-    width: 10px;
+    width: 200px;
+    margin: 10px;
 }

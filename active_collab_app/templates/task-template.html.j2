@@ -85,7 +85,7 @@
     {% for attachment in attachments %}
 
         <div class="attachment">
-            {% if attachment.file_meta.kind == "image" %}
+            {% if attachment.file_meta.kind == "image" and attachment.disposition != "inline" %}
                 <img src="{{ attachment.download_url }}"/><br>
                 <b>{{ attachment.name }}</b>
             {% else %}
@@ -154,7 +154,7 @@
             <div class="comment-attachments">
                 {% for c_attachment in comment.attachments %}
                     <div class="attachment">
-                        {% if c_attachment.file_meta.kind == "image" %}
+                        {% if c_attachment.file_meta.kind == "image" and c_attachment.disposition != "inline" %}
                             <img src="{{ c_attachment.download_url }}"/><br>
                             <b>{{ c_attachment.name }}</b>
                         {% else %}
