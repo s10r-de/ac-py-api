@@ -133,7 +133,6 @@
 
 <div class="comments">
     {% for comment in comments %}
-        <hr class="comment-separator"/>
         <div class="comment">
             <div class="comment-meta">
                 <p>{{ comment.created_on|as_datetime }} {{ comment.created_by_name }} {{ comment.created_by_email|email }}</p>
@@ -175,7 +174,7 @@
                 DEBUG: {{ comment|json }}
             </div>
         </div>
-        <p></p>
+        <hr class="comment-separator"/>
     {% else %}
         <div>No comments</div>
     {% endfor %}
