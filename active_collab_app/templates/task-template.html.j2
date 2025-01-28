@@ -137,16 +137,10 @@
         <div class="comment">
             <div class="comment-meta">
                 <p>{{ comment.created_on|as_datetime }} {{ comment.created_by_name }} {{ comment.created_by_email|email }}</p>
-                {% if comment.last_modification_on %}<p>modified: {{ comment.last_modification_on|as_datetime }} {{ comment.last_modification_by_name }} {{ comment.last_modification_by_email|email }}</p>{% endif %}
-                {% for attachment in comment.attachments %}
-                    <p class="todo">TODO: Attachment {{ attachment|json }}</p>
-
-                    <div class="attachment-debug debug">
-                        DEBUG: {{ attachment|json }}
-                    </div>
-
-                {% endfor %}
+                {% if comment.last_modification_on %}<p>
+                    modified: {{ comment.last_modification_on|as_datetime }} {{ comment.last_modification_by_name }} {{ comment.last_modification_by_email|email }}</p>{% endif %}
             </div>
+
             <div class="comment-body">{{ comment.body_formatted|safe }}</div>
 
             <div class="comment-reactions">
@@ -154,6 +148,26 @@
                     <span class="reaction-emoji">{{ reaction.class|emoji }}</span>
                     <span class="reaction-name">{{ reaction.created_by_name }}</span>
                     <div class="debug">{{ reaction|json }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="comment-attachments">
+                {% for c_attachment in comment.attachments %}
+                    <div class="attachment">
+                        {% if c_attachment.file_meta.kind == "image" %}
+                            <img src="{{ c_attachment.download_url }}"/><br>
+                            <b>{{ c_attachment.name }}</b>
+                        {% else %}
+                            <a href="{{ c_attachment.download_url }}">{{ c_attachment.name }}</a>
+                        {% endif %}
+                        <div>
+                            <i>created by {{ c_attachment.created_by }} {{ c_attachment.created_by_email|email }}
+                                on {{ c_attachment.created_on|as_datetime }}</i>
+                        </div>
+                    </div>
+                    <div class="attachment-debug debug">
+                        DEBUG: {{ c_attachment|json }}
+                    </div>
                 {% endfor %}
             </div>
 

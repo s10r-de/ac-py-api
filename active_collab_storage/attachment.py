@@ -50,3 +50,6 @@ class AcFileStorageAttachment(AcFileStorageBaseClass):
 
     def find_by_task(self, task_id: int) -> Iterator[AcAttachment]:
         return filter(lambda t: t.parent_id == task_id and t.parent_type == "Task", self.get_all())
+
+    def find_by_comment(self, comment_id: int) -> Iterator[AcAttachment]:
+        return filter(lambda t: t.parent_id == comment_id and t.parent_type == "Comment", self.get_all())

@@ -45,9 +45,12 @@ def render_all_tasks(ac_storage: AcFileStorage,
         task_d["subtasks"] = map(lambda t: t.to_dict(),
                                  ac_storage.data_objects["subtasks"].sort_by_position(
                                      ac_storage.data_objects["subtasks"].find_by_task(task.id)))
-        task_d["comments"] = map(lambda c: c.to_dict(),
-                                  ac_storage.data_objects["comments"].sort_by_created(
-                                      ac_storage.data_objects["comments"].find_by_task(task.id)))
+        comments = ac_storage.data_objects["comments"].sort_by_created(
+            ac_storage.data_objects["comments"].find_by_task(task.id))
+        for comment in comments:
+            for attachment in comment.attachments:
+                copy_attachment(ac_storage, attachment, output_path, output_url)
+        task_d["comments"] = map(lambda c: c.to_dict(), comments)
 
         attachments: list[AcAttachment] = (
             list(ac_storage.data_objects["attachments"].find_by_task(task.id)))
