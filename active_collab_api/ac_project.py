@@ -56,6 +56,7 @@ class AcProject:
     completed_by_name: str | None = dataclasses.field(default=None)
     completed_by_email: str | None = dataclasses.field(default=None)
     type: str | None = dataclasses.field(default=None)
+    member_permissions: str | None = dataclasses.field(default=None)  # 'collaborative'
 
     def __eq__(self, other) -> bool:
         ignored_fields = [

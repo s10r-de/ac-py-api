@@ -48,5 +48,6 @@
   "trashed_on": null,
   "updated_by_id": 5,
   "updated_on": 1723725088,
-  "url_path": "/projects/611"
+  "url_path": "/projects/611",
+  "member_permissions": "collaborative"
 }
