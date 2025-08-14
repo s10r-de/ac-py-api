@@ -10,14 +10,7 @@ from collections.abc import Iterator
 
 from active_collab_api.active_collab import ActiveCollab
 from active_collab_app import CFG_SECTION_DEFAULT
-from active_collab_app.delete import run_delete_all
-from active_collab_app.dump import run_dump_all
-from active_collab_app.empty import run_empty_trash
-from active_collab_app.gen_html import run_html
 from active_collab_app.info import run_info
-from active_collab_app.load import run_load_all
-from active_collab_app.testing import run_testing
-from active_collab_app.verify import run_verify_all
 from active_collab_app.version import run_version
 
 
@@ -65,20 +58,6 @@ def run(args, config: configparser.ConfigParser):  # pylint: disable=R0911
         return run_version()
     if args.command == "info":
         return run_info(login(config), config)
-    if args.command == "dump":
-        return run_dump_all(login(config), config)
-    if args.command == "delete":
-        return run_delete_all(login(config), config)
-    if args.command == "empty":
-        return run_empty_trash(login(config), config)
-    if args.command == "verify":
-        return run_verify_all(login(config), config)
-    if args.command == "load":
-        return run_load_all(login(config), config)
-    if args.command == "testing":
-        return run_testing(login(config), config)
-    if args.command == "html":
-        return run_html(config)
     return None
 
 
@@ -86,8 +65,8 @@ def arg_parser() -> (dict, argparse.ArgumentParser):
     # parse arguments
     parser = argparse.ArgumentParser(
         prog="acdump",
-        description="This is a tool to dump data from Active-Collab",
-        epilog="(c) 2024 by ACME VC, Charlie Sloan <cs@example.com>",
+        description="This is a tool to access Active-Collab from CLI",
+        epilog="by Charlie Sloan <cschaba@s10r.de>",
     )
     parser.add_argument(
         "-c", "--config", required=True, help="use the named config file"
@@ -103,14 +82,7 @@ def arg_parser() -> (dict, argparse.ArgumentParser):
         "command",
         choices=[
             "version",
-            "info",
-            "dump",
-            "delete",
-            "empty",
-            "verify",
-            "load",
-            "testing",
-            "html",
+            "info"
         ],
         help="The command to run",
     )
