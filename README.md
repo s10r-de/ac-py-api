@@ -1,4 +1,4 @@
-# Backup Active Collab
+# Active Collab Python CLient
 
 An API client, written in python to access Active Collab via the HTTP-API.
 
