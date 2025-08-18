@@ -64,6 +64,22 @@ Then test if execution will work by print the version number:
 }
 ```
 
+Example to access a self-hosted instance:
+
+```
+```
+[DEFAULT]
+base_url = http://collab.example.com:8008/
+dump_timestamp = /tmp/dump.txt
+is_cloud = 0
+
+[LOGIN]
+username = ac@example.com
+password = 12345678
+
+[STORAGE]
+path = ./self-hosted-data
+```
 
 ## API Documentation
 
