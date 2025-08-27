@@ -1,6 +1,6 @@
-# Active Collab Python CLient
+# ActiveCollab Python CLient
 
-An API client, written in python to access Active Collab via the HTTP-API.
+An API client, written in python to access ActiveCollab via the HTTP-API.
 
 ## Setup
 
@@ -25,84 +25,62 @@ pip3 install -r requirements.txt
 
 Always run the script it inside this virtual environment!
 
+Check main:
+
+```
+PYTHONPATH=$PWD:$PYTHONPATH python3 active_collab_app/main.py --help
+```
+
 ## Usage
 
-### 1. Export data from cloud
+### 1. Connect
 
 Create a new `config*.ini` file from `config-example.ini`. You need to
-provide your credentials to log in into Active Collab Cloud or
-self-hosted and for the Cloud Login you also need to give the account
-number (get it from URL).
+provide your credentials to log in into ActiveCollab Cloud or
+to your self-hosted instance. For the Cloud Login you also need to 
+give the account number (get it from URL).
 
-Example `config-cloud.ini`:
+Example `config-localhost.ini`:
 
 ```ini
 [DEFAULT]
-base_url = https://activecollab.com
-is_cloud = 1
+#base_url = https://activecollab.com
+#is_cloud = 1
+base_url = http://localhost:8008
+is_cloud = 0
 
 [LOGIN]
-# best is to create a dedicated user account just for the
-# API use, then you can add it only to the projects where
-# you need it and limit therefore the access!
-username = ac-api-test@example.com
-password = ***secret***
-
-# take the account number from the first segment of the URL
-# this is only required for Cloud hosted Active-Collab, for
-# self hosted it is ignored.
-account = #123456
+username = you@example.com
+password = very-secret
+#account = #123456
 ```
 
 Then test if execution will work by print the version number:
 
 ```console
-./acdump.sh -c config-cloud.ini info
+$ PYTHONPATH=$PWD:$PYTHONPATH python3 active_collab_app/main.py --config config-localhost.ini  info
 {
     "application": "ActiveCollab",
-    "version": "7.4.698",
-    "is_cloud": true
+    "version": "7.4.375",
+    "is_cloud": false
 }
 ```
 
-Example to access a self-hosted instance:
+## Official API Documentation
 
-```
-```
-[DEFAULT]
-base_url = http://collab.example.com:8008/
-dump_timestamp = /tmp/dump.txt
-is_cloud = 0
 
-[LOGIN]
-username = ac@example.com
-password = 12345678
-
-[STORAGE]
-path = ./self-hosted-data
-```
-
-## API Documentation
-
-We only have the following information regarding our API:
-
-We have resources available regarding our API - first the documentation page: <https://developers.activecollab.com/api-documentation/index.html>
-
-The second is the GitHub repo with examples here: <https://github.com/activecollab/activecollab-feather-sdk>
-
-And the third and most valuable one is the Stack-Overflow here: <https://stackoverflow.com/questions/tagged/activecollab>
+- The documentation page: <https://developers.activecollab.com/api-documentation/index.html>
+- GitHub repo with examples here: <https://github.com/activecollab/activecollab-feather-sdk>
+- Stack-Overflow here: <https://stackoverflow.com/questions/tagged/activecollab>
 
 If you need some further assistance on this, I encourage you to post all the questions about the API on Stack Overflow so that our developers can take a look and answer.
 
 You can find [ER-Diagram](AcObjects.md)
 
-## API Problems
+### API Problems
 
 - no paging: <https://github.com/activecollab/activecollab-feather-sdk/issues/29> (mostly)
   - <https://stackoverflow.com/questions/40020003/get-pagination-results-in-active-collab-api/40020858#40020858>
 - no filter: <https://github.com/activecollab/activecollab-feather-sdk/issues/36>
 
-## License
-
-Use it like it is.  NO WARRANTY!  Be careful when accessing your production account!
 
