@@ -52,6 +52,7 @@ password = ***secret***
 # this is only required for Cloud hosted Active-Collab, for
 # self hosted it is ignored.
 account = #123456
+```
 
 Then test if execution will work by print the version number:
 
