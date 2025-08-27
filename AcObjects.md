@@ -1,4 +1,4 @@
-# Active Collab Objects
+# ActiveCollab Objects
 
 All objects are stored under `Account`.
 
