@@ -1,6 +1,8 @@
+This repository is part of [AC-Toolbox](https://github.com/s10r-de/ac-toolbox)
+
 # ActiveCollab Python CLient
 
-An API client, written in python to access ActiveCollab via the HTTP-API.
+An API client, written in python to access the cloud or self-hosted ActiveCollab via the HTTP-API.
 
 ## Setup
 
